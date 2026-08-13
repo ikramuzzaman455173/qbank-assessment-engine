@@ -10,4 +10,5 @@ export const ROUTES = {
   practice: "/practice",
   analytics: "/analytics",
   settings: "/settings",
+  profile: "/profile",
 } as const;

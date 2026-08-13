@@ -1,18 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Target } from "lucide-react";
+
+import { EmptyState, PageHeader } from "@/components/common";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/practice")({
+  head: () => ({
+    meta: [
+      { title: "Practice — QBank" },
+      { name: "description", content: "Practice questions based on your progress." },
+    ],
+  }),
   component: PracticePage,
 });
 
 function PracticePage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Practice</h1>
-        <p className="text-muted-foreground">Hone your skills with practice sessions.</p>
-      </div>
-      <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border bg-muted/50">
-        <p className="text-muted-foreground">Practice placeholder</p>
+    <div className="space-y-8">
+      <PageHeader
+        title="Practice Mode"
+        description="Focused practice on your weak questions and spaced repetition."
+      />
+
+      <div className="rounded-lg border bg-card p-1">
+        <EmptyState
+          icon={Target}
+          title="Not enough data"
+          description="You need to complete some tests or review questions before practice mode can generate sessions for you."
+          action={<Button variant="outline">Go to Question Banks</Button>}
+        />
       </div>
     </div>
   );

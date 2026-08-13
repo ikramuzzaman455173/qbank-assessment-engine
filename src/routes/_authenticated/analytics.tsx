@@ -1,18 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { BarChart3 } from "lucide-react";
+
+import { EmptyState, PageHeader } from "@/components/common";
 
 export const Route = createFileRoute("/_authenticated/analytics")({
+  head: () => ({
+    meta: [
+      { title: "Analytics — QBank" },
+      { name: "description", content: "Understand your learning progress." },
+    ],
+  }),
   component: AnalyticsPage,
 });
 
 function AnalyticsPage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-        <p className="text-muted-foreground">View your learning progress and statistics.</p>
-      </div>
-      <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border bg-muted/50">
-        <p className="text-muted-foreground">Analytics placeholder</p>
+    <div className="space-y-8">
+      <PageHeader
+        title="Analytics & Progress"
+        description="Understand your learning progress and mastery."
+      />
+
+      <div className="rounded-lg border bg-card p-1">
+        <EmptyState
+          icon={BarChart3}
+          title="No analytics yet"
+          description="Complete your first test to see detailed analytics and progress tracking."
+        />
       </div>
     </div>
   );

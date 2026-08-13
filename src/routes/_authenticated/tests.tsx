@@ -1,18 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ClipboardList } from "lucide-react";
+
+import { EmptyState, PageHeader } from "@/components/common";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/tests")({
+  head: () => ({
+    meta: [
+      { title: "Tests — QBank" },
+      { name: "description", content: "Create and review your practice tests." },
+    ],
+  }),
   component: TestsPage,
 });
 
 function TestsPage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Tests</h1>
-        <p className="text-muted-foreground">Manage your assessments and exams.</p>
-      </div>
-      <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border bg-muted/50">
-        <p className="text-muted-foreground">Tests placeholder</p>
+    <div className="space-y-8">
+      <PageHeader
+        title="Tests"
+        description="Create and review your practice tests."
+        actions={<Button>Generate Test</Button>}
+      />
+
+      <div className="rounded-lg border bg-card p-1">
+        <EmptyState
+          icon={ClipboardList}
+          title="No tests available"
+          description="You haven't generated or taken any tests yet."
+          action={<Button variant="outline">Generate your first test</Button>}
+        />
       </div>
     </div>
   );

@@ -1,45 +1,36 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen } from "lucide-react";
-import { useState } from "react";
 
-import { EmptyState, PageHeader, SearchBar } from "@/components/common";
+import { EmptyState, PageHeader } from "@/components/common";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/question-banks/")({
   head: () => ({
     meta: [
       { title: "Question Banks — QBank" },
-      { name: "description", content: "Create and manage your own MCQ question banks." },
-      { property: "og:title", content: "Question Banks — QBank" },
-      { property: "og:description", content: "Create and manage your own MCQ question banks." },
+      { name: "description", content: "Manage and organize your question collections." },
     ],
   }),
   component: QuestionBanksPage,
 });
 
 function QuestionBanksPage() {
-  const [query, setQuery] = useState("");
-
   return (
-    <>
+    <div className="space-y-8">
       <PageHeader
         title="Question Banks"
-        description="Your banks are private. Tests are always generated from questions you own."
-        actions={<Button disabled>New question bank</Button>}
+        description="Manage and organize your question collections."
+        actions={<Button>Create Question Bank</Button>}
       />
 
-      <SearchBar
-        value={query}
-        onChange={setQuery}
-        placeholder="Search banks…"
-        label="Search question banks"
-      />
-
-      <EmptyState
-        icon={BookOpen}
-        title="No question banks yet"
-        description="Question bank creation, manual MCQ entry and imports arrive in the next step."
-      />
-    </>
+      <div className="rounded-lg border bg-card p-1">
+        <EmptyState
+          icon={BookOpen}
+          title="No question banks found"
+          description="You haven't created any question banks yet. Create your first bank to start organizing questions."
+          action={<Button variant="outline">Create your first bank</Button>}
+        />
+      </div>
+    </div>
   );
 }

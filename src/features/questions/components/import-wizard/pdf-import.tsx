@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Upload, FileText, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useProcessPdf } from "../../api/use-process-pdf";
 import { useCreateSource } from "../../api/use-create-source";
 import type { ParsedQuestionResult, RawQuestion } from "./schema";

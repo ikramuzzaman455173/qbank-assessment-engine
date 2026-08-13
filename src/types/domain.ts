@@ -61,31 +61,65 @@ export interface UploadedSource extends OwnedEntity, Timestamps {
   importedQuestions: number;
 }
 
-export type TestMode = "practice" | "exam";
-export type TestStatus = "draft" | "ready" | "in_progress" | "completed";
+export type TestMode = "full" | "random" | "custom";
+export type TestStatus = "draft" | "in_progress" | "completed";
 
 export interface Test extends OwnedEntity, Timestamps {
-  bankId: UUID;
+  questionBankId: UUID;
   title: string;
   mode: TestMode;
-  status: TestStatus;
-  questionCount: number;
-  durationMinutes: number | null;
+  totalQuestions: number;
+  difficulty: QuestionDifficulty | "mixed" | null;
+  topic: string | null;
+  source: string | null;
+  timerEnabled: boolean;
+  durationSeconds: number | null;
+  randomizeQuestions: boolean;
+  randomizeOptions: boolean;
 }
 
-export interface AttemptAnswer {
-  questionId: UUID;
-  selectedOptionIds: string[];
-  isCorrect: boolean | null;
-  answeredAt: ISODateString | null;
+export interface TestQuestion extends Timestamps {
+  id: UUID;
+  testId: UUID;
+  originalQuestionId: UUID | null;
+  questionOrder: number;
+  questionText: string;
+  optionA: string;
+  optionB: string;
+  optionC: string;
+  optionD: string;
+  correctAnswer: CorrectAnswer;
+  explanation: string | null;
+  topic: string | null;
+  difficulty: QuestionDifficulty | null;
+  sourceReference: string | null;
 }
+
+export type AttemptStatus = "in_progress" | "completed" | "auto_submitted" | "abandoned";
 
 export interface Attempt extends OwnedEntity, Timestamps {
   testId: UUID;
+  status: AttemptStatus;
   startedAt: ISODateString;
   submittedAt: ISODateString | null;
+  timeSpentSeconds: number | null;
+  totalQuestions: number;
+  answeredQuestions: number;
+  correctAnswers: number | null;
+  incorrectAnswers: number | null;
+  unansweredQuestions: number | null;
   score: number | null;
-  answers: AttemptAnswer[];
+  percentage: number | null;
+}
+
+export interface AttemptAnswer {
+  id: UUID;
+  attemptId: UUID;
+  testQuestionId: UUID;
+  selectedAnswer: CorrectAnswer | null;
+  isCorrect: boolean | null;
+  isMarkedForReview: boolean;
+  answeredAt: ISODateString | null;
 }
 
 export type MasteryLevel = "unattempted" | "weak" | "learning" | "mastered";

@@ -3,6 +3,7 @@ export const ROUTES = {
   auth: "/auth",
   dashboard: "/dashboard",
   profile: "/profile",
+  analytics: "/analytics",
   settings: "/settings",
   questionBanks: "/question-banks",
   questionBank: (id: string) => `/question-banks/${id}`,

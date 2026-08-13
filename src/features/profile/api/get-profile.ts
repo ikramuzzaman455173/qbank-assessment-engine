@@ -22,8 +22,10 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 
   return {
     id: data.id,
-    displayName: data.full_name,
+    fullName: data.full_name,
+    displayName: data.display_name || data.full_name,
     avatarUrl: data.avatar_url,
+    bio: data.bio,
     createdAt: data.created_at || new Date().toISOString(), // Fallback if missing
     updatedAt: data.updated_at || new Date().toISOString(), // Fallback if missing
   };

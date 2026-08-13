@@ -18,8 +18,10 @@ export interface OwnedEntity {
 
 export interface Profile extends Timestamps {
   id: UUID;
+  fullName: string | null;
   displayName: string | null;
   avatarUrl: string | null;
+  bio: string | null;
 }
 
 export interface QuestionBank extends OwnedEntity, Timestamps {

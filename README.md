@@ -202,41 +202,41 @@ src/
 
 ├── app/
 
-│   ├── routes/
+│ ├── routes/
 
-│   ├── providers/
+│ ├── providers/
 
-│   └── config/
+│ └── config/
 
 │
 
 ├── components/
 
-│   ├── ui/
+│ ├── ui/
 
-│   ├── common/
+│ ├── common/
 
-│   └── layout/
+│ └── layout/
 
 │
 
 ├── features/
 
-│   ├── auth/
+│ ├── auth/
 
-│   ├── dashboard/
+│ ├── dashboard/
 
-│   ├── question-banks/
+│ ├── question-banks/
 
-│   ├── questions/
+│ ├── questions/
 
-│   ├── imports/
+│ ├── imports/
 
-│   ├── tests/
+│ ├── tests/
 
-│   ├── practice/
+│ ├── practice/
 
-│   └── analytics/
+│ └── analytics/
 
 │
 

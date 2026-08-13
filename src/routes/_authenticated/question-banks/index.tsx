@@ -28,7 +28,12 @@ function QuestionBanksPage() {
         actions={<Button disabled>New question bank</Button>}
       />
 
-      <SearchBar value={query} onChange={setQuery} placeholder="Search banks…" label="Search question banks" />
+      <SearchBar
+        value={query}
+        onChange={setQuery}
+        placeholder="Search banks…"
+        label="Search question banks"
+      />
 
       <EmptyState
         icon={BookOpen}

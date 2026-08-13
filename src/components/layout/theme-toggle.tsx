@@ -8,7 +8,13 @@ export function ThemeToggle() {
   const nextLabel = resolvedTheme === "dark" ? "Switch to light theme" : "Switch to dark theme";
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={nextLabel} title={nextLabel}>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggleTheme}
+      aria-label={nextLabel}
+      title={nextLabel}
+    >
       {resolvedTheme === "dark" ? (
         <Sun className="size-4" aria-hidden="true" />
       ) : (

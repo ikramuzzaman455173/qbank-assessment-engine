@@ -50,8 +50,10 @@ export function toAppError(error: unknown): AppError {
 
   if (isSupabaseLikeError(error)) {
     const status = error.status ?? 0;
-    if (status === 401) return new AppError("authentication", FALLBACK_MESSAGES.authentication, error);
-    if (status === 403) return new AppError("authorization", FALLBACK_MESSAGES.authorization, error);
+    if (status === 401)
+      return new AppError("authentication", FALLBACK_MESSAGES.authentication, error);
+    if (status === 403)
+      return new AppError("authorization", FALLBACK_MESSAGES.authorization, error);
     if (status === 404) return new AppError("not_found", FALLBACK_MESSAGES.not_found, error);
     if (status >= 500) return new AppError("server", FALLBACK_MESSAGES.server, error);
   }

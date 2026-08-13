@@ -34,8 +34,18 @@ function DashboardPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Question banks" value="—" icon={BookOpen} hint="Connected in a later step" />
-        <StatCard label="Questions" value="—" icon={ClipboardList} hint="Connected in a later step" />
+        <StatCard
+          label="Question banks"
+          value="—"
+          icon={BookOpen}
+          hint="Connected in a later step"
+        />
+        <StatCard
+          label="Questions"
+          value="—"
+          icon={ClipboardList}
+          hint="Connected in a later step"
+        />
         <StatCard label="Tests taken" value="—" icon={Target} hint="Connected in a later step" />
         <StatCard label="Mastery" value="—" icon={TrendingUp} hint="Connected in a later step" />
       </div>

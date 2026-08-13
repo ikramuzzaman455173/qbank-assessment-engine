@@ -1,0 +1,32 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { questionBankKeys } from "./keys";
+import type { QuestionBank } from "@/types/domain";
+
+export function useQuestionBank(id: string) {
+  return useQuery({
+    queryKey: questionBankKeys.detail(id),
+    queryFn: async (): Promise<QuestionBank> => {
+      const { data, error } = await (supabase as any)
+        .from("question_banks")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) throw error;
+
+      return {
+        id: data.id,
+        ownerId: data.user_id,
+        name: data.name,
+        description: data.description,
+        subject: data.subject,
+        topic: data.topic,
+        questionCount: data.question_count,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      };
+    },
+    enabled: !!id,
+  });
+}

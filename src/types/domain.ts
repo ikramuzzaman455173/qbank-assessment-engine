@@ -26,25 +26,25 @@ export interface QuestionBank extends OwnedEntity, Timestamps {
   name: string;
   description: string | null;
   subject: string | null;
+  topic: string | null;
   questionCount: number;
 }
 
 export type QuestionDifficulty = "easy" | "medium" | "hard";
-
-export interface QuestionOption {
-  id: string;
-  text: string;
-}
+export type CorrectAnswer = "A" | "B" | "C" | "D";
 
 export interface Question extends OwnedEntity, Timestamps {
   bankId: UUID;
-  stem: string;
-  options: QuestionOption[];
-  correctOptionIds: string[];
+  questionText: string;
+  optionA: string;
+  optionB: string;
+  optionC: string;
+  optionD: string;
+  correctAnswer: CorrectAnswer;
   explanation: string | null;
   topic: string | null;
   difficulty: QuestionDifficulty | null;
-  sourceId: UUID | null;
+  sourceReference: string | null;
 }
 
 export type SourceKind = "pdf" | "json" | "manual";

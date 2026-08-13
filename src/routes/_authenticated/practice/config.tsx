@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/common";
-import { PracticeConfigForm } from "@/features/practice/components/practice-config-form";
+import { PracticeConfigForm } from "@/features/practice/components";
 
 export const Route = createFileRoute("/_authenticated/practice/config")({
   validateSearch: (search: Record<string, unknown>) => {

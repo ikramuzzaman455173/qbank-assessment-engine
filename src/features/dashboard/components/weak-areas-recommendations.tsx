@@ -80,7 +80,7 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
               
               <div className="mt-4 pt-4 border-t border-border/50">
                 <Button variant="ghost" className="w-full justify-between p-0 h-auto font-medium hover:bg-transparent hover:text-primary" asChild>
-                  <Link to="/practice/config" search={{ topic: topic.topic }}>
+                  <Link to="/practice/config" search={{ mode: "topic", topic: topic.topic }}>
                     Practice Now
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </Link>

@@ -41,7 +41,7 @@ const configSchema = z.object({
 
 type ConfigValues = z.infer<typeof configSchema>;
 
-export function PracticeConfigForm({ initialMode }: { initialMode: string }) {
+export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode: string, initialTopic?: string | undefined }) {
   const { data: banks, isLoading: isBanksLoading } = useQuestionBanks();
   const createMutation = useCreatePracticeSession();
   const [generateError, setGenerateError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export function PracticeConfigForm({ initialMode }: { initialMode: string }) {
       practiceMode: initialMode,
       totalQuestions: 10,
       difficulty: "",
-      topic: "",
+      topic: initialTopic || "",
       randomizeQuestions: true,
       randomizeOptions: true,
     },

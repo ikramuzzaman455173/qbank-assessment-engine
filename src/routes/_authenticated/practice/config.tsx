@@ -6,13 +6,14 @@ export const Route = createFileRoute("/_authenticated/practice/config")({
   validateSearch: (search: Record<string, unknown>) => {
     return {
       mode: (search['mode'] as string) || "all",
+      topic: (search['topic'] as string) || undefined,
     };
   },
   component: PracticeConfigPage,
 });
 
 function PracticeConfigPage() {
-  const { mode } = Route.useSearch();
+  const { mode, topic } = Route.useSearch();
   
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
@@ -20,7 +21,7 @@ function PracticeConfigPage() {
         title="Configure Practice"
         description="Select your question bank and settings for this session."
       />
-      <PracticeConfigForm initialMode={mode || "all"} />
+      <PracticeConfigForm initialMode={mode || "all"} initialTopic={topic} />
     </div>
   );
 }

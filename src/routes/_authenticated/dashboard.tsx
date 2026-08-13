@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useAuth } from '@/features/auth/hooks/use-auth'
+import { useSession } from '@/features/auth/hooks/use-session'
 import { useDashboardMetrics } from '@/features/dashboard/api/use-dashboard-metrics'
 import { PageHeader } from '@/components/common/page-header'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -17,11 +17,11 @@ export const Route = createFileRoute('/_authenticated/dashboard')({
 })
 
 function DashboardPage() {
-  const { session } = useAuth()
+  const { session } = useSession()
   const [days, setDays] = useState<number>(30)
   
   const { data: metrics, isLoading, isError } = useDashboardMetrics(days)
-  const profileName = session?.user?.user_metadata?.full_name || 'Student'
+  const profileName = session?.user?.user_metadata?.['full_name'] || 'Student'
 
   return (
     <div className="flex flex-col gap-6">

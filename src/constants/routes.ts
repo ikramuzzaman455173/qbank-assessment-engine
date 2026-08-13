@@ -1,0 +1,15 @@
+export const ROUTES = {
+  landing: "/",
+  auth: "/auth",
+  dashboard: "/dashboard",
+  profile: "/profile",
+  settings: "/settings",
+  questionBanks: "/question-banks",
+  questionBank: (id: string) => `/question-banks/${id}`,
+  tests: "/tests",
+  createTest: "/tests/create",
+  test: (id: string) => `/tests/${id}`,
+  attemptTest: (id: string) => `/tests/${id}/attempt`,
+  practice: "/practice",
+  practiceConfig: "/practice/config",
+};

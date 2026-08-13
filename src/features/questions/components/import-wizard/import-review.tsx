@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { QuestionForm, type QuestionValues } from "../question-form";
-import type { ParsedQuestionResult } from "./schema";
+import type { ParsedQuestionResult, RawQuestion } from "./schema";
 import { rawQuestionSchema } from "./schema";
 import { AlertCircle, CheckCircle2, Edit2 } from "lucide-react";
 
@@ -53,7 +53,7 @@ export function ImportReview({ results: initialResults, onImport, onCancel, isIm
     setSelectedIndices(new Set(validIndices));
   };
 
-  const handleEditSubmit = (values: QuestionValues) => {
+  const handleEditSubmit = (values: RawQuestion) => {
     if (editingIndex === null) return;
     
     // The QuestionValues matches our Question structure exactly.

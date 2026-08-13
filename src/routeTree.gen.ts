@@ -19,6 +19,8 @@ import { Route as AuthenticatedPracticeRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedTestsRouteImport } from './routes/_authenticated/tests'
+import { Route as AuthenticatedPracticeIndexRouteImport } from './routes/_authenticated/practice/index'
+import { Route as AuthenticatedPracticeConfigRouteImport } from './routes/_authenticated/practice/config'
 import { Route as AuthenticatedQuestionBanksIndexRouteImport } from './routes/_authenticated/question-banks/index'
 import { Route as AuthenticatedQuestionBanksBankIdRouteImport } from './routes/_authenticated/question-banks/$bankId'
 import { Route as AuthenticatedTestsIndexRouteImport } from './routes/_authenticated/tests/index'
@@ -77,6 +79,18 @@ const AuthenticatedTestsRoute = AuthenticatedTestsRouteImport.update({
   path: '/tests',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPracticeIndexRoute =
+  AuthenticatedPracticeIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPracticeRoute,
+  } as any)
+const AuthenticatedPracticeConfigRoute =
+  AuthenticatedPracticeConfigRouteImport.update({
+    id: '/config',
+    path: '/config',
+    getParentRoute: () => AuthenticatedPracticeRoute,
+  } as any)
 const AuthenticatedQuestionBanksIndexRoute =
   AuthenticatedQuestionBanksIndexRouteImport.update({
     id: '/question-banks/',
@@ -131,13 +145,15 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/practice': typeof AuthenticatedPracticeRoute
+  '/practice': typeof AuthenticatedPracticeRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tests': typeof AuthenticatedTestsRouteWithChildren
+  '/practice/config': typeof AuthenticatedPracticeConfigRoute
   '/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRouteWithChildren
   '/tests/$testId': typeof AuthenticatedTestsTestIdRouteWithChildren
   '/tests/create': typeof AuthenticatedTestsCreateRoute
+  '/practice/': typeof AuthenticatedPracticeIndexRoute
   '/question-banks/': typeof AuthenticatedQuestionBanksIndexRoute
   '/tests/': typeof AuthenticatedTestsIndexRoute
   '/attempts/$attemptId/result': typeof AuthenticatedAttemptsAttemptIdResultRoute
@@ -150,12 +166,13 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/practice': typeof AuthenticatedPracticeRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/practice/config': typeof AuthenticatedPracticeConfigRoute
   '/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRouteWithChildren
   '/tests/$testId': typeof AuthenticatedTestsTestIdRouteWithChildren
   '/tests/create': typeof AuthenticatedTestsCreateRoute
+  '/practice': typeof AuthenticatedPracticeIndexRoute
   '/question-banks': typeof AuthenticatedQuestionBanksIndexRoute
   '/tests': typeof AuthenticatedTestsIndexRoute
   '/attempts/$attemptId/result': typeof AuthenticatedAttemptsAttemptIdResultRoute
@@ -170,13 +187,15 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/practice': typeof AuthenticatedPracticeRoute
+  '/_authenticated/practice': typeof AuthenticatedPracticeRouteWithChildren
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tests': typeof AuthenticatedTestsRouteWithChildren
+  '/_authenticated/practice/config': typeof AuthenticatedPracticeConfigRoute
   '/_authenticated/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRouteWithChildren
   '/_authenticated/tests/$testId': typeof AuthenticatedTestsTestIdRouteWithChildren
   '/_authenticated/tests/create': typeof AuthenticatedTestsCreateRoute
+  '/_authenticated/practice/': typeof AuthenticatedPracticeIndexRoute
   '/_authenticated/question-banks/': typeof AuthenticatedQuestionBanksIndexRoute
   '/_authenticated/tests/': typeof AuthenticatedTestsIndexRoute
   '/_authenticated/attempts/$attemptId/result': typeof AuthenticatedAttemptsAttemptIdResultRoute
@@ -195,9 +214,11 @@ export interface FileRouteTypes {
     | '/profile'
     | '/settings'
     | '/tests'
+    | '/practice/config'
     | '/question-banks/$bankId'
     | '/tests/$testId'
     | '/tests/create'
+    | '/practice/'
     | '/question-banks/'
     | '/tests/'
     | '/attempts/$attemptId/result'
@@ -210,12 +231,13 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/analytics'
     | '/dashboard'
-    | '/practice'
     | '/profile'
     | '/settings'
+    | '/practice/config'
     | '/question-banks/$bankId'
     | '/tests/$testId'
     | '/tests/create'
+    | '/practice'
     | '/question-banks'
     | '/tests'
     | '/attempts/$attemptId/result'
@@ -233,9 +255,11 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/settings'
     | '/_authenticated/tests'
+    | '/_authenticated/practice/config'
     | '/_authenticated/question-banks/$bankId'
     | '/_authenticated/tests/$testId'
     | '/_authenticated/tests/create'
+    | '/_authenticated/practice/'
     | '/_authenticated/question-banks/'
     | '/_authenticated/tests/'
     | '/_authenticated/attempts/$attemptId/result'
@@ -322,6 +346,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTestsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/practice/': {
+      id: '/_authenticated/practice/'
+      path: '/'
+      fullPath: '/practice/'
+      preLoaderRoute: typeof AuthenticatedPracticeIndexRouteImport
+      parentRoute: typeof AuthenticatedPracticeRoute
+    }
+    '/_authenticated/practice/config': {
+      id: '/_authenticated/practice/config'
+      path: '/config'
+      fullPath: '/practice/config'
+      preLoaderRoute: typeof AuthenticatedPracticeConfigRouteImport
+      parentRoute: typeof AuthenticatedPracticeRoute
+    }
     '/_authenticated/question-banks/': {
       id: '/_authenticated/question-banks/'
       path: '/question-banks'
@@ -381,6 +419,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedPracticeRouteChildren {
+  AuthenticatedPracticeConfigRoute: typeof AuthenticatedPracticeConfigRoute
+  AuthenticatedPracticeIndexRoute: typeof AuthenticatedPracticeIndexRoute
+}
+
+const AuthenticatedPracticeRouteChildren: AuthenticatedPracticeRouteChildren = {
+  AuthenticatedPracticeConfigRoute: AuthenticatedPracticeConfigRoute,
+  AuthenticatedPracticeIndexRoute: AuthenticatedPracticeIndexRoute,
+}
+
+const AuthenticatedPracticeRouteWithChildren =
+  AuthenticatedPracticeRoute._addFileChildren(
+    AuthenticatedPracticeRouteChildren,
+  )
+
 interface AuthenticatedTestsTestIdRouteChildren {
   AuthenticatedTestsTestIdAttemptRoute: typeof AuthenticatedTestsTestIdAttemptRoute
 }
@@ -428,7 +481,7 @@ const AuthenticatedQuestionBanksBankIdRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedPracticeRoute: typeof AuthenticatedPracticeRoute
+  AuthenticatedPracticeRoute: typeof AuthenticatedPracticeRouteWithChildren
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTestsRoute: typeof AuthenticatedTestsRouteWithChildren
@@ -440,7 +493,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedPracticeRoute: AuthenticatedPracticeRoute,
+  AuthenticatedPracticeRoute: AuthenticatedPracticeRouteWithChildren,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTestsRoute: AuthenticatedTestsRouteWithChildren,

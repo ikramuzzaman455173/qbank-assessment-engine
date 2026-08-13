@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Bookmark, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+import { Bookmark, ChevronLeft, ChevronRight, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import { useSaveAnswer } from "../api/use-save-answer";
 import { useSubmitAttempt } from "../api/use-submit-attempt";
 import { TestTimer } from "./test-timer";
@@ -30,6 +30,18 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
 
   // We maintain a tiny bit of local state for the radio group to feel instantly responsive
   const [localSelection, setLocalSelection] = useState<CorrectAnswer | null>(null);
+  
+  const isPractice = test.mode === "practice";
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  // In practice mode, show feedback as soon as an answer is saved/selected
+  useEffect(() => {
+    if (isPractice && currentAnswerRecord?.selectedAnswer) {
+      setShowFeedback(true);
+    } else {
+      setShowFeedback(false);
+    }
+  }, [currentIndex, currentAnswerRecord?.selectedAnswer, isPractice]);
 
   useEffect(() => {
     setLocalSelection((currentAnswerRecord?.selectedAnswer as CorrectAnswer) || null);
@@ -37,6 +49,11 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
 
   const handleOptionSelect = (val: CorrectAnswer) => {
     if (!currentQuestion) return;
+    
+    // In practice mode, if feedback is already showing and they are not retrying,
+    // we could prevent selection, but "Retry Question" is allowed.
+    // So we just allow changing the answer and it will update the DB.
+    
     setLocalSelection(val);
     saveAnswerMutation.mutate({
       attemptId: attempt.id,
@@ -44,6 +61,10 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
       selectedAnswer: val,
       isMarkedForReview: currentAnswerRecord?.isMarkedForReview,
     });
+    
+    if (isPractice) {
+      setShowFeedback(true);
+    }
   };
 
   const toggleMarkForReview = () => {
@@ -128,9 +149,20 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
                 >
                   {(['A', 'B', 'C', 'D'] as CorrectAnswer[]).map((opt) => {
                     const optionText = currentQuestion[`option${opt}` as keyof TestQuestion] as string;
+                    
+                    // Highlight correct/incorrect if feedback is showing
+                    let optionClass = "flex items-center space-x-2 rounded-lg border p-4 hover:bg-muted/50 transition-colors cursor-pointer";
+                    if (showFeedback) {
+                      if (opt === currentQuestion.correctAnswer) {
+                        optionClass = "flex items-center space-x-2 rounded-lg border-green-500 bg-green-500/10 p-4 transition-colors";
+                      } else if (opt === localSelection && opt !== currentQuestion.correctAnswer) {
+                        optionClass = "flex items-center space-x-2 rounded-lg border-destructive bg-destructive/10 p-4 transition-colors";
+                      }
+                    }
+
                     return (
-                      <div key={opt} className="flex items-center space-x-2 rounded-lg border p-4 hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => handleOptionSelect(opt)}>
-                        <RadioGroupItem value={opt} id={`option-${opt}`} />
+                      <div key={opt} className={optionClass} onClick={() => handleOptionSelect(opt)}>
+                        <RadioGroupItem value={opt} id={`option-${opt}`} disabled={showFeedback && opt !== localSelection && opt !== currentQuestion.correctAnswer} />
                         <Label htmlFor={`option-${opt}`} className="flex-1 cursor-pointer text-base leading-relaxed font-normal">
                           <span className="font-semibold mr-2">{opt}.</span>
                           {optionText}
@@ -139,6 +171,43 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
                     );
                   })}
                 </RadioGroup>
+
+                {/* Practice Feedback Banner */}
+                {showFeedback && localSelection && (
+                  <div className={`p-4 rounded-lg border ${localSelection === currentQuestion.correctAnswer ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} animate-in fade-in slide-in-from-bottom-2`}>
+                    <div className="flex items-start gap-3">
+                      {localSelection === currentQuestion.correctAnswer ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                      ) : (
+                        <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+                      )}
+                      <div className="space-y-2">
+                        <h4 className={`font-semibold ${localSelection === currentQuestion.correctAnswer ? 'text-green-800' : 'text-red-800'}`}>
+                          {localSelection === currentQuestion.correctAnswer ? "Correct!" : "Incorrect"}
+                        </h4>
+                        
+                        {localSelection !== currentQuestion.correctAnswer && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            The correct answer is <strong className="text-foreground">{currentQuestion.correctAnswer}</strong>.
+                          </p>
+                        )}
+
+                        {currentQuestion.explanation && (
+                          <div className="mt-3 text-sm prose prose-sm max-w-none">
+                            <strong>Explanation:</strong>
+                            <p>{currentQuestion.explanation}</p>
+                          </div>
+                        )}
+                        
+                        {currentQuestion.sourceReference && (
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Source: {currentQuestion.sourceReference}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
@@ -202,7 +271,7 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
             </Button>
           ) : (
             <Button onClick={() => setIsSubmitDialogOpen(true)}>
-              Finish
+              {isPractice ? "Finish Practice" : "Finish"}
               <CheckCircle2 className="w-4 h-4 ml-2" />
             </Button>
           )}

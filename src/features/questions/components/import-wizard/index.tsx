@@ -41,7 +41,7 @@ export function ImportWizard({ bankId }: ImportWizardProps) {
       
       await importMutation.mutateAsync({
         bankId,
-        sourceId,
+        sourceId: sourceId as any,
         // map snake_case RawQuestion to Question format
         questions: validQuestions.map(q => ({
           questionText: q.question_text,

@@ -44,7 +44,7 @@ export function ImportSummary({ bankId, totalDetected, totalImported, totalSkipp
           <div className="flex justify-center">
             <Button 
               size="lg" 
-              onClick={() => navigate({ to: "/_authenticated/question-banks/$bankId", params: { bankId } })}
+              onClick={() => navigate({ to: "/question-banks/$bankId", params: { bankId } })}
             >
               Return to Question Bank
               <ChevronRight className="ml-2 w-4 h-4" />

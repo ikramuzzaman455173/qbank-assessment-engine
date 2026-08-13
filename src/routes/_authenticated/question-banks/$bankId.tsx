@@ -20,6 +20,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useQuestionBank } from "@/features/question-banks/api/use-question-bank";
 import {
@@ -33,6 +34,7 @@ import { useDeleteQuestion } from "@/features/questions/api/use-delete-question"
 import { QuestionFilters } from "@/features/questions/components/question-filters";
 import { QuestionForm, type QuestionValues } from "@/features/questions/components/question-form";
 import { QuestionPreview } from "@/features/questions/components/question-preview";
+import { BankPerformanceSummary } from "@/features/practice/components/bank-performance-summary";
 import type { Question } from "@/types/domain";
 import { ROUTES } from "@/constants/routes";
 
@@ -177,6 +179,14 @@ function QuestionBankDetailsPage() {
         </div>
       </div>
 
+      <Tabs defaultValue="questions" className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="questions">Questions</TabsTrigger>
+          <TabsTrigger value="performance">Performance Insights</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="questions" className="space-y-6">
+
       <QuestionFilters
         onFiltersChange={(f) => setFilters((prev) => ({ ...prev, ...f, page: 1 }))}
         isLoading={isQuestionsLoading}
@@ -245,6 +255,12 @@ function QuestionBankDetailsPage() {
           )}
         </div>
       )}
+      </TabsContent>
+      
+      <TabsContent value="performance">
+        <BankPerformanceSummary bankId={bankId} />
+      </TabsContent>
+      </Tabs>
 
       {/* Create Question Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>

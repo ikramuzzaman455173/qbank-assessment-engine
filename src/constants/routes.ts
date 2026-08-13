@@ -13,6 +13,8 @@ export const ROUTES = {
   attemptTest: (id: string) => `/tests/${id}/attempt`,
   attemptResult: (attemptId: string) => `/attempts/${attemptId}/result`,
   practice: "/practice",
+  practiceConfig: "/practice/config",
+  practiceSession: (id: string) => `/practice/${id}`,
   analytics: "/analytics",
   settings: "/settings",
   profile: "/profile",

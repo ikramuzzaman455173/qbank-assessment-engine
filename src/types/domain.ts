@@ -61,7 +61,7 @@ export interface UploadedSource extends OwnedEntity, Timestamps {
   importedQuestions: number;
 }
 
-export type TestMode = "full" | "random" | "custom";
+export type TestMode = "full" | "random" | "custom" | "practice";
 export type TestStatus = "draft" | "in_progress" | "completed";
 
 export interface Test extends OwnedEntity, Timestamps {

@@ -30,13 +30,14 @@ function ResetPasswordPage() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}${ROUTES.dashboard}`,
+        redirectTo: `${window.location.origin}${ROUTES.auth}`,
       });
       if (error) throw error;
       setIsSubmitted(true);
       toast.success("Password reset link sent to your email!");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to send reset link");
+    } catch (error: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error((error as any).message || "Failed to send reset link");
     } finally {
       setIsLoading(false);
     }

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen, ClipboardList, Target, TrendingUp } from "lucide-react";
 
 import { EmptyState, PageHeader, StatCard } from "@/components/common";
+import { useProfile } from "@/features/profile/api/use-profile";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -14,10 +15,13 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardPage() {
+  const { data: profile } = useProfile();
+  const greeting = profile?.displayName ? `Welcome back, ${profile.displayName}!` : "Welcome back!";
+
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Welcome back!"
+        title={greeting}
         description="Here is an overview of your recent study activity and progress."
       />
 

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Settings, User } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,10 +14,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ROUTES } from "@/constants/routes";
 import { useSession } from "@/features/auth/hooks/use-session";
+import { useProfile } from "@/features/profile/api/use-profile";
 import { supabase } from "@/integrations/supabase/client";
 
 export function UserMenu() {
   const { user } = useSession();
+  const { data: profile } = useProfile();
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -28,14 +31,16 @@ export function UserMenu() {
     void navigate({ to: ROUTES.auth, replace: true });
   }
 
-  const email = user?.email ?? "User";
-  const initials = email.substring(0, 2).toUpperCase();
+  const displayName = profile?.displayName || user?.email || "User";
+  const email = user?.email || "";
+  const initials = displayName.substring(0, 2).toUpperCase();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
           <Avatar className="size-8 cursor-pointer border border-border transition-opacity hover:opacity-80">
+            {profile?.avatarUrl && <AvatarImage src={profile.avatarUrl} alt={displayName} />}
             <AvatarFallback className="bg-primary/10 text-xs text-primary">
               {initials}
             </AvatarFallback>
@@ -45,7 +50,7 @@ export function UserMenu() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Account</p>
+            <p className="text-sm font-medium leading-none">{displayName}</p>
             <p className="text-xs leading-none text-muted-foreground truncate">{email}</p>
           </div>
         </DropdownMenuLabel>

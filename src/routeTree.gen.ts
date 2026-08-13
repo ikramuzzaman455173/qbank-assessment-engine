@@ -21,6 +21,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedTestsRouteImport } from './routes/_authenticated/tests'
 import { Route as AuthenticatedQuestionBanksIndexRouteImport } from './routes/_authenticated/question-banks/index'
 import { Route as AuthenticatedQuestionBanksBankIdRouteImport } from './routes/_authenticated/question-banks/$bankId'
+import { Route as AuthenticatedQuestionBanksBankIdImportRouteImport } from './routes/_authenticated/question-banks/$bankId.import'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -83,6 +84,12 @@ const AuthenticatedQuestionBanksBankIdRoute =
     path: '/question-banks/$bankId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedQuestionBanksBankIdImportRoute =
+  AuthenticatedQuestionBanksBankIdImportRouteImport.update({
+    id: '/import',
+    path: '/import',
+    getParentRoute: () => AuthenticatedQuestionBanksBankIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -94,8 +101,9 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tests': typeof AuthenticatedTestsRoute
-  '/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRoute
+  '/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRouteWithChildren
   '/question-banks/': typeof AuthenticatedQuestionBanksIndexRoute
+  '/question-banks/$bankId/import': typeof AuthenticatedQuestionBanksBankIdImportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -107,8 +115,9 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tests': typeof AuthenticatedTestsRoute
-  '/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRoute
+  '/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRouteWithChildren
   '/question-banks': typeof AuthenticatedQuestionBanksIndexRoute
+  '/question-banks/$bankId/import': typeof AuthenticatedQuestionBanksBankIdImportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -122,8 +131,9 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tests': typeof AuthenticatedTestsRoute
-  '/_authenticated/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRoute
+  '/_authenticated/question-banks/$bankId': typeof AuthenticatedQuestionBanksBankIdRouteWithChildren
   '/_authenticated/question-banks/': typeof AuthenticatedQuestionBanksIndexRoute
+  '/_authenticated/question-banks/$bankId/import': typeof AuthenticatedQuestionBanksBankIdImportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/question-banks/$bankId'
     | '/question-banks/'
+    | '/question-banks/$bankId/import'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/question-banks/$bankId'
     | '/question-banks'
+    | '/question-banks/$bankId/import'
   id:
     | '__root__'
     | '/'
@@ -166,6 +178,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tests'
     | '/_authenticated/question-banks/$bankId'
     | '/_authenticated/question-banks/'
+    | '/_authenticated/question-banks/$bankId/import'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -261,8 +274,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedQuestionBanksBankIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/question-banks/$bankId/import': {
+      id: '/_authenticated/question-banks/$bankId/import'
+      path: '/import'
+      fullPath: '/question-banks/$bankId/import'
+      preLoaderRoute: typeof AuthenticatedQuestionBanksBankIdImportRouteImport
+      parentRoute: typeof AuthenticatedQuestionBanksBankIdRoute
+    }
   }
 }
+
+interface AuthenticatedQuestionBanksBankIdRouteChildren {
+  AuthenticatedQuestionBanksBankIdImportRoute: typeof AuthenticatedQuestionBanksBankIdImportRoute
+}
+
+const AuthenticatedQuestionBanksBankIdRouteChildren: AuthenticatedQuestionBanksBankIdRouteChildren =
+  {
+    AuthenticatedQuestionBanksBankIdImportRoute:
+      AuthenticatedQuestionBanksBankIdImportRoute,
+  }
+
+const AuthenticatedQuestionBanksBankIdRouteWithChildren =
+  AuthenticatedQuestionBanksBankIdRoute._addFileChildren(
+    AuthenticatedQuestionBanksBankIdRouteChildren,
+  )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
@@ -271,7 +306,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTestsRoute: typeof AuthenticatedTestsRoute
-  AuthenticatedQuestionBanksBankIdRoute: typeof AuthenticatedQuestionBanksBankIdRoute
+  AuthenticatedQuestionBanksBankIdRoute: typeof AuthenticatedQuestionBanksBankIdRouteWithChildren
   AuthenticatedQuestionBanksIndexRoute: typeof AuthenticatedQuestionBanksIndexRoute
 }
 
@@ -282,7 +317,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTestsRoute: AuthenticatedTestsRoute,
-  AuthenticatedQuestionBanksBankIdRoute: AuthenticatedQuestionBanksBankIdRoute,
+  AuthenticatedQuestionBanksBankIdRoute:
+    AuthenticatedQuestionBanksBankIdRouteWithChildren,
   AuthenticatedQuestionBanksIndexRoute: AuthenticatedQuestionBanksIndexRoute,
 }
 

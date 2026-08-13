@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, Download } from "lucide-react";
 import { useState } from "react";
 
 import { EmptyState, ErrorState, LoadingState, PageHeader } from "@/components/common";
@@ -165,10 +165,16 @@ function QuestionBankDetailsPage() {
             {bank.subject ? ` • ${bank.subject}` : ""}
           </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Question
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => navigate({ to: ROUTES.importQuestions(bankId) })}>
+            <Download className="mr-2 h-4 w-4" />
+            Import
+          </Button>
+          <Button onClick={() => setIsCreateOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Question
+          </Button>
+        </div>
       </div>
 
       <QuestionFilters

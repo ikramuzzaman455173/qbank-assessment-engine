@@ -6,6 +6,7 @@ export const ROUTES = {
   dashboard: "/dashboard",
   questionBanks: "/question-banks",
   questionBank: (id: string) => `/question-banks/${id}`,
+  importQuestions: (id: string) => `/question-banks/${id}/import`,
   tests: "/tests",
   practice: "/practice",
   analytics: "/analytics",

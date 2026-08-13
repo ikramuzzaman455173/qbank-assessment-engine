@@ -48,14 +48,17 @@ export interface Question extends OwnedEntity, Timestamps {
 }
 
 export type SourceKind = "pdf" | "json" | "manual";
-export type SourceStatus = "uploaded" | "processing" | "ready" | "failed";
+export type SourceStatus = "uploaded" | "processing" | "review" | "completed" | "failed";
 
 export interface UploadedSource extends OwnedEntity, Timestamps {
   kind: SourceKind;
   status: SourceStatus;
   fileName: string;
   storagePath: string | null;
+  fileSize: number | null;
   bankId: UUID | null;
+  totalQuestions: number;
+  importedQuestions: number;
 }
 
 export type TestMode = "practice" | "exam";

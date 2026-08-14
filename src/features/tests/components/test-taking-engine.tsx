@@ -31,6 +31,20 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
   
   const currentAnswer = answers.find(a => a.testQuestionId === currentQuestion?.id);
 
+  const options = useMemo(() => {
+    if (!currentQuestion) return [];
+    const baseOptions = [
+      { id: "A", text: currentQuestion.optionA },
+      { id: "B", text: currentQuestion.optionB },
+      { id: "C", text: currentQuestion.optionC },
+      { id: "D", text: currentQuestion.optionD },
+    ];
+    if (test.randomizeOptions) {
+      return [...baseOptions].sort(() => Math.random() - 0.5);
+    }
+    return baseOptions;
+  }, [currentQuestion, test.randomizeOptions]);
+
   if (!currentQuestion) return null;
 
   const handleSelectOption = (optionId: any) => {
@@ -110,18 +124,7 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
 
   const unansweredCount = test.totalQuestions - answers.filter(a => !!a.selectedAnswer).length;
 
-  const options = useMemo(() => {
-    const baseOptions = [
-      { id: "A", text: currentQuestion.optionA },
-      { id: "B", text: currentQuestion.optionB },
-      { id: "C", text: currentQuestion.optionC },
-      { id: "D", text: currentQuestion.optionD },
-    ];
-    if (test.randomizeOptions) {
-      return [...baseOptions].sort(() => Math.random() - 0.5);
-    }
-    return baseOptions;
-  }, [currentQuestion, test.randomizeOptions]);
+
 
   return (
     <div className="flex flex-col lg:flex-row h-full w-full min-h-[calc(100vh-6rem)] gap-6 p-4 md:p-6">

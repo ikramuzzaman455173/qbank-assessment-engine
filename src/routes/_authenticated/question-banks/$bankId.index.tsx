@@ -16,7 +16,7 @@ import { QuestionForm, type QuestionValues } from "@/features/questions/componen
 import type { Question } from "@/types/domain";
 import { ROUTES } from "@/constants/routes";
 
-export const Route = createFileRoute("/_authenticated/question-banks/$bankId")({
+export const Route = createFileRoute("/_authenticated/question-banks/$bankId/")({
   head: () => ({
     meta: [
       { title: "Bank Details — QBank" },

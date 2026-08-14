@@ -20,7 +20,7 @@ export function ResultSummary({ attempt }: ResultSummaryProps) {
           <Award className="w-8 h-8 text-primary" />
         </div>
         <CardTitle className="text-3xl font-bold">
-          {attempt.percentage !== null ? attempt.percentage.toFixed(1) : 0}%
+          {typeof attempt.percentage === "number" ? attempt.percentage.toFixed(1) : 0}%
         </CardTitle>
         <CardDescription className="text-lg">
           Final Score: {attempt.score} out of {attempt.totalQuestions}

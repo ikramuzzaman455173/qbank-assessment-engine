@@ -14,14 +14,14 @@ export function AppNav({ onNavigate }: AppNavProps) {
           key={to}
           to={to}
           onClick={onNavigate}
-          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:scale-[0.98]"
           activeProps={{
-            className: "bg-sidebar-accent text-sidebar-accent-foreground",
+            className: "bg-primary/10 text-primary font-semibold relative after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:h-2/3 after:w-1 after:bg-primary after:rounded-r-md",
             "aria-current": "page",
           }}
           activeOptions={{ exact: to === "/dashboard" }}
         >
-          <Icon className="size-4 shrink-0" aria-hidden="true" />
+          <Icon className="size-4 shrink-0 transition-transform group-hover:scale-110" aria-hidden="true" />
           {label}
         </Link>
       ))}

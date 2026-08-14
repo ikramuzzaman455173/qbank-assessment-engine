@@ -58,7 +58,9 @@ export function ProfileSettings() {
     try {
       await updateProfile.mutateAsync({
         id: user?.id as string,
-        ...values,
+        fullName: values.fullName,
+        displayName: values.displayName,
+        bio: values.bio || null,
       });
       toast.success("Profile updated successfully");
     } catch (error: any) {

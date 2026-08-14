@@ -1,3 +1,5 @@
+import type { ISODateString, UUID, TestMode } from "./domain";
+
 export interface TrendPoint {
   date: ISODateString;
   accuracy: number;

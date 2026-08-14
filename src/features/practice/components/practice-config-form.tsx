@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +28,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { useQuestionBanks } from "@/features/question-banks/api/use-question-banks";
-import { useCreatePracticeSession } from "../api/use-create-practice-session";
 
 const configSchema = z.object({
   bankId: z.string().min(1, "Please select a Question Bank"),
@@ -43,7 +43,7 @@ type ConfigValues = z.infer<typeof configSchema>;
 
 export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode: string, initialTopic?: string | undefined }) {
   const { data: banks, isLoading: isBanksLoading } = useQuestionBanks();
-  const createMutation = useCreatePracticeSession();
+  const navigate = useNavigate();
   const [generateError, setGenerateError] = useState<string | null>(null);
 
   const form = useForm<ConfigValues>({
@@ -61,18 +61,17 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
 
   const onSubmit = (values: ConfigValues) => {
     setGenerateError(null);
-    createMutation.mutate({
-      bankId: values.bankId,
-      practiceMode: values.practiceMode,
-      totalQuestions: values.totalQuestions,
-      difficulty: values.difficulty === "mixed" ? null : (values.difficulty || null),
-      topic: values.topic || null,
-      randomizeQuestions: values.randomizeQuestions,
-      randomizeOptions: values.randomizeOptions,
-    }, {
-      onError: (err) => {
-        setGenerateError(err.message);
-      }
+    void navigate({
+      to: "/practice",
+      search: {
+        bankId: values.bankId,
+        practiceMode: values.practiceMode,
+        totalQuestions: values.totalQuestions,
+        difficulty: values.difficulty === "mixed" ? undefined : (values.difficulty || undefined),
+        topic: values.topic || undefined,
+        randomizeQuestions: values.randomizeQuestions,
+        randomizeOptions: values.randomizeOptions,
+      } as any
     });
   };
 
@@ -129,11 +128,6 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="all">Practice All</SelectItem>
-                        <SelectItem value="incorrect">Practice Mistakes</SelectItem>
-                        <SelectItem value="unanswered">Practice Unanswered</SelectItem>
-                        <SelectItem value="difficult">Practice Difficult</SelectItem>
-                        <SelectItem value="weak_topic">Weak Topics</SelectItem>
-                        <SelectItem value="recent_mistakes">Recent Mistakes</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -253,8 +247,7 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
               </Alert>
             )}
 
-            <Button type="submit" className="w-full" disabled={createMutation.isPending}>
-              {createMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            <Button type="submit" className="w-full">
               Start Practice Session
             </Button>
           </form>

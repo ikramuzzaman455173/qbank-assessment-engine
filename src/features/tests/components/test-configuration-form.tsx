@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { ROUTES } from "@/constants/routes";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +50,7 @@ type ConfigValues = z.infer<typeof configSchema>;
 export function TestConfigurationForm() {
   const { data: banks, isLoading: isBanksLoading } = useQuestionBanks();
   const createMutation = useCreateTest();
+  const navigate = useNavigate();
   const [generateError, setGenerateError] = useState<string | null>(null);
 
   const form = useForm<ConfigValues>({
@@ -97,6 +100,9 @@ export function TestConfigurationForm() {
       randomizeQuestions: values.randomizeQuestions,
       randomizeOptions: values.randomizeOptions,
     }, {
+      onSuccess: (data) => {
+        void navigate({ to: ROUTES.test(data) as any });
+      },
       onError: (err) => {
         setGenerateError(err.message);
       }

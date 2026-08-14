@@ -90,13 +90,13 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
                         <div className="flex justify-between gap-4">
                           <span className="text-muted-foreground">Accuracy:</span>
                           <span className="font-medium text-primary">
-                            {payload[0].value}%
+                            {payload[0]?.value}%
                           </span>
                         </div>
                         <div className="flex justify-between gap-4">
                           <span className="text-muted-foreground">Questions:</span>
                           <span className="font-medium">
-                            {payload[0].payload.answered}
+                            {payload[0]?.payload?.answered}
                           </span>
                         </div>
                       </div>

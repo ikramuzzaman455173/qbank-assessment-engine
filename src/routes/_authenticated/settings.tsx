@@ -38,14 +38,14 @@ type SettingsTab =
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
 
-  const tabs = [
+  const tabs: Array<{ id: SettingsTab; label: string; icon: any; destructive?: boolean }> = [
     { id: "profile", label: "Profile", icon: User },
     { id: "preferences", label: "Preferences", icon: Settings2 },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "data", label: "Data Management", icon: Database },
     { id: "security", label: "Security", icon: ShieldCheck },
     { id: "danger", label: "Danger Zone", icon: AlertTriangle, destructive: true },
-  ] as const;
+  ];
 
   return (
     <div className="space-y-8">

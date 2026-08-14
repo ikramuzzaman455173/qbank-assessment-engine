@@ -97,7 +97,7 @@ export function QuestionForm({
 
         {/* Options and Correct Answer Selection */}
         <div className="space-y-4">
-          <FormLabel>Answer Options * (Select the correct one)</FormLabel>
+          <div className="text-sm font-medium">Answer Options * (Select the correct one)</div>
           <FormField
             control={form.control as any}
             name="correctAnswer"

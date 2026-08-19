@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -6,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -59,11 +58,11 @@ serve(async (req) => {
     const arrayBuffer = await fileData.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
     
-    // Efficient base64 encoding in Deno
-    const chunk_size = 0x8000;
-    const chunks = [];
-    for (let i = 0; i < uint8Array.length; i += chunk_size) {
-      chunks.push(String.fromCharCode.apply(null, uint8Array.subarray(i, i + chunk_size)));
+    const chunkSize = 0x8000;
+    const chunks: string[] = [];
+    for (let i = 0; i < uint8Array.length; i += chunkSize) {
+      const sub = uint8Array.subarray(i, i + chunkSize);
+      chunks.push(String.fromCharCode(...Array.from(sub)));
     }
     const base64Data = btoa(chunks.join(""));
 
@@ -133,41 +132,67 @@ Rules:
       },
     };
 
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
+    const candidateModels = [
+      "gemini-3.7-flash",
+      "gemini-3.6-flash",
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite",
+      "gemini-3.1-pro-preview",
+      "gemini-3-flash-preview",
+      "gemini-2.5-flash",
+      "gemini-2.0-flash",
+      "gemini-1.5-flash",
+    ];
+    let parsedOutput: any = null;
+    let lastErrorText = "";
+
+    for (const model of candidateModels) {
+      try {
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          }
+        );
+
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawText) {
+            parsedOutput = JSON.parse(rawText);
+            break;
+          }
+        } else {
+          lastErrorText = await geminiRes.text();
+          console.warn(`Model ${model} failed: ${lastErrorText}`);
+        }
+      } catch (err: any) {
+        lastErrorText = err?.message || String(err);
+        console.warn(`Request to ${model} threw error:`, err);
       }
-    );
-
-    if (!geminiRes.ok) {
-      const errorText = await geminiRes.text();
-      console.error("Gemini API Error:", errorText);
-      return new Response(JSON.stringify({ error: "Failed to process PDF with AI" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
     }
 
-    const geminiData = await geminiRes.json();
-    const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-    
-    if (!rawText) {
-      throw new Error("No text returned from Gemini");
+    if (!parsedOutput) {
+      return new Response(
+        JSON.stringify({ error: `Failed to process PDF with AI: ${lastErrorText || "No text generated"}` }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
-
-    const parsedOutput = JSON.parse(rawText);
 
     return new Response(JSON.stringify(parsedOutput), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error processing request:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: error?.message || "Internal server error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

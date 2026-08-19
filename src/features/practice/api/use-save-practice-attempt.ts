@@ -4,16 +4,16 @@ import type { Question } from "@/types/domain";
 import { attemptKeys } from "@/features/tests/api/keys";
 
 interface SavePracticeAttemptArgs {
-  bankId?: string;
+  bankId?: string | undefined;
   questions: Question[];
   userAnswers: Record<string, string>;
   percentage: number;
   correctCount: number;
   incorrectCount: number;
   unansweredCount: number;
-  timerEnabled?: boolean;
-  durationMinutes?: number;
-  startedAt?: string;
+  timerEnabled?: boolean | undefined;
+  durationMinutes?: number | undefined;
+  startedAt?: string | undefined;
 }
 
 export function useSavePracticeAttempt() {

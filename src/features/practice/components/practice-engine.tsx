@@ -25,12 +25,12 @@ import { cn } from "@/lib/utils";
 
 interface PracticeEngineProps {
   questions: Question[];
-  bankId?: string;
-  randomizeOptions?: boolean;
-  onFinish?: () => void;
-  defaultMode?: "exam" | "instant";
-  timerEnabled?: boolean;
-  durationMinutes?: number;
+  bankId?: string | undefined;
+  randomizeOptions?: boolean | undefined;
+  onFinish?: (() => void) | undefined;
+  defaultMode?: "exam" | "instant" | undefined;
+  timerEnabled?: boolean | undefined;
+  durationMinutes?: number | undefined;
 }
 
 export function PracticeEngine({ 
@@ -440,6 +440,10 @@ export function PracticeEngine({
   // -------------------------------------------------------------
   // TEST / PRACTICE ACTIVE RUN VIEW
   // -------------------------------------------------------------
+  if (!currentQuestion) {
+    return null;
+  }
+
   const qKey = currentQuestion.id || String(currentIndex);
   const selectedOption = userAnswers[qKey] || null;
   const isCurrentRevealed = mode === "instant" ? Boolean(instantRevealed[qKey]) : false;

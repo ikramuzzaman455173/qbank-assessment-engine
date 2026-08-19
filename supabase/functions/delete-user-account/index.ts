@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -6,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -49,7 +48,7 @@ serve(async (req) => {
       .list(user.id);
 
     if (!listError && avatarFiles && avatarFiles.length > 0) {
-      const filesToRemove = avatarFiles.map((x) => `${user.id}/${x.name}`);
+      const filesToRemove = avatarFiles.map((x: { name: string }) => `${user.id}/${x.name}`);
       await supabaseAdmin.storage.from("avatars").remove(filesToRemove);
     }
 
@@ -71,9 +70,9 @@ serve(async (req) => {
         status: 200,
       }
     );
-  } catch (error) {
+  } catch (error: any) {
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error?.message || "Internal server error" }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,

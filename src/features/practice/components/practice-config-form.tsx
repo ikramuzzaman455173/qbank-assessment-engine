@@ -120,14 +120,15 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Practice Mode</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value || "exam"}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select mode" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="all">Practice All</SelectItem>
+                        <SelectItem value="exam">Exam Mode (Result & Review at End)</SelectItem>
+                        <SelectItem value="instant">Learn Mode (Instant Feedback)</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

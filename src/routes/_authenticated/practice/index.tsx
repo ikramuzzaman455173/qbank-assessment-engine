@@ -61,6 +61,7 @@ function PracticeRoute() {
       <PracticeEngine 
         questions={questions} 
         randomizeOptions={search.randomizeOptions}
+        defaultMode={search.practiceMode === "instant" ? "instant" : "exam"}
         onFinish={() => navigate({ to: '/question-banks/$bankId', params: { bankId: search.bankId! } })}
       />
     </div>

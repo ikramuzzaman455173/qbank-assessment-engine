@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, ChevronRight } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { ROUTES } from "@/constants/routes";
 
 interface ImportSummaryProps {
   bankId: string;
@@ -11,14 +12,12 @@ interface ImportSummaryProps {
 }
 
 export function ImportSummary({ bankId, totalDetected, totalImported, totalSkipped }: ImportSummaryProps) {
-  const navigate = useNavigate();
-
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
-            <CheckCircle2 className="w-6 h-6 text-green-600" />
+          <div className="mx-auto w-12 h-12 rounded-full bg-green-100 dark:bg-green-950/50 flex items-center justify-center mb-4">
+            <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
           </div>
           <CardTitle>Import Complete</CardTitle>
           <CardDescription>
@@ -32,7 +31,7 @@ export function ImportSummary({ bankId, totalDetected, totalImported, totalSkipp
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Detected</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-green-600">{totalImported}</p>
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400">{totalImported}</p>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Imported</p>
             </div>
             <div>
@@ -42,12 +41,11 @@ export function ImportSummary({ bankId, totalDetected, totalImported, totalSkipp
           </div>
 
           <div className="flex justify-center">
-            <Button 
-              size="lg" 
-              onClick={() => navigate({ to: "/question-banks/$bankId", params: { bankId } })}
-            >
-              Return to Question Bank
-              <ChevronRight className="ml-2 w-4 h-4" />
+            <Button size="lg" asChild>
+              <Link to={ROUTES.questionBank(bankId)}>
+                Return to Question Bank
+                <ChevronRight className="ml-2 w-4 h-4" />
+              </Link>
             </Button>
           </div>
         </CardContent>

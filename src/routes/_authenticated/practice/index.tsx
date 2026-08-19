@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { ROUTES } from '@/constants/routes';
 import { useQuestions } from '@/features/questions/api/use-questions';
 import { PracticeEngine } from '@/features/practice/components';
 import { LoadingState, ErrorState } from '@/components/common';
@@ -69,7 +70,7 @@ function PracticeRoute() {
         defaultMode={search.practiceMode === "instant" ? "instant" : "exam"}
         timerEnabled={search.timerEnabled}
         durationMinutes={search.durationMinutes}
-        onFinish={() => navigate({ to: '/question-banks/$bankId', params: { bankId: search.bankId! } })}
+        onFinish={() => navigate({ to: ROUTES.questionBank(search.bankId!) as any })}
       />
     </div>
   );

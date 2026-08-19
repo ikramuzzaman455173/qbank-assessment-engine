@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -9,35 +9,44 @@ interface TestTimerProps {
 }
 
 export function TestTimer({ startedAt, durationSeconds, onExpire }: TestTimerProps) {
-  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(() => {
+    const start = new Date(startedAt).getTime();
+    const now = Date.now();
+    const elapsed = Math.floor((now - start) / 1000);
+    return Math.max(0, durationSeconds - elapsed);
+  });
+
+  const onExpireRef = useRef(onExpire);
+  useEffect(() => {
+    onExpireRef.current = onExpire;
+  }, [onExpire]);
+
+  const hasExpiredRef = useRef(false);
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const start = new Date(startedAt).getTime();
-      const now = new Date().getTime();
-      const elapsedSeconds = Math.floor((now - start) / 1000);
-      const remaining = durationSeconds - elapsedSeconds;
-      
+    const start = new Date(startedAt).getTime();
+
+    const tick = () => {
+      const now = Date.now();
+      const elapsed = Math.floor((now - start) / 1000);
+      const remaining = durationSeconds - elapsed;
+
       if (remaining <= 0) {
-        onExpire();
-        return 0;
+        setTimeLeft(0);
+        if (!hasExpiredRef.current) {
+          hasExpiredRef.current = true;
+          onExpireRef.current?.();
+        }
+      } else {
+        setTimeLeft(remaining);
       }
-      return remaining;
     };
 
-    // Initial calculation
-    const initial = calculateTimeLeft();
-    setTimeLeft(initial);
-
-    if (initial <= 0) return;
-
-    const interval = setInterval(() => {
-      const remaining = calculateTimeLeft();
-      setTimeLeft(remaining);
-    }, 1000);
+    tick();
+    const interval = setInterval(tick, 1000);
 
     return () => clearInterval(interval);
-  }, [startedAt, durationSeconds, onExpire]);
+  }, [startedAt, durationSeconds]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
@@ -55,13 +64,13 @@ export function TestTimer({ startedAt, durationSeconds, onExpire }: TestTimerPro
 
   return (
     <div className={cn(
-      "flex items-center gap-2 font-mono text-lg font-medium px-4 py-2 rounded-lg border",
-      isDanger ? "bg-destructive/10 text-destructive border-destructive" 
-      : isWarning ? "bg-yellow-100 text-yellow-800 border-yellow-300" 
-      : "bg-muted/50"
+      "flex items-center gap-2 font-mono text-sm sm:text-base font-semibold px-3.5 py-1.5 rounded-lg border transition-colors",
+      isDanger ? "bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/30 animate-pulse" 
+      : isWarning ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30" 
+      : "bg-muted/60 text-foreground border-border"
     )}>
-      <Clock className="w-5 h-5" />
-      {formatTime(Math.max(0, timeLeft))}
+      <Clock className="w-4 h-4 shrink-0" />
+      <span>{formatTime(Math.max(0, timeLeft))}</span>
     </div>
   );
 }

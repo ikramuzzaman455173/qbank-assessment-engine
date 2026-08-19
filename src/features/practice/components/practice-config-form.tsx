@@ -35,6 +35,8 @@ const configSchema = z.object({
   totalQuestions: z.number().min(1, "Must have at least 1 question"),
   difficulty: z.string().optional().nullable(),
   topic: z.string().optional().nullable(),
+  timerEnabled: z.boolean(),
+  durationMinutes: z.number().min(1).optional().nullable(),
   randomizeQuestions: z.boolean(),
   randomizeOptions: z.boolean(),
 });
@@ -50,14 +52,18 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
     resolver: zodResolver(configSchema),
     defaultValues: {
       bankId: "",
-      practiceMode: initialMode,
+      practiceMode: initialMode || "exam",
       totalQuestions: 10,
       difficulty: "",
       topic: initialTopic || "",
+      timerEnabled: false,
+      durationMinutes: 10,
       randomizeQuestions: true,
       randomizeOptions: true,
     },
   });
+
+  const watchTimerEnabled = form.watch("timerEnabled");
 
   const onSubmit = (values: ConfigValues) => {
     setGenerateError(null);
@@ -69,6 +75,8 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
         totalQuestions: values.totalQuestions,
         difficulty: values.difficulty === "mixed" ? undefined : (values.difficulty || undefined),
         topic: values.topic || undefined,
+        timerEnabled: values.timerEnabled,
+        durationMinutes: values.timerEnabled ? (values.durationMinutes || 10) : undefined,
         randomizeQuestions: values.randomizeQuestions,
         randomizeOptions: values.randomizeOptions,
       } as any
@@ -197,8 +205,51 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
             </div>
 
             <div className="space-y-4 pt-4 border-t">
-              <h4 className="font-medium text-sm text-muted-foreground">Additional Settings</h4>
+              <h4 className="font-medium text-sm text-muted-foreground">Timer & Question Settings</h4>
               
+              <FormField
+                control={form.control}
+                name="timerEnabled"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Enable Timer</FormLabel>
+                      <FormDescription>
+                        Set a countdown timer for this practice session.
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              {watchTimerEnabled && (
+                <FormField
+                  control={form.control}
+                  name="durationMinutes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duration (Minutes)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          min={1} 
+                          {...field} 
+                          value={field.value || ""}
+                          onChange={e => field.onChange(parseInt(e.target.value, 10))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
               <FormField
                 control={form.control}
                 name="randomizeQuestions"

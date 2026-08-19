@@ -11,6 +11,9 @@ interface SavePracticeAttemptArgs {
   correctCount: number;
   incorrectCount: number;
   unansweredCount: number;
+  timerEnabled?: boolean;
+  durationMinutes?: number;
+  startedAt?: string;
 }
 
 export function useSavePracticeAttempt() {
@@ -25,10 +28,15 @@ export function useSavePracticeAttempt() {
       correctCount,
       incorrectCount,
       unansweredCount,
+      timerEnabled = false,
+      durationMinutes = 10,
+      startedAt,
     }: SavePracticeAttemptArgs) => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return null;
       const userId = userData.user.id;
+
+      const durationSeconds = timerEnabled ? durationMinutes * 60 : null;
 
       // 1. Create a Test entry in the tests table (mode = 'practice')
       const { data: testData, error: testError } = await supabase
@@ -39,7 +47,8 @@ export function useSavePracticeAttempt() {
           title: `Practice Session (${new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })})`,
           mode: "practice",
           total_questions: questions.length,
-          timer_enabled: false,
+          timer_enabled: timerEnabled,
+          duration_seconds: durationSeconds,
           randomize_questions: false,
           randomize_options: false,
         })
@@ -80,15 +89,18 @@ export function useSavePracticeAttempt() {
       }
 
       // 3. Insert Completed Attempt record
+      const startIso = startedAt || new Date(Date.now() - 60000).toISOString();
+      const timeSpent = Math.max(1, Math.floor((Date.now() - new Date(startIso).getTime()) / 1000));
+
       const { data: attemptData, error: attemptError } = await supabase
         .from("attempts")
         .insert({
           test_id: testId,
           user_id: userId,
           status: "completed",
-          started_at: new Date(Date.now() - 120000).toISOString(),
+          started_at: startIso,
           submitted_at: new Date().toISOString(),
-          time_spent_seconds: 120,
+          time_spent_seconds: timeSpent,
           total_questions: questions.length,
           answered_questions: questions.length - unansweredCount,
           correct_answers: correctCount,

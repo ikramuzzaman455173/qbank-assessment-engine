@@ -9,6 +9,8 @@ interface PracticeSearch {
   totalQuestions: number;
   difficulty?: string;
   topic?: string;
+  timerEnabled?: boolean;
+  durationMinutes?: number;
   randomizeQuestions: boolean;
   randomizeOptions: boolean;
 }
@@ -20,6 +22,8 @@ export const Route = createFileRoute('/_authenticated/practice/')({
       totalQuestions: Number(search['totalQuestions']) || 10,
       randomizeQuestions: search['randomizeQuestions'] !== "false",
       randomizeOptions: search['randomizeOptions'] !== "false",
+      timerEnabled: search['timerEnabled'] === true || search['timerEnabled'] === "true",
+      durationMinutes: Number(search['durationMinutes']) || 10,
     };
     
     if (search['bankId']) result.bankId = search['bankId'] as string;
@@ -63,6 +67,8 @@ function PracticeRoute() {
         bankId={search.bankId}
         randomizeOptions={search.randomizeOptions}
         defaultMode={search.practiceMode === "instant" ? "instant" : "exam"}
+        timerEnabled={search.timerEnabled}
+        durationMinutes={search.durationMinutes}
         onFinish={() => navigate({ to: '/question-banks/$bankId', params: { bankId: search.bankId! } })}
       />
     </div>

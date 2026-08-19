@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Question } from "@/types/domain";
 import { useSavePracticeAttempt } from "../api/use-save-practice-attempt";
+import { TestTimer } from "@/features/tests/components/test-timer";
 import { cn } from "@/lib/utils";
 
 interface PracticeEngineProps {
@@ -28,6 +29,8 @@ interface PracticeEngineProps {
   randomizeOptions?: boolean;
   onFinish?: () => void;
   defaultMode?: "exam" | "instant";
+  timerEnabled?: boolean;
+  durationMinutes?: number;
 }
 
 export function PracticeEngine({ 
@@ -35,7 +38,9 @@ export function PracticeEngine({
   bankId,
   randomizeOptions = false, 
   onFinish,
-  defaultMode = "exam"
+  defaultMode = "exam",
+  timerEnabled = false,
+  durationMinutes = 10,
 }: PracticeEngineProps) {
   // Session Mode: "exam" (results at end) or "instant" (immediate feedback)
   const [mode, setMode] = useState<"exam" | "instant">(defaultMode);
@@ -52,6 +57,7 @@ export function PracticeEngine({
   const [reviewFilter, setReviewFilter] = useState<"all" | "incorrect" | "correct" | "unanswered">("all");
   const saveAttemptMutation = useSavePracticeAttempt();
   const hasSavedRef = useRef(false);
+  const startedAtRef = useRef<string>(new Date().toISOString());
 
   if (questions.length === 0) {
     return (
@@ -118,6 +124,7 @@ export function PracticeEngine({
     setCurrentIndex(0);
     setIsFinished(false);
     hasSavedRef.current = false;
+    startedAtRef.current = new Date().toISOString();
   };
 
   // Metrics calculation
@@ -154,9 +161,12 @@ export function PracticeEngine({
         correctCount,
         incorrectCount,
         unansweredCount,
+        timerEnabled,
+        durationMinutes,
+        startedAt: startedAtRef.current,
       });
     }
-  }, [isFinished, answeredCount, bankId, questions, userAnswers, percentage, correctCount, incorrectCount, unansweredCount, saveAttemptMutation]);
+  }, [isFinished, answeredCount, bankId, questions, userAnswers, percentage, correctCount, incorrectCount, unansweredCount, timerEnabled, durationMinutes, saveAttemptMutation]);
 
   // -------------------------------------------------------------
   // RESULTS VIEW (When Test is Finished)
@@ -436,8 +446,8 @@ export function PracticeEngine({
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-200">
-      {/* Top Header: Mode & Progress Info */}
-      <div className="flex items-center justify-between pb-1">
+      {/* Top Header: Mode, Timer & Progress Info */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
         <div>
           <span className="text-sm font-semibold text-foreground">
             Question {currentIndex + 1} of {totalQuestions}
@@ -448,6 +458,15 @@ export function PracticeEngine({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Live Timer if enabled */}
+          {timerEnabled && durationMinutes && (
+            <TestTimer 
+              startedAt={startedAtRef.current}
+              durationSeconds={durationMinutes * 60}
+              onExpire={() => setIsFinished(true)}
+            />
+          )}
+
           {/* Mode Switcher */}
           <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border text-xs">
             <button

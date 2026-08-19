@@ -52,45 +52,26 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
     }
 
     try {
-      setStatus("uploading");
-      
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("Not authenticated");
-      
-      const userId = userData.user.id;
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-      const filePath = `${userId}/${fileName}`;
-      
-      // 1. Upload to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('question-sources')
-        .upload(filePath, file);
-        
-      if (uploadError) {
-        throw new Error(`Upload failed: ${uploadError.message}`);
-      }
-      
       setStatus("processing");
       
-      // 2. Create Source Record
+      // 1. Create Source Audit Record (storagePath is null since raw PDF is not permanently stored)
       const sourceRecord = await createSourceMutation.mutateAsync({
         bankId,
         fileName: file.name,
         kind: "pdf",
-        storagePath: filePath,
+        storagePath: null,
         fileSize: file.size,
         status: "processing",
         totalQuestions: 0,
         importedQuestions: 0,
       });
 
-      // 3. Process PDF via Edge Function
+      // 2. Process PDF directly with Gemini AI (In-Memory Base64)
       const rawQuestions: RawQuestion[] = await processPdfMutation.mutateAsync({
-        storagePath: filePath,
+        file,
       });
       
-      // 4. Validate and format results
+      // 3. Validate and format results
       const results: ParsedQuestionResult[] = rawQuestions.map((item, index) => {
         const validation = rawQuestionSchema.safeParse(item);
         if (validation.success) {
@@ -105,12 +86,12 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
             originalIndex: index,
             data: item as any,
             error: validation.error.errors[0]?.message || "Invalid structure",
-            status: "needs_review", // for AI extraction, invalid structure implies needs review
+            status: "needs_review",
           };
         }
       });
       
-      // 5. Update Source Record
+      // 4. Update Source Record with question count
       await supabase
         .from("uploaded_sources")
         .update({

@@ -2,12 +2,31 @@ import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ProcessPdfArgs {
-  storagePath: string;
+  file?: File;
+  storagePath?: string;
+}
+
+// Convert File / Blob directly to Base64 in browser without storing
+async function fileToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(",")[1];
+      if (base64) {
+        resolve(base64);
+      } else {
+        reject(new Error("Failed to encode PDF to base64"));
+      }
+    };
+    reader.onerror = () => reject(reader.error || new Error("Failed to read PDF file"));
+    reader.readAsDataURL(blob);
+  });
 }
 
 export function useProcessPdf() {
   return useMutation({
-    mutationFn: async ({ storagePath }: ProcessPdfArgs) => {
+    mutationFn: async ({ file, storagePath }: ProcessPdfArgs) => {
       // 1. Check for API key
       const geminiApiKey = import.meta.env["VITE_GEMINI_API_KEY"];
       if (!geminiApiKey) {
@@ -16,26 +35,25 @@ export function useProcessPdf() {
         );
       }
 
-      // 2. Fetch the PDF from Supabase Storage
-      const { data: fileData, error: downloadError } = await supabase.storage
-        .from("question-sources")
-        .download(storagePath);
+      let base64Data = "";
 
-      if (downloadError || !fileData) {
-        throw new Error("Failed to download PDF from storage: " + (downloadError?.message || "Unknown error"));
+      // 2. Obtain base64: either directly from local File (0 storage cost) or from Supabase Storage
+      if (file) {
+        base64Data = await fileToBase64(file);
+      } else if (storagePath) {
+        const { data: fileData, error: downloadError } = await supabase.storage
+          .from("question-sources")
+          .download(storagePath);
+
+        if (downloadError || !fileData) {
+          throw new Error("Failed to download PDF from storage: " + (downloadError?.message || "Unknown error"));
+        }
+        base64Data = await fileToBase64(fileData);
+      } else {
+        throw new Error("No PDF file or storage path provided for processing.");
       }
 
-      // 3. Convert PDF to base64 safely
-      const arrayBuffer = await fileData.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      const chunkSize = 0x8000;
-      const chunks = [];
-      for (let i = 0; i < uint8Array.length; i += chunkSize) {
-        chunks.push(String.fromCharCode.apply(null, Array.from(uint8Array.subarray(i, i + chunkSize))));
-      }
-      const base64Data = btoa(chunks.join(""));
-
-      // 4. Call Gemini API directly
+      // 3. Structured Output JSON Schema for Gemini
       const responseSchema = {
         type: "object",
         properties: {
@@ -87,30 +105,43 @@ Rules:
         },
       };
 
-      const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${geminiApiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
+      // 4. Call Gemini 2.0 / 1.5 Flash API directly
+      const candidateModels = ["gemini-2.0-flash", "gemini-1.5-flash"];
+      let lastErrorText = "";
+
+      for (const model of candidateModels) {
+        try {
+          const geminiRes = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(requestBody),
+            }
+          );
+
+          if (geminiRes.ok) {
+            const geminiData = await geminiRes.json();
+            const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (!rawText) {
+              throw new Error("No response text returned from AI model");
+            }
+
+            const parsedOutput = JSON.parse(rawText);
+            return parsedOutput.questions || [];
+          } else {
+            lastErrorText = await geminiRes.text();
+            console.warn(`Model ${model} failed with: ${lastErrorText}, trying fallback...`);
+          }
+        } catch (err: any) {
+          lastErrorText = err.message || String(err);
+          console.warn(`Request to ${model} threw error:`, err);
         }
-      );
-
-      if (!geminiRes.ok) {
-        const errorText = await geminiRes.text();
-        console.error("Gemini API Error:", errorText);
-        throw new Error("Failed to process PDF with AI. Check console for details.");
       }
 
-      const geminiData = await geminiRes.json();
-      const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!rawText) {
-        throw new Error("No text returned from Gemini");
-      }
-
-      const parsedOutput = JSON.parse(rawText);
-      return parsedOutput.questions;
+      console.error("Gemini API Error details:", lastErrorText);
+      throw new Error(`Failed to process PDF with AI: ${lastErrorText || "Check console for details."}`);
     },
   });
 }

@@ -619,14 +619,12 @@ BEGIN
 
     -- Create a temporary table to hold eligible questions
     CREATE TEMP TABLE tmp_eligible_questions ON COMMIT DROP AS
-    SELECT * FROM questions
-    WHERE bank_id = p_bank_id
-    AND owner_id = v_user_id
-    AND (p_difficulty IS NULL OR p_difficulty = 'mixed' OR difficulty = p_difficulty)
-    AND (p_topic IS NULL OR p_topic = '' OR topic = p_topic);
-    -- Source filter requires joining with uploaded_sources but questions table doesn't track source directly,
-    -- except via source_reference maybe? We will ignore source filter for now as it's complex 
-    -- without a direct link, or we assume all are eligible if source filter is not implemented on question table.
+    SELECT q.* FROM public.questions q
+    JOIN public.question_banks qb ON q.question_bank_id = qb.id
+    WHERE q.question_bank_id = p_bank_id
+    AND qb.user_id = v_user_id
+    AND (p_difficulty IS NULL OR p_difficulty = 'mixed' OR q.difficulty::text = p_difficulty)
+    AND (p_topic IS NULL OR p_topic = '' OR q.topic = p_topic);
 
     SELECT COUNT(*) INTO v_available_count FROM tmp_eligible_questions;
 
@@ -635,7 +633,7 @@ BEGIN
     END IF;
 
     -- Insert Test
-    INSERT INTO tests (
+    INSERT INTO public.tests (
         user_id, question_bank_id, title, mode, total_questions, difficulty, topic, source,
         timer_enabled, duration_seconds, randomize_questions, randomize_options
     ) VALUES (
@@ -644,22 +642,17 @@ BEGIN
     ) RETURNING id INTO v_test_id;
 
     -- Insert Test Questions (Snapshot)
-    -- We can use ORDER BY random() to shuffle if p_randomize_questions or if p_mode = 'random'
-    -- Actually if p_mode = 'random', we definitely want a random sample.
-    -- If p_mode = 'full', we take all.
-    -- If p_mode = 'custom', we take N random.
-    
-    INSERT INTO test_questions (
+    INSERT INTO public.test_questions (
         test_id, original_question_id, question_order,
         question_text, option_a, option_b, option_c, option_d, correct_answer,
         explanation, topic, difficulty, source_reference
     )
     SELECT
-        v_test_id, id, row_number() over (ORDER BY CASE WHEN p_mode IN ('random', 'custom') THEN random() ELSE id::text::float END),
+        v_test_id, id, row_number() over (ORDER BY CASE WHEN p_mode IN ('random', 'custom') THEN random() ELSE 0.5 END),
         question_text, option_a, option_b, option_c, option_d, correct_answer,
         explanation, topic, difficulty, source_reference
     FROM tmp_eligible_questions
-    ORDER BY CASE WHEN p_mode IN ('random', 'custom') THEN random() ELSE id::text::float END
+    ORDER BY CASE WHEN p_mode IN ('random', 'custom') THEN random() ELSE 0.5 END
     LIMIT p_total_questions;
 
     RETURN v_test_id;

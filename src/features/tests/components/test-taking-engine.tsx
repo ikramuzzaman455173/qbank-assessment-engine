@@ -45,7 +45,15 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
     return baseOptions;
   }, [currentQuestion, test.randomizeOptions]);
 
-  if (!currentQuestion) return null;
+  if (!currentQuestion || questions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto p-6 bg-card rounded-xl border shadow-sm my-12">
+        <h2 className="text-xl font-bold mb-2">No Questions Found</h2>
+        <p className="text-sm text-muted-foreground mb-6">This test does not contain any questions yet.</p>
+        <Button onClick={() => window.history.back()}>Go Back</Button>
+      </div>
+    );
+  }
 
   const handleSelectOption = (optionId: any) => {
     // Optimistic update

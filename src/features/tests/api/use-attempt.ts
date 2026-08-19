@@ -42,6 +42,41 @@ export function useCurrentAttempt(testId: string) {
   });
 }
 
+export function useTestAttempts(testId: string) {
+  return useQuery({
+    queryKey: [...attemptKeys.lists(testId), "history"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("attempts")
+        .select("*")
+        .eq("test_id", testId)
+        .order("created_at", { ascending: false });
+
+      if (error) throw new Error(error.message);
+
+      return (data || []).map((item) => ({
+        id: item.id,
+        ownerId: item.user_id,
+        testId: item.test_id,
+        status: item.status,
+        startedAt: item.started_at,
+        submittedAt: item.submitted_at,
+        timeSpentSeconds: item.time_spent_seconds,
+        totalQuestions: item.total_questions,
+        answeredQuestions: item.answered_questions,
+        correctAnswers: item.correct_answers,
+        incorrectAnswers: item.incorrect_answers,
+        unansweredQuestions: item.unanswered_questions,
+        score: item.score,
+        percentage: item.percentage,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+      })) as Attempt[];
+    },
+    enabled: !!testId,
+  });
+}
+
 export function useAttempt(attemptId: string) {
   return useQuery({
     queryKey: attemptKeys.detail(attemptId),
@@ -53,9 +88,10 @@ export function useAttempt(attemptId: string) {
           attempt_answers (*)
         `)
         .eq("id", attemptId)
-        .single();
+        .maybeSingle();
 
       if (error) throw new Error(error.message);
+      if (!data) return null;
 
       const attempt: Attempt & { answers: AttemptAnswer[] } = {
         id: data.id,

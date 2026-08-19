@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { 
   CheckCircle2, 
   XCircle, 
@@ -19,10 +19,12 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Question } from "@/types/domain";
+import { useSavePracticeAttempt } from "../api/use-save-practice-attempt";
 import { cn } from "@/lib/utils";
 
 interface PracticeEngineProps {
   questions: Question[];
+  bankId?: string;
   randomizeOptions?: boolean;
   onFinish?: () => void;
   defaultMode?: "exam" | "instant";
@@ -30,6 +32,7 @@ interface PracticeEngineProps {
 
 export function PracticeEngine({ 
   questions, 
+  bankId,
   randomizeOptions = false, 
   onFinish,
   defaultMode = "exam"
@@ -44,9 +47,11 @@ export function PracticeEngine({
   // Instant mode specific state (reveals answer for current question)
   const [instantRevealed, setInstantRevealed] = useState<Record<string, boolean>>({});
   
-  // Finished state
+  // Finished state & Attempt saving
   const [isFinished, setIsFinished] = useState(false);
   const [reviewFilter, setReviewFilter] = useState<"all" | "incorrect" | "correct" | "unanswered">("all");
+  const saveAttemptMutation = useSavePracticeAttempt();
+  const hasSavedRef = useRef(false);
 
   if (questions.length === 0) {
     return (
@@ -112,6 +117,7 @@ export function PracticeEngine({
     setInstantRevealed({});
     setCurrentIndex(0);
     setIsFinished(false);
+    hasSavedRef.current = false;
   };
 
   // Metrics calculation
@@ -135,6 +141,22 @@ export function PracticeEngine({
   });
 
   const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+  // Auto-save completed attempt to Supabase
+  useEffect(() => {
+    if (isFinished && !hasSavedRef.current && answeredCount > 0) {
+      hasSavedRef.current = true;
+      saveAttemptMutation.mutate({
+        bankId,
+        questions,
+        userAnswers,
+        percentage,
+        correctCount,
+        incorrectCount,
+        unansweredCount,
+      });
+    }
+  }, [isFinished, answeredCount, bankId, questions, userAnswers, percentage, correctCount, incorrectCount, unansweredCount, saveAttemptMutation]);
 
   // -------------------------------------------------------------
   // RESULTS VIEW (When Test is Finished)
@@ -527,10 +549,10 @@ export function PracticeEngine({
               stateClass = "border-border opacity-50 cursor-default";
 
               if (isCorrect) {
-                stateClass = "border-emerald-500 bg-emerald-500/10 text-emerald-900 dark:text-emerald-100 ring-1 ring-emerald-500 cursor-default opacity-100";
+                stateClass = "border-emerald-500 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500 cursor-default opacity-100";
                 Icon = <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />;
               } else if (isSelected && !isCorrect) {
-                stateClass = "border-red-500 bg-red-500/10 text-red-900 dark:text-red-100 ring-1 ring-red-500 cursor-default opacity-100";
+                stateClass = "border-red-500 bg-red-500/10 text-red-950 dark:text-red-100 ring-1 ring-red-500 cursor-default opacity-100";
                 Icon = <XCircle className="h-5 w-5 text-red-500 shrink-0" />;
               }
             } else {

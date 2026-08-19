@@ -15,25 +15,26 @@ export function usePreferences() {
         .from("user_preferences")
         .select("*")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
         
       if (error) {
-        if (error.code === 'PGRST116') {
-          // Record not found - might happen if trigger failed, so return defaults
-          return {
-            id: user.id,
-            theme: "system",
-            default_test_question_count: 20,
-            default_test_timer: null,
-            randomize_questions: true,
-            randomize_options: false,
-            default_practice_question_count: 10,
-            immediate_feedback: true,
-            show_explanations: true,
-            notification_preferences: {},
-          } as UserPreferences;
-        }
-        throw error;
+        console.warn("Preferences fetch warning:", error.message);
+      }
+
+      if (!data) {
+        // Return default preferences gracefully if no record exists yet
+        return {
+          id: user.id,
+          theme: "system",
+          default_test_question_count: 20,
+          default_test_timer: null,
+          randomize_questions: true,
+          randomize_options: false,
+          default_practice_question_count: 10,
+          immediate_feedback: true,
+          show_explanations: true,
+          notification_preferences: {},
+        } as UserPreferences;
       }
       return data as UserPreferences;
     },

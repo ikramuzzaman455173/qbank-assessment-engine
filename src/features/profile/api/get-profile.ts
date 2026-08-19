@@ -9,11 +9,11 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     .from("profiles")
     .select("*")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
   if (error) {
-    if (error.code === "PGRST116") return null; // No rows found
-    throw error;
+    console.warn("Profile fetch warning:", error.message);
+    return null;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -128,25 +128,25 @@ BEGIN
     INTO v_strong_topics, v_weak_topics;
 
     -- 5. Recent Activity
-    SELECT COALESCE(jsonb_agg(
-        jsonb_build_object(
-            'id', a.id,
-            'title', t.title,
-            'mode', t.mode,
-            'practice_mode', t.practice_mode,
-            'score', a.score,
-            'percentage', a.percentage,
-            'answered_questions', a.answered_questions,
-            'total_questions', a.total_questions,
-            'submitted_at', a.submitted_at
-        )
-    ), '[]'::jsonb) INTO v_recent_activity
-    FROM attempts a
-    JOIN tests t ON a.test_id = t.id
-    WHERE a.user_id = v_user_id
-    AND a.status IN ('completed', 'auto_submitted')
-    ORDER BY a.submitted_at DESC
-    LIMIT 5;
+    SELECT COALESCE(jsonb_agg(row_to_json(recent_sub)), '[]'::jsonb) INTO v_recent_activity
+    FROM (
+        SELECT 
+            a.id,
+            t.title,
+            t.mode,
+            t.practice_mode,
+            a.score,
+            a.percentage,
+            a.answered_questions,
+            a.total_questions,
+            a.submitted_at
+        FROM attempts a
+        JOIN tests t ON a.test_id = t.id
+        WHERE a.user_id = v_user_id
+        AND a.status IN ('completed', 'auto_submitted')
+        ORDER BY a.submitted_at DESC
+        LIMIT 5
+    ) recent_sub;
 
     -- 6. Question Bank Summaries
     WITH bank_stats AS (

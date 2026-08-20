@@ -1,18 +1,21 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   CheckCircle2,
+  Flame,
   HelpCircle,
+  Play,
   RotateCcw,
   Sparkles,
   Timer,
   XCircle,
+  Zap,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
@@ -55,33 +58,108 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
     correct: "C",
     explanation: "Mitochondria generate most of the chemical energy needed to power the biochemical reactions of the cell through cellular respiration.",
   },
+  {
+    id: 3,
+    topic: "Mathematics",
+    difficulty: "Hard",
+    question: "What is the derivative of f(x) = ln(x² + 1) with respect to x?",
+    options: [
+      { id: "A", text: "2x / (x² + 1)" },
+      { id: "B", text: "1 / (x² + 1)" },
+      { id: "C", text: "2 / (x² + 1)" },
+      { id: "D", text: "x / (x² + 1)" },
+    ],
+    correct: "A",
+    explanation: "Using the chain rule: d/dx[ln(u)] = (1/u) * du/dx. Here u = x² + 1 and du/dx = 2x, so the derivative is 2x / (x² + 1).",
+  },
+  {
+    id: 4,
+    topic: "Medicine",
+    difficulty: "Medium",
+    question: "Which blood type is considered the universal red blood cell donor?",
+    options: [
+      { id: "A", text: "AB Positive (AB+)" },
+      { id: "B", text: "A Negative (A-)" },
+      { id: "C", text: "O Negative (O-)" },
+      { id: "D", text: "O Positive (O+)" },
+    ],
+    correct: "C",
+    explanation: "O Negative red blood cells lack A, B, and Rh antigens, meaning they can be safely transfused to patients of virtually any blood type.",
+  },
 ];
 
 export function LandingHero() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState<"A" | "B" | "C" | "D" | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
+  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const sandboxRef = useRef<HTMLDivElement>(null);
+
   const activeQ = DEMO_QUESTIONS[currentIdx] ?? DEMO_QUESTIONS[0];
   if (!activeQ) return null;
 
   const isAnswered = selectedOption !== null;
   const isCorrect = isAnswered && selectedOption === activeQ.correct;
 
+  // Simple live timer for realistic test feel
+  useEffect(() => {
+    if (isAnswered) return;
+    const interval = setInterval(() => {
+      setTimerSeconds((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isAnswered, currentIdx]);
+
   const handleSelect = (optionId: "A" | "B" | "C" | "D") => {
     if (isAnswered) return;
     setSelectedOption(optionId);
     setShowExplanation(true);
+    if (optionId === activeQ.correct) {
+      setScore((s) => s + 1);
+      setStreak((st) => st + 1);
+    } else {
+      setStreak(0);
+    }
   };
 
   const handleNext = () => {
     setSelectedOption(null);
     setShowExplanation(false);
+    setTimerSeconds(0);
     setCurrentIdx((prev) => (prev + 1) % DEMO_QUESTIONS.length);
   };
 
   const handleReset = () => {
     setSelectedOption(null);
     setShowExplanation(false);
+    setTimerSeconds(0);
+  };
+
+  const handleTopicSwitch = (idx: number) => {
+    setCurrentIdx(idx);
+    setSelectedOption(null);
+    setShowExplanation(false);
+    setTimerSeconds(0);
+  };
+
+  // When clicking "Try Interactive Sandbox"
+  const triggerSandboxAction = () => {
+    setIsHighlighted(true);
+    if (sandboxRef.current) {
+      sandboxRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    setTimeout(() => {
+      setIsHighlighted(false);
+    }, 2800);
+  };
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s < 10 ? "0" : ""}${s}`;
   };
 
   return (
@@ -115,10 +193,14 @@ export function LandingHero() {
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-                <a href="#interactive-demo">
-                  <span>Try Interactive Sandbox</span>
-                </a>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={triggerSandboxAction}
+                className="w-full sm:w-auto gap-2 group cursor-pointer"
+              >
+                <Play className="size-3.5 fill-current transition-transform group-hover:scale-110" />
+                <span>Try Interactive Sandbox</span>
               </Button>
             </div>
 
@@ -139,17 +221,56 @@ export function LandingHero() {
           </div>
 
           {/* Right Column: Live Interactive Sandbox Widget */}
-          <div id="interactive-demo" className="lg:col-span-6">
+          <div id="interactive-demo" ref={sandboxRef} className="lg:col-span-6">
             <div className="relative mx-auto max-w-lg">
-              <div className="mb-2 flex items-center justify-between px-1 text-xs text-muted-foreground font-medium">
-                <span className="flex items-center gap-1.5">
-                  <span className="inline-block size-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Live Practice Sandbox
-                </span>
-                <span>Question {currentIdx + 1} of {DEMO_QUESTIONS.length}</span>
+              {/* Topic Switcher Pills */}
+              <div className="mb-3 flex items-center justify-between gap-2 overflow-x-auto pb-1 text-xs">
+                <div className="flex items-center gap-1.5">
+                  {DEMO_QUESTIONS.map((q, idx) => (
+                    <button
+                      key={q.id}
+                      type="button"
+                      onClick={() => handleTopicSwitch(idx)}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer shrink-0",
+                        currentIdx === idx
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "bg-muted/70 text-muted-foreground hover:text-foreground hover:bg-muted",
+                      )}
+                    >
+                      {q.topic}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 font-mono text-xs">
+                  {streak > 0 && (
+                    <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold">
+                      <Flame className="size-3.5 fill-current" />
+                      {streak}
+                    </span>
+                  )}
+                  <span className="text-muted-foreground">
+                    Q{currentIdx + 1}/{DEMO_QUESTIONS.length}
+                  </span>
+                </div>
               </div>
 
-              <Card className="border border-border bg-card shadow-sm relative overflow-hidden">
+              {/* Sandbox Card with dynamic focus pulse */}
+              <Card
+                className={cn(
+                  "border border-border bg-card shadow-sm relative overflow-hidden transition-all duration-300",
+                  isHighlighted && "ring-2 ring-primary ring-offset-2 scale-[1.02] shadow-md",
+                )}
+              >
+                {/* Floating Hint Callout when highlighted */}
+                {isHighlighted && !isAnswered && (
+                  <div className="absolute top-2 right-2 z-20 bg-primary text-primary-foreground text-xs px-2.5 py-1 rounded-full animate-bounce shadow-md font-medium flex items-center gap-1.5">
+                    <Zap className="size-3 fill-current" />
+                    <span>Click any option to test live!</span>
+                  </div>
+                )}
+
                 <CardHeader className="pb-3 border-b border-border/60 bg-muted/20">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -169,9 +290,9 @@ export function LandingHero() {
                       </Badge>
                     </div>
 
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Timer className="size-3.5" />
-                      <span>Instant Feedback</span>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
+                      <Timer className="size-3.5 text-foreground" />
+                      <span>{formatTime(timerSeconds)}</span>
                     </div>
                   </div>
 
@@ -206,6 +327,7 @@ export function LandingHero() {
                           className={cn(
                             "w-full text-left flex items-start gap-3 p-3 rounded-md border text-sm transition-all cursor-pointer disabled:cursor-default",
                             stateStyle,
+                            !isAnswered && isHighlighted && "border-primary/50 animate-pulse",
                           )}
                         >
                           <span
@@ -243,7 +365,19 @@ export function LandingHero() {
                       )}
                     >
                       <div className="flex items-center justify-between mb-1 font-semibold">
-                        <span>{isCorrect ? "Correct! Well done." : "Incorrect Answer."}</span>
+                        <span className="flex items-center gap-1.5">
+                          {isCorrect ? (
+                            <>
+                              <CheckCircle2 className="size-4 text-emerald-500" />
+                              <span>Correct! Great job.</span>
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="size-4 text-red-500" />
+                              <span>Incorrect Answer.</span>
+                            </>
+                          )}
+                        </span>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -255,7 +389,7 @@ export function LandingHero() {
                         </Button>
                       </div>
                       {showExplanation && (
-                        <p className="text-muted-foreground text-xs leading-relaxed pt-1 border-t border-border/40 mt-1">
+                        <p className="text-muted-foreground text-xs leading-relaxed pt-1.5 border-t border-border/40 mt-1">
                           {activeQ.explanation}
                         </p>
                       )}
@@ -275,14 +409,21 @@ export function LandingHero() {
                       Try Again
                     </Button>
 
-                    <Button
-                      size="sm"
-                      onClick={handleNext}
-                      className="text-xs gap-1.5"
-                    >
-                      <span>Next Question</span>
-                      <ArrowRight className="size-3.5" />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      {score > 0 && (
+                        <span className="text-xs text-muted-foreground font-mono hidden sm:inline">
+                          Score: {score}
+                        </span>
+                      )}
+                      <Button
+                        size="sm"
+                        onClick={handleNext}
+                        className="text-xs gap-1.5"
+                      >
+                        <span>Next Question</span>
+                        <ArrowRight className="size-3.5" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

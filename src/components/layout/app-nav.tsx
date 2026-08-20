@@ -14,9 +14,9 @@ export function AppNav({ onNavigate }: AppNavProps) {
           key={to}
           to={to}
           onClick={onNavigate}
-          className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:scale-[0.98]"
+          className="group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground border border-transparent transition-all hover:border-border/60 hover:bg-muted/60 hover:text-foreground active:scale-[0.98]"
           activeProps={{
-            className: "bg-sidebar-accent text-foreground font-semibold",
+            className: "bg-primary text-primary-foreground font-semibold border border-primary shadow-xs",
             "aria-current": "page",
           }}
           activeOptions={{ exact: to === "/dashboard" }}

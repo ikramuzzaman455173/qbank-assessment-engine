@@ -69,7 +69,7 @@ function PracticeRoute() {
         defaultMode={search.practiceMode === "instant" ? "instant" : "exam"}
         timerEnabled={search.timerEnabled}
         durationMinutes={search.durationMinutes}
-        onFinish={() => void navigate({ to: '/_authenticated/question-banks/$bankId/', params: { bankId: search.bankId! } })}
+        onFinish={() => void navigate({ to: '/question-banks/$bankId', params: { bankId: search.bankId! } })}
       />
     </div>
   );

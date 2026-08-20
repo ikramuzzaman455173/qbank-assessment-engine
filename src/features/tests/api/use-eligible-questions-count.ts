@@ -15,14 +15,14 @@ export function useEligibleQuestionsCount(args: EligibleCountArgs) {
       let query = supabase
         .from("questions")
         .select("id", { count: "exact", head: true })
-        .eq("bank_id", args.bankId);
+        .eq("question_bank_id", args.bankId);
 
       if (args.difficulty && args.difficulty !== "mixed") {
         query = query.eq("difficulty", args.difficulty);
       }
       
-      if (args.topic) {
-        query = query.eq("topic", args.topic);
+      if (args.topic && args.topic.trim() !== "") {
+        query = query.eq("topic", args.topic.trim());
       }
 
       const { count, error } = await query;

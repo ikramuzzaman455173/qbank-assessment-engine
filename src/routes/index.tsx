@@ -1,7 +1,13 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ROUTES } from "@/constants/routes";
 import { supabase } from "@/integrations/supabase/client";
+import { LandingHeader } from "@/features/landing/components/landing-header";
+import { LandingHero } from "@/features/landing/components/landing-hero";
+import { LandingFeatures } from "@/features/landing/components/landing-features";
+import { LandingHowItWorks } from "@/features/landing/components/landing-how-it-works";
+import { LandingStats } from "@/features/landing/components/landing-stats";
+import { LandingCTA } from "@/features/landing/components/landing-cta";
+import { LandingFooter } from "@/features/landing/components/landing-footer";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -10,25 +16,21 @@ export const Route = createFileRoute("/")({
       throw redirect({ to: ROUTES.dashboard });
     }
   },
-  component: Index,
+  component: LandingPage,
 });
 
-function Index() {
+function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
-      <div className="mx-auto flex max-w-[480px] flex-col items-center justify-center text-center">
-        <h1 className="mb-4 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Welcome to Knowledge Canvas
-        </h1>
-        <p className="mb-8 text-lg text-muted-foreground">
-          Your personal platform for interactive learning and comprehensive assessments.
-        </p>
-        <div className="flex gap-4">
-          <Button asChild size="lg">
-            <Link to={ROUTES.auth}>Get Started</Link>
-          </Button>
-        </div>
-      </div>
+    <div className="flex min-h-screen flex-col bg-background text-foreground scroll-smooth">
+      <LandingHeader />
+      <main className="flex-1">
+        <LandingHero />
+        <LandingFeatures />
+        <LandingHowItWorks />
+        <LandingStats />
+        <LandingCTA />
+      </main>
+      <LandingFooter />
     </div>
   );
 }

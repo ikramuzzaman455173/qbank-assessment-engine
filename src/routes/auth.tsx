@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -74,7 +75,7 @@ function AuthPage() {
 
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "hat74920@gmail.com", password: "hat74920" },
   });
 
   const signUpForm = useForm<SignUpValues>({
@@ -141,8 +142,22 @@ function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="relative flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+      <div className="absolute top-4 left-4 sm:top-8 sm:left-8">
+        <Button
+          variant="ghost"
+          size="sm"
+          asChild
+          className="gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <Link to={ROUTES.landing}>
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            <span>Back to Home</span>
+          </Link>
+        </Button>
+      </div>
+
+      <Card className="w-full max-w-md shadow-xs border border-border">
         <CardHeader className="space-y-1 pb-6 text-center">
           <CardTitle className="text-2xl font-bold tracking-tight">Welcome to QBank</CardTitle>
           <CardDescription>

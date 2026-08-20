@@ -9,3 +9,4 @@ export { FormSection } from "./form-section";
 export { StatCard } from "./stat-card";
 export { DurationPicker } from "./duration-picker";
 export { AdvancedPagination } from "./advanced-pagination";
+export { LogoutConfirmDialog } from "./logout-confirm-dialog";

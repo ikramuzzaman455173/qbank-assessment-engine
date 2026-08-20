@@ -12,6 +12,7 @@ import { useSession } from "@/features/auth/hooks/use-session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { LogoutConfirmDialog } from "@/components/common/logout-confirm-dialog";
 import {
   Form,
   FormControl,
@@ -37,6 +38,7 @@ export function SecuritySettings() {
   const navigate = useNavigate();
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const form = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -68,9 +70,11 @@ export function SecuritySettings() {
     setIsSigningOut(true);
     try {
       await supabase.auth.signOut();
+      setShowLogoutModal(false);
       navigate({ to: "/auth" });
     } catch (error: any) {
       toast.error(error.message || "Failed to sign out");
+    } finally {
       setIsSigningOut(false);
     }
   };
@@ -137,13 +141,20 @@ export function SecuritySettings() {
                 Signed in as: {user?.email}
               </p>
             </div>
-            <Button variant="secondary" onClick={handleSignOut} disabled={isSigningOut}>
-              {isSigningOut ? <Loader2 className="mr-2 size-4 animate-spin" /> : <LogOut className="mr-2 size-4" />}
+            <Button variant="secondary" onClick={() => setShowLogoutModal(true)}>
+              <LogOut className="mr-2 size-4" />
               Sign Out
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      <LogoutConfirmDialog
+        open={showLogoutModal}
+        onOpenChange={setShowLogoutModal}
+        onConfirm={handleSignOut}
+        isPending={isSigningOut}
+      />
     </div>
   );
 }

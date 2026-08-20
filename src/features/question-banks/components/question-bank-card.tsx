@@ -30,13 +30,13 @@ export function QuestionBankCard({ bank, onEdit, onDelete }: QuestionBankCardPro
   const formattedDate = new Date(bank.updatedAt).toLocaleDateString();
 
   return (
-    <Card className="flex flex-col h-full hover:shadow-md transition-shadow">
+    <Card className="group flex flex-col h-full hover:border-foreground/30 hover:shadow-xs transition-all bg-card">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
         <div className="space-y-1 truncate pr-4">
-          <CardTitle className="truncate text-lg font-bold" title={bank.name}>
+          <CardTitle className="truncate text-base font-semibold" title={bank.name}>
             <Link
               to={ROUTES.questionBank(bank.id)}
-              className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              className="hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm"
             >
               {bank.name}
             </Link>

@@ -20,8 +20,12 @@ export function DashboardMetricCard({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {icon && <div className="text-muted-foreground">{icon}</div>}
+        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+        {icon && (
+          <div className="text-muted-foreground">
+            {icon}
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         {loading ? (

@@ -77,22 +77,22 @@ export function QuestionPreview({
               <div
                 key={opt.id}
                 className={cn(
-                  "flex items-start gap-3 p-3 rounded-md border transition-colors",
+                  "flex items-start gap-3 p-3 rounded-lg border transition-colors",
                   isCorrect
-                    ? "border-green-500/50 bg-green-500/10 text-green-900 dark:text-green-100"
-                    : "border-border bg-card",
+                    ? "border-emerald-500/40 bg-emerald-500/5 text-foreground"
+                    : "border-border bg-card hover:bg-muted/30",
                 )}
               >
                 <span
                   className={cn(
-                    "font-bold min-w-[1.2rem]",
-                    isCorrect ? "text-green-600 dark:text-green-400" : "text-muted-foreground",
+                    "font-semibold min-w-[1.2rem]",
+                    isCorrect ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground",
                   )}
                 >
                   {opt.id}.
                 </span>
                 <span className="flex-1 whitespace-pre-wrap">{opt.text}</span>
-                {isCorrect && <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />}
+                {isCorrect && <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />}
               </div>
             );
           })}
@@ -100,8 +100,8 @@ export function QuestionPreview({
 
         {question.explanation && (
           <div className="pl-8 pt-2">
-            <div className="bg-muted p-4 rounded-md text-sm border-l-4 border-l-primary/50">
-              <span className="font-semibold mb-1 block">Explanation:</span>
+            <div className="bg-muted/50 p-3.5 rounded-lg text-sm border-l-2 border-l-foreground">
+              <span className="font-semibold mb-1 block text-foreground">Explanation:</span>
               <p className="whitespace-pre-wrap text-muted-foreground leading-relaxed">
                 {question.explanation}
               </p>

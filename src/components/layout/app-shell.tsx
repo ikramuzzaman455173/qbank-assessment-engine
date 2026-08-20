@@ -17,7 +17,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-background">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
-        <div className="flex h-16 shrink-0 items-center px-5 border-b border-border/40">
+        <div className="flex h-16 shrink-0 items-center px-5 border-b border-sidebar-border">
           <Link to={ROUTES.dashboard} aria-label="Go to dashboard">
             <Brand />
           </Link>
@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b border-border bg-background/85 px-4 backdrop-blur md:px-6">
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b border-border bg-background/80 px-4 backdrop-blur md:px-6">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button
@@ -42,10 +42,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             </SheetTrigger>
             <SheetContent side="left" className="w-72 bg-sidebar p-0">
               <SheetTitle className="sr-only">Navigation</SheetTitle>
-              <div className="flex h-16 items-center px-5">
+              <div className="flex h-16 items-center px-5 border-b border-sidebar-border">
                 <Brand />
               </div>
-              <div className="px-3">
+              <div className="px-3 py-4">
                 <AppNav onNavigate={() => setMobileOpen(false)} />
               </div>
             </SheetContent>

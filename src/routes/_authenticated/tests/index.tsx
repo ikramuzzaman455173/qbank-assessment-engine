@@ -59,7 +59,20 @@ function TestsPage() {
                 <div className="space-y-1 text-sm text-muted-foreground">
                   <p>{test.totalQuestions} Questions • {test.mode} mode</p>
                   <p>Difficulty: {test.difficulty || "Mixed"}</p>
-                  {test.timerEnabled && <p>Timer: {test.durationSeconds! / 60} minutes</p>}
+                  {test.timerEnabled && test.durationSeconds && (
+                    <p>
+                      Timer: {(() => {
+                        const h = Math.floor(test.durationSeconds / 3600);
+                        const m = Math.floor((test.durationSeconds % 3600) / 60);
+                        const s = test.durationSeconds % 60;
+                        const parts = [];
+                        if (h > 0) parts.push(`${h}h`);
+                        if (m > 0) parts.push(`${m}m`);
+                        if (s > 0) parts.push(`${s}s`);
+                        return parts.join(" ") || `${test.durationSeconds}s`;
+                      })()}
+                    </p>
+                  )}
                 </div>
                 <div className="pt-4 flex gap-2">
                   <Button className="w-full" onClick={() => navigate({ to: ROUTES.test(test.id) })}>

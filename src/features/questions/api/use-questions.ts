@@ -4,11 +4,11 @@ import { questionKeys } from "./keys";
 import type { Question, Paginated } from "@/types/domain";
 
 export interface QuestionFilters {
-  searchQuery?: string;
-  difficulty?: string;
-  topic?: string;
-  page?: number;
-  pageSize?: number;
+  searchQuery?: string | undefined;
+  difficulty?: string | undefined;
+  topic?: string | undefined;
+  page?: number | undefined;
+  pageSize?: number | undefined;
 }
 
 export function useQuestions(bankId: string, filters: QuestionFilters = {}) {

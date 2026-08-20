@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
@@ -183,9 +184,8 @@ function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input
+                          <PasswordInput
                             placeholder="••••••••"
-                            type="password"
                             disabled={isLoading}
                             {...field}
                           />
@@ -242,9 +242,8 @@ function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input
+                          <PasswordInput
                             placeholder="••••••••"
-                            type="password"
                             disabled={isLoading}
                             {...field}
                           />
@@ -260,9 +259,8 @@ function AuthPage() {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input
+                          <PasswordInput
                             placeholder="••••••••"
-                            type="password"
                             disabled={isLoading}
                             {...field}
                           />

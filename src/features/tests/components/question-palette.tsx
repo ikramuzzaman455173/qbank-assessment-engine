@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Bookmark, Check } from "lucide-react";
 import type { AttemptAnswer } from "@/types/domain";
+import { cn } from "@/lib/utils";
 
 interface QuestionPaletteProps {
   totalQuestions: number;
@@ -27,32 +28,32 @@ export function QuestionPalette({
         const isMarked = !!answer?.isMarkedForReview;
         const isCurrent = idx === currentIndex;
 
-        let variant: "default" | "outline" | "secondary" | "ghost" = "outline";
-        if (isCurrent) {
-          variant = "default"; // solid primary color
-        } else if (isAnswered && !isMarked) {
-          variant = "secondary"; // answered but not marked
-        }
-
         return (
           <Button
             key={idx}
-            variant={variant}
+            variant="outline"
             size="sm"
             onClick={() => onSelectQuestion(idx)}
-            className={`
-              relative h-10 w-10 p-0 text-sm font-medium
-              ${isMarked && !isCurrent ? 'border-yellow-500 text-yellow-700' : ''}
-              ${isAnswered && isMarked && !isCurrent ? 'bg-yellow-50 border-yellow-500' : ''}
-              ${isAnswered && !isMarked && !isCurrent ? 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:text-green-800' : ''}
-            `}
+            className={cn(
+              "relative h-10 w-10 p-0 text-sm font-semibold transition-all",
+              isCurrent && "bg-primary text-primary-foreground border-primary ring-2 ring-primary/30 hover:bg-primary/90 hover:text-primary-foreground",
+              !isCurrent && isAnswered && !isMarked && "bg-emerald-100 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 hover:text-emerald-800",
+              !isCurrent && isMarked && "bg-amber-100 dark:bg-amber-950/40 border-amber-400 dark:border-amber-600 text-amber-800 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60",
+              !isCurrent && !isAnswered && !isMarked && "bg-muted/30 border-border text-muted-foreground hover:bg-muted"
+            )}
           >
             {idx + 1}
             {isMarked && (
-              <Bookmark className={`absolute -top-1 -right-1 h-3 w-3 ${isCurrent ? 'text-primary-foreground' : 'text-yellow-600'} fill-current`} />
+              <Bookmark className={cn(
+                "absolute -top-1 -right-1 h-3 w-3 fill-current",
+                isCurrent ? "text-primary-foreground" : "text-amber-600 dark:text-amber-400"
+              )} />
             )}
             {isAnswered && !isMarked && (
-              <Check className={`absolute -bottom-1 -right-1 h-3 w-3 ${isCurrent ? 'text-primary-foreground' : 'text-green-600'}`} />
+              <Check className={cn(
+                "absolute -bottom-0.5 -right-0.5 h-3 w-3",
+                isCurrent ? "text-primary-foreground" : "text-emerald-600 dark:text-emerald-400"
+              )} />
             )}
           </Button>
         );

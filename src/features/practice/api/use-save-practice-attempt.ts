@@ -13,6 +13,7 @@ interface SavePracticeAttemptArgs {
   unansweredCount: number;
   timerEnabled?: boolean | undefined;
   durationMinutes?: number | undefined;
+  durationSeconds?: number | undefined;
   startedAt?: string | undefined;
 }
 
@@ -30,13 +31,16 @@ export function useSavePracticeAttempt() {
       unansweredCount,
       timerEnabled = false,
       durationMinutes = 10,
+      durationSeconds: propDurationSeconds,
       startedAt,
     }: SavePracticeAttemptArgs) => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return null;
       const userId = userData.user.id;
 
-      const durationSeconds = timerEnabled ? durationMinutes * 60 : null;
+      const calculatedDurationSeconds = timerEnabled
+        ? (propDurationSeconds ?? (durationMinutes ? durationMinutes * 60 : 600))
+        : null;
 
       // 1. Create a Test entry in the tests table (mode = 'practice')
       const { data: testData, error: testError } = await supabase
@@ -48,7 +52,7 @@ export function useSavePracticeAttempt() {
           mode: "practice",
           total_questions: questions.length,
           timer_enabled: timerEnabled,
-          duration_seconds: durationSeconds,
+          duration_seconds: calculatedDurationSeconds,
           randomize_questions: false,
           randomize_options: false,
         })

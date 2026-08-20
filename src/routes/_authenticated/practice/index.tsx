@@ -11,19 +11,24 @@ interface PracticeSearch {
   topic?: string;
   timerEnabled?: boolean;
   durationMinutes?: number;
+  durationSeconds?: number;
   randomizeQuestions: boolean;
   randomizeOptions: boolean;
 }
 
 export const Route = createFileRoute('/_authenticated/practice/')({
   validateSearch: (search: Record<string, unknown>): PracticeSearch => {
+    const rawSeconds = search['durationSeconds'] ? Number(search['durationSeconds']) : undefined;
+    const rawMinutes = search['durationMinutes'] ? Number(search['durationMinutes']) : undefined;
+
     const result: PracticeSearch = {
       practiceMode: (search['practiceMode'] as string) || "all",
       totalQuestions: Number(search['totalQuestions']) || 10,
       randomizeQuestions: search['randomizeQuestions'] !== "false",
       randomizeOptions: search['randomizeOptions'] !== "false",
       timerEnabled: search['timerEnabled'] === true || search['timerEnabled'] === "true",
-      durationMinutes: Number(search['durationMinutes']) || 10,
+      durationMinutes: rawMinutes || 10,
+      durationSeconds: rawSeconds ?? (rawMinutes ? rawMinutes * 60 : 600),
     };
     
     if (search['bankId']) result.bankId = search['bankId'] as string;
@@ -68,7 +73,7 @@ function PracticeRoute() {
         randomizeOptions={search.randomizeOptions}
         defaultMode={search.practiceMode === "instant" ? "instant" : "exam"}
         timerEnabled={search.timerEnabled}
-        durationMinutes={search.durationMinutes}
+        durationSeconds={search.durationSeconds}
         onFinish={() => void navigate({ to: '/question-banks/$bankId', params: { bankId: search.bankId! } })}
       />
     </div>

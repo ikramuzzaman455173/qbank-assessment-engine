@@ -31,6 +31,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useEligibleQuestionsCount } from "../api/use-eligible-questions-count";
 import { useCreateTest } from "../api/use-create-test";
 import { useQuestionBanks } from "@/features/question-banks/api/use-question-banks";
+import { DurationPicker } from "@/components/common/duration-picker";
 
 const configSchema = z.object({
   bankId: z.string().min(1, "Please select a Question Bank"),
@@ -40,7 +41,7 @@ const configSchema = z.object({
   difficulty: z.any(),
   topic: z.string().optional().nullable(),
   timerEnabled: z.boolean(),
-  durationMinutes: z.number().min(1).optional().nullable(),
+  durationSeconds: z.number().min(10, "Duration must be at least 10 seconds").optional().nullable(),
   randomizeQuestions: z.boolean(),
   randomizeOptions: z.boolean(),
 });
@@ -63,7 +64,7 @@ export function TestConfigurationForm() {
       difficulty: "mixed",
       topic: "",
       timerEnabled: false,
-      durationMinutes: 15,
+      durationSeconds: 900, // 15 minutes default
       randomizeQuestions: true,
       randomizeOptions: true,
     },
@@ -96,7 +97,7 @@ export function TestConfigurationForm() {
       difficulty: values.difficulty as any,
       topic: values.topic || null,
       timerEnabled: values.timerEnabled,
-      durationSeconds: values.timerEnabled && values.durationMinutes ? values.durationMinutes * 60 : null,
+      durationSeconds: values.timerEnabled && values.durationSeconds ? values.durationSeconds : null,
       randomizeQuestions: values.randomizeQuestions,
       randomizeOptions: values.randomizeOptions,
     }, {
@@ -242,21 +243,29 @@ export function TestConfigurationForm() {
                 <FormField
                   control={form.control}
                   name="totalQuestions"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Questions</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="number" 
-                          min={1} 
-                          max={eligibleCount || 100} 
-                          {...field} 
-                          onChange={e => field.onChange(parseInt(e.target.value, 10))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  render={({ field }) => {
+                    const requestedMoreThanAvailable = watchBankId && !isCountLoading && eligibleCount > 0 && field.value > eligibleCount;
+                    return (
+                      <FormItem>
+                        <FormLabel>Number of Questions</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min={1} 
+                            max={eligibleCount || 100} 
+                            {...field} 
+                            onChange={e => field.onChange(parseInt(e.target.value, 10))}
+                          />
+                        </FormControl>
+                        {requestedMoreThanAvailable && (
+                          <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                            Only {eligibleCount} questions available. Count will be capped.
+                          </p>
+                        )}
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
               )}
             </div>
@@ -288,17 +297,20 @@ export function TestConfigurationForm() {
               {watchTimerEnabled && (
                 <FormField
                   control={form.control}
-                  name="durationMinutes"
+                  name="durationSeconds"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Duration (Minutes)</FormLabel>
+                    <FormItem className="rounded-xl border p-4 bg-muted/20 space-y-3">
+                      <div>
+                        <FormLabel className="text-base font-semibold">Test Time Limit</FormLabel>
+                        <FormDescription>
+                          Configure hours, minutes, or seconds. The test will auto-submit when the countdown ends.
+                        </FormDescription>
+                      </div>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          min={1} 
-                          {...field} 
-                          value={field.value || ""}
-                          onChange={e => field.onChange(parseInt(e.target.value, 10))}
+                        <DurationPicker
+                          value={field.value ?? 900}
+                          onChange={field.onChange}
+                          minSeconds={10}
                         />
                       </FormControl>
                       <FormMessage />
@@ -356,10 +368,21 @@ export function TestConfigurationForm() {
               </Alert>
             )}
 
-            <Button type="submit" className="w-full" disabled={createMutation.isPending || eligibleCount === 0}>
-              {createMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Generate Test
-            </Button>
+            <div className="space-y-2">
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={createMutation.isPending || isCountLoading || !watchBankId || eligibleCount === 0}
+              >
+                {createMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Generate Test
+              </Button>
+              {!watchBankId ? (
+                <p className="text-xs text-center text-muted-foreground">Select a question bank to configure and generate your test.</p>
+              ) : eligibleCount === 0 && !isCountLoading ? (
+                <p className="text-xs text-center text-amber-600 dark:text-amber-400">No questions match the current filters. Please adjust difficulty or topic.</p>
+              ) : null}
+            </div>
           </form>
         </Form>
       </CardContent>

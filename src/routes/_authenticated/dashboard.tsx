@@ -23,11 +23,14 @@ function DashboardPage() {
   const { data: metrics, isLoading, isError } = useDashboardMetrics(days)
   const profileName = session?.user?.user_metadata?.['full_name'] || 'Student'
 
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <PageHeader 
-          title={`Good morning, ${profileName}`}
+          title={`${greeting}, ${profileName}`}
           description="Keep building your knowledge one question at a time."
         />
         

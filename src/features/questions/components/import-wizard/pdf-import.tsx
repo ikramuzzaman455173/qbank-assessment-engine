@@ -83,18 +83,18 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
 
   const startSimulatedProgress = () => {
     setProgress(15);
-    setStageMessage("Reading document & preparing data...");
+    setStageMessage("Reading pages & indexing content...");
 
     progressTimerRef.current = setInterval(() => {
       setProgress((prev) => {
         if (prev < 40) {
-          setStageMessage("Initiating extraction session...");
+          setStageMessage("Identifying question patterns...");
           return prev + 5;
         } else if (prev < 75) {
-          setStageMessage("AI is analyzing document & extracting questions...");
+          setStageMessage("Extracting & structuring MCQs...");
           return prev + 2;
         } else if (prev < 92) {
-          setStageMessage("Formatting and verifying structured questions...");
+          setStageMessage("Validating schema & formatting output...");
           return prev + 1;
         }
         return prev;
@@ -131,7 +131,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
         importedQuestions: 0,
       });
 
-      // 2. Process PDF directly with Gemini AI (In-Memory Base64)
+      // 2. Process PDF via document parser (In-Memory Base64)
       const rawQuestions: RawQuestion[] = await processPdfMutation.mutateAsync({
         file,
       });
@@ -193,7 +193,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
         <CardHeader>
           <CardTitle>Import PDF</CardTitle>
           <CardDescription>
-            Upload a PDF document. Our AI will securely extract the multiple choice questions from it.
+            Upload a PDF document and we'll automatically extract the multiple choice questions from it.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -251,7 +251,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2 font-medium text-primary">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>{stageMessage || "Processing with AI..."}</span>
+                  <span>{stageMessage || "Processing document..."}</span>
                 </div>
                 <span className="font-semibold text-primary">{Math.min(progress, 100)}%</span>
               </div>
@@ -260,7 +260,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
               
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
                 <ShieldAlert className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-                <span>Please do not close this tab or refresh the page while AI is extracting questions.</span>
+                <span>Please do not close this tab or refresh the page while questions are being extracted.</span>
               </div>
             </div>
           )}

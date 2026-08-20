@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { 
   CheckCircle2, 
   XCircle, 
@@ -11,7 +11,10 @@ import {
   Send,
   Eye,
   Check,
-  AlertCircle
+  AlertCircle,
+  Maximize,
+  Minimize2,
+  Keyboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -21,6 +24,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Question } from "@/types/domain";
 import { useSavePracticeAttempt } from "../api/use-save-practice-attempt";
 import { TestTimer } from "@/features/tests/components/test-timer";
+import { useFullscreen } from "@/hooks/use-fullscreen";
 import { cn } from "@/lib/utils";
 
 interface PracticeEngineProps {
@@ -31,6 +35,7 @@ interface PracticeEngineProps {
   defaultMode?: "exam" | "instant" | undefined;
   timerEnabled?: boolean | undefined;
   durationMinutes?: number | undefined;
+  durationSeconds?: number | undefined;
 }
 
 export function PracticeEngine({ 
@@ -41,7 +46,10 @@ export function PracticeEngine({
   defaultMode = "exam",
   timerEnabled = false,
   durationMinutes = 10,
+  durationSeconds: propDurationSeconds,
 }: PracticeEngineProps) {
+  const durationSeconds = propDurationSeconds ?? (durationMinutes ? durationMinutes * 60 : 600);
+
   // Session Mode: "exam" (results at end) or "instant" (immediate feedback)
   const [mode, setMode] = useState<"exam" | "instant">(defaultMode);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -58,6 +66,15 @@ export function PracticeEngine({
   const saveAttemptMutation = useSavePracticeAttempt();
   const hasSavedRef = useRef(false);
   const startedAtRef = useRef<string>(new Date().toISOString());
+
+  // Strike-through (option elimination) state: { [questionKey]: Set of eliminated option IDs }
+  const [strikeThrough, setStrikeThrough] = useState<Record<string, Set<string>>>({});
+
+  // Fullscreen / Focus mode
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
+
+  // Keyboard hints visibility
+  const [showKeyHints, setShowKeyHints] = useState(true);
 
   if (questions.length === 0) {
     return (
@@ -104,28 +121,107 @@ export function PracticeEngine({
     }
   };
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
       setIsFinished(true);
     }
-  };
+  }, [currentIndex, questions.length]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
     }
-  };
+  }, [currentIndex]);
 
   const handleRestart = () => {
     setUserAnswers({});
     setInstantRevealed({});
+    setStrikeThrough({});
     setCurrentIndex(0);
     setIsFinished(false);
     hasSavedRef.current = false;
     startedAtRef.current = new Date().toISOString();
   };
+
+  // Toggle strike-through on an option (elimination tool)
+  const handleToggleStrike = useCallback((optionId: string) => {
+    if (!currentQuestion) return;
+    const qKey = currentQuestion.id || String(currentIndex);
+    setStrikeThrough(prev => {
+      const existing = prev[qKey] ? new Set(prev[qKey]) : new Set<string>();
+      if (existing.has(optionId)) {
+        existing.delete(optionId);
+      } else {
+        existing.add(optionId);
+      }
+      return { ...prev, [qKey]: existing };
+    });
+  }, [currentQuestion, currentIndex]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    if (isFinished) return;
+
+    const handler = (e: KeyboardEvent) => {
+      // Don't capture if user is typing in an input/textarea
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+      const key = e.key.toUpperCase();
+      const optionKeys = ["A", "B", "C", "D"];
+      const numberKeys: Record<string, string> = { "1": "A", "2": "B", "3": "C", "4": "D" };
+
+      // Shift + A/B/C/D = strike-through toggle
+      if (e.shiftKey && optionKeys.includes(key)) {
+        e.preventDefault();
+        handleToggleStrike(key);
+        return;
+      }
+
+      // A/B/C/D or 1/2/3/4 = select option
+      if (optionKeys.includes(key)) {
+        e.preventDefault();
+        handleSelectOption(key);
+        return;
+      }
+      if (numberKeys[e.key]) {
+        e.preventDefault();
+        handleSelectOption(numberKeys[e.key]);
+        return;
+      }
+
+      // Arrow navigation
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        handleNext();
+        return;
+      }
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        handlePrevious();
+        return;
+      }
+
+      // F = toggle fullscreen
+      if (key === "F" && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        void toggleFullscreen();
+        return;
+      }
+
+      // Enter on last question = submit
+      if (e.key === "Enter" && currentIndex === questions.length - 1) {
+        e.preventDefault();
+        setIsFinished(true);
+        return;
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isFinished, currentIndex, questions.length, handleNext, handlePrevious, handleSelectOption, handleToggleStrike, toggleFullscreen]);
 
   // Metrics calculation
   const totalQuestions = questions.length;
@@ -162,11 +258,11 @@ export function PracticeEngine({
         incorrectCount,
         unansweredCount,
         timerEnabled,
-        durationMinutes,
+        durationSeconds,
         startedAt: startedAtRef.current,
       });
     }
-  }, [isFinished, answeredCount, bankId, questions, userAnswers, percentage, correctCount, incorrectCount, unansweredCount, timerEnabled, durationMinutes, saveAttemptMutation]);
+  }, [isFinished, answeredCount, bankId, questions, userAnswers, percentage, correctCount, incorrectCount, unansweredCount, timerEnabled, durationSeconds, saveAttemptMutation]);
 
   // -------------------------------------------------------------
   // RESULTS VIEW (When Test is Finished)
@@ -463,10 +559,10 @@ export function PracticeEngine({
 
         <div className="flex items-center gap-2">
           {/* Live Timer if enabled */}
-          {timerEnabled && durationMinutes && (
+          {timerEnabled && durationSeconds > 0 && (
             <TestTimer 
               startedAt={startedAtRef.current}
-              durationSeconds={durationMinutes * 60}
+              durationSeconds={durationSeconds}
               onExpire={() => setIsFinished(true)}
             />
           )}
@@ -499,6 +595,17 @@ export function PracticeEngine({
             </button>
           </div>
 
+          {/* Fullscreen / Focus Mode Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => void toggleFullscreen()}
+            className="h-8 w-8 text-muted-foreground hover:text-primary"
+            title={isFullscreen ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
+          >
+            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+          </Button>
+
           <Button 
             variant="ghost" 
             size="sm" 
@@ -529,7 +636,7 @@ export function PracticeEngine({
                 isCurrent 
                   ? "bg-primary text-primary-foreground border-primary ring-2 ring-primary/30" 
                   : hasAnswer
-                  ? "bg-primary/15 text-primary border-primary/30 hover:bg-primary/25"
+                  ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 dark:hover:bg-emerald-900/50"
                   : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
               )}
               title={`Jump to Question ${idx + 1}`}
@@ -563,6 +670,7 @@ export function PracticeEngine({
           {currentOptions.map((opt) => {
             const isSelected = selectedOption === opt.id;
             const isCorrect = currentQuestion.correctAnswer === opt.id;
+            const isStruck = strikeThrough[qKey]?.has(opt.id) ?? false;
 
             let stateClass = "border-border hover:border-primary/50 hover:bg-accent/40 cursor-pointer";
             let Icon = null;
@@ -589,9 +697,14 @@ export function PracticeEngine({
               <div
                 key={opt.id}
                 onClick={() => handleSelectOption(opt.id)}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  handleToggleStrike(opt.id);
+                }}
                 className={cn(
                   "flex items-start gap-3 p-4 rounded-xl border transition-all duration-150 select-none",
-                  stateClass
+                  stateClass,
+                  isStruck && "opacity-40 line-through decoration-2"
                 )}
               >
                 {/* Radio selection circle */}
@@ -659,6 +772,26 @@ export function PracticeEngine({
           </div>
         </CardFooter>
       </Card>
+
+      {/* Keyboard Shortcuts Hint Bar */}
+      {showKeyHints && (
+        <div className="hidden sm:flex items-center justify-between bg-muted/50 border rounded-lg px-4 py-2 text-xs text-muted-foreground animate-in fade-in duration-300">
+          <div className="flex items-center gap-1.5">
+            <Keyboard className="h-3.5 w-3.5" />
+            <span className="font-medium">Shortcuts:</span>
+            <span>
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">A-D</kbd> answer
+              <span className="mx-1.5">·</span>
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">←→</kbd> navigate
+              <span className="mx-1.5">·</span>
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">Shift+A-D</kbd> eliminate
+              <span className="mx-1.5">·</span>
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">F</kbd> focus mode
+            </span>
+          </div>
+          <button onClick={() => setShowKeyHints(false)} className="text-muted-foreground/60 hover:text-foreground ml-4">✕</button>
+        </div>
+      )}
     </div>
   );
 }

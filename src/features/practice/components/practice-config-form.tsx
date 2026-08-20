@@ -28,6 +28,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { useQuestionBanks } from "@/features/question-banks/api/use-question-banks";
+import { useEligibleQuestionsCount } from "@/features/tests/api/use-eligible-questions-count";
+import { DurationPicker } from "@/components/common/duration-picker";
 
 const configSchema = z.object({
   bankId: z.string().min(1, "Please select a Question Bank"),
@@ -36,7 +38,7 @@ const configSchema = z.object({
   difficulty: z.string().optional().nullable(),
   topic: z.string().optional().nullable(),
   timerEnabled: z.boolean(),
-  durationMinutes: z.number().min(1).optional().nullable(),
+  durationSeconds: z.number().min(10, "Duration must be at least 10 seconds").optional().nullable(),
   randomizeQuestions: z.boolean(),
   randomizeOptions: z.boolean(),
 });
@@ -57,13 +59,22 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
       difficulty: "",
       topic: initialTopic || "",
       timerEnabled: false,
-      durationMinutes: 10,
+      durationSeconds: 600, // 10 minutes default
       randomizeQuestions: true,
       randomizeOptions: true,
     },
   });
 
+  const watchBankId = form.watch("bankId");
+  const watchDifficulty = form.watch("difficulty");
+  const watchTopic = form.watch("topic");
   const watchTimerEnabled = form.watch("timerEnabled");
+
+  const { data: eligibleCount = 0, isLoading: isCountLoading } = useEligibleQuestionsCount({
+    bankId: watchBankId,
+    difficulty: (watchDifficulty && watchDifficulty !== "mixed" ? watchDifficulty : null) as any,
+    topic: watchTopic || null,
+  });
 
   const onSubmit = (values: ConfigValues) => {
     setGenerateError(null);
@@ -72,11 +83,11 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
       search: {
         bankId: values.bankId,
         practiceMode: values.practiceMode,
-        totalQuestions: values.totalQuestions,
+        totalQuestions: Math.min(values.totalQuestions, eligibleCount || values.totalQuestions),
         difficulty: values.difficulty === "mixed" ? undefined : (values.difficulty || undefined),
         topic: values.topic || undefined,
         timerEnabled: values.timerEnabled,
-        durationMinutes: values.timerEnabled ? (values.durationMinutes || 10) : undefined,
+        durationSeconds: values.timerEnabled ? (values.durationSeconds || 600) : undefined,
         randomizeQuestions: values.randomizeQuestions,
         randomizeOptions: values.randomizeOptions,
       } as any
@@ -84,7 +95,7 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
   };
 
   return (
-    <Card>
+    <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Session Settings</CardTitle>
         <CardDescription>
@@ -147,20 +158,29 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
               <FormField
                 control={form.control}
                 name="totalQuestions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Number of Questions</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        min={1} 
-                        {...field} 
-                        onChange={e => field.onChange(parseInt(e.target.value, 10))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const requestedMoreThanAvailable = watchBankId && !isCountLoading && eligibleCount > 0 && field.value > eligibleCount;
+                  return (
+                    <FormItem>
+                      <FormLabel>Number of Questions</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          min={1} 
+                          max={eligibleCount || 100}
+                          {...field} 
+                          onChange={e => field.onChange(parseInt(e.target.value, 10))}
+                        />
+                      </FormControl>
+                      {requestedMoreThanAvailable && (
+                        <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                          Only {eligibleCount} questions available.
+                        </p>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
 
@@ -204,6 +224,19 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
               />
             </div>
 
+            {watchBankId && (
+              <Alert className="bg-muted/50">
+                <AlertDescription className="font-medium text-sm flex items-center justify-between">
+                  <span>Available Eligible Questions:</span>
+                  {isCountLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <span className="text-lg">{eligibleCount}</span>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
+
             <div className="space-y-4 pt-4 border-t">
               <h4 className="font-medium text-sm text-muted-foreground">Timer & Question Settings</h4>
               
@@ -231,17 +264,20 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
               {watchTimerEnabled && (
                 <FormField
                   control={form.control}
-                  name="durationMinutes"
+                  name="durationSeconds"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Duration (Minutes)</FormLabel>
+                    <FormItem className="rounded-xl border p-4 bg-muted/20 space-y-3">
+                      <div>
+                        <FormLabel className="text-base font-semibold">Practice Time Limit</FormLabel>
+                        <FormDescription>
+                          Set hours, minutes, or seconds. The practice session will auto-submit when the countdown ends.
+                        </FormDescription>
+                      </div>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          min={1} 
-                          {...field} 
-                          value={field.value || ""}
-                          onChange={e => field.onChange(parseInt(e.target.value, 10))}
+                        <DurationPicker
+                          value={field.value ?? 600}
+                          onChange={field.onChange}
+                          minSeconds={10}
                         />
                       </FormControl>
                       <FormMessage />
@@ -299,9 +335,20 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
               </Alert>
             )}
 
-            <Button type="submit" className="w-full">
-              Start Practice Session
-            </Button>
+            <div className="space-y-2">
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isCountLoading || !watchBankId || eligibleCount === 0}
+              >
+                Start Practice Session
+              </Button>
+              {!watchBankId ? (
+                <p className="text-xs text-center text-muted-foreground">Select a question bank to start practicing.</p>
+              ) : eligibleCount === 0 && !isCountLoading ? (
+                <p className="text-xs text-center text-amber-600 dark:text-amber-400">No questions match the current filters. Please adjust difficulty or topic.</p>
+              ) : null}
+            </div>
           </form>
         </Form>
       </CardContent>

@@ -5,7 +5,7 @@ import { ROUTES } from "@/constants/routes";
 
 export function LandingCTA() {
   return (
-    <section className="py-20 border-b border-border bg-canvas-dots bg-background relative overflow-hidden">
+    <section className="py-14 md:py-20 border-b border-border bg-canvas-dots bg-background relative overflow-hidden">
       <div className="container-page">
         {/* Ticket Pass Style Container */}
         <div className="mx-auto max-w-4xl rounded-2xl border-2 border-dashed border-primary/50 bg-card p-6 sm:p-10 shadow-lg relative overflow-hidden">

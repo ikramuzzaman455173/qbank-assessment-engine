@@ -75,8 +75,8 @@ export function LandingHowItWorks() {
   if (!activeStep) return null;
 
   return (
-    <section id="how-it-works" className="scroll-mt-20 py-20 border-b border-border bg-canvas-grid bg-background relative">
-      <div className="container-page space-y-12">
+    <section id="how-it-works" className="scroll-mt-20 py-14 md:py-20 border-b border-border bg-canvas-grid bg-background relative">
+      <div className="container-page space-y-10 md:space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-primary/50 bg-muted/60 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary shadow-2xs rotate-[1deg]">

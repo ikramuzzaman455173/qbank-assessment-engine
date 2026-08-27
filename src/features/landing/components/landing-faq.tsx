@@ -48,8 +48,8 @@ export function LandingFAQ() {
   };
 
   return (
-    <section id="faq" className="scroll-mt-20 py-20 border-b border-border bg-muted/30 relative">
-      <div className="container-page max-w-3xl space-y-10">
+    <section id="faq" className="scroll-mt-20 py-14 md:py-20 border-b border-border bg-muted/30 relative">
+      <div className="container-page max-w-3xl space-y-8 md:space-y-10">
         {/* Section Header */}
         <div className="text-center max-w-xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-primary/50 bg-background px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary shadow-2xs rotate-[1.5deg]">

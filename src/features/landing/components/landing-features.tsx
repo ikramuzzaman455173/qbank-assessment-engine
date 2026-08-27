@@ -59,8 +59,8 @@ const FEATURES = [
 
 export function LandingFeatures() {
   return (
-    <section id="features" className="scroll-mt-20 py-20 border-b border-border bg-muted/30">
-      <div className="container-page space-y-12">
+    <section id="features" className="scroll-mt-20 py-14 md:py-20 border-b border-border bg-muted/30">
+      <div className="container-page space-y-10 md:space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-primary/50 bg-background px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary shadow-2xs rotate-[-1.5deg]">

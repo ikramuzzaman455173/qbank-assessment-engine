@@ -132,7 +132,7 @@ export function LandingHero() {
   };
 
   return (
-    <section className="relative overflow-hidden py-16 md:py-24 border-b border-border bg-canvas-dots bg-background">
+    <section className="relative overflow-hidden py-14 md:py-20 border-b border-border bg-canvas-dots bg-background">
       {/* Subtle ambient light */}
       <div className="pointer-events-none absolute -top-24 left-1/4 size-96 rounded-full bg-primary/5 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 right-1/4 size-96 rounded-full bg-primary/5 blur-3xl" />

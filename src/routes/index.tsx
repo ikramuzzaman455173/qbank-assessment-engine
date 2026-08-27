@@ -8,8 +8,6 @@ import { LandingHeader } from "@/features/landing/components/landing-header";
 import { LandingHero } from "@/features/landing/components/landing-hero";
 import { LandingFeatures } from "@/features/landing/components/landing-features";
 import { LandingHowItWorks } from "@/features/landing/components/landing-how-it-works";
-import { LandingComparison } from "@/features/landing/components/landing-comparison";
-import { LandingStats } from "@/features/landing/components/landing-stats";
 import { LandingFAQ } from "@/features/landing/components/landing-faq";
 import { LandingCTA } from "@/features/landing/components/landing-cta";
 import { LandingFooter } from "@/features/landing/components/landing-footer";
@@ -46,8 +44,6 @@ function LandingPage() {
         <LandingHero />
         <LandingFeatures />
         <LandingHowItWorks />
-        <LandingComparison />
-        <LandingStats />
         <LandingFAQ />
         <LandingCTA />
       </main>
@@ -59,7 +55,7 @@ function LandingPage() {
           size="icon"
           variant="outline"
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-40 size-10 rounded-full border-2 border-dashed border-primary/50 bg-background/80 backdrop-blur-md shadow-md hover:scale-110 hover:border-solid hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+          className="fixed bottom-6 right-6 z-40 size-10 rounded-full border border-border bg-background/80 backdrop-blur-md shadow-md hover:scale-110 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
           aria-label="Scroll to top"
         >
           <ArrowUp className="size-4" />

@@ -68,7 +68,7 @@ export function UserMenu() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild className="cursor-pointer">
-              <Link to={ROUTES.profile}>
+              <Link to="/settings" search={{ tab: "profile" }}>
                 <User className="mr-2 size-4" aria-hidden="true" />
                 <span>Profile</span>
               </Link>

@@ -4,7 +4,7 @@ export const ROUTES = {
   terms: "/terms",
   auth: "/auth",
   dashboard: "/dashboard",
-  profile: "/profile",
+  profile: "/settings",
   analytics: "/analytics",
   settings: "/settings",
   questionBanks: "/question-banks",

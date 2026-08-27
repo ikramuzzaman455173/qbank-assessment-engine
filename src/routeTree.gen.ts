@@ -17,7 +17,6 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPracticeIndexRouteImport } from './routes/_authenticated/practice/index'
 import { Route as AuthenticatedPracticeConfigRouteImport } from './routes/_authenticated/practice/config'
@@ -67,11 +66,6 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -147,7 +141,6 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/practice/config': typeof AuthenticatedPracticeConfigRoute
   '/tests/$testId': typeof AuthenticatedTestsTestIdRouteWithChildren
@@ -168,7 +161,6 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/practice/config': typeof AuthenticatedPracticeConfigRoute
   '/tests/$testId': typeof AuthenticatedTestsTestIdRouteWithChildren
@@ -191,7 +183,6 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/practice/config': typeof AuthenticatedPracticeConfigRoute
   '/_authenticated/tests/$testId': typeof AuthenticatedTestsTestIdRouteWithChildren
@@ -214,7 +205,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/analytics'
     | '/dashboard'
-    | '/profile'
     | '/settings'
     | '/practice/config'
     | '/tests/$testId'
@@ -235,7 +225,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/analytics'
     | '/dashboard'
-    | '/profile'
     | '/settings'
     | '/practice/config'
     | '/tests/$testId'
@@ -257,7 +246,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
-    | '/_authenticated/profile'
     | '/_authenticated/settings'
     | '/_authenticated/practice/config'
     | '/_authenticated/tests/$testId'
@@ -336,13 +324,6 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -442,7 +423,6 @@ const AuthenticatedTestsTestIdRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedPracticeConfigRoute: typeof AuthenticatedPracticeConfigRoute
   AuthenticatedTestsTestIdRoute: typeof AuthenticatedTestsTestIdRouteWithChildren
@@ -458,7 +438,6 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedPracticeConfigRoute: AuthenticatedPracticeConfigRoute,
   AuthenticatedTestsTestIdRoute: AuthenticatedTestsTestIdRouteWithChildren,

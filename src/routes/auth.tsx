@@ -179,7 +179,9 @@ function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>
+                          Email <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder="m@example.com"
@@ -197,7 +199,9 @@ function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>
+                          Password <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <PasswordInput
                             placeholder="••••••••"
@@ -224,7 +228,9 @@ function AuthPage() {
                     name="fullName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>
+                          Full Name <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Input placeholder="John Doe" disabled={isLoading} {...field} />
                         </FormControl>
@@ -237,7 +243,9 @@ function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>
+                          Email <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder="m@example.com"
@@ -255,7 +263,9 @@ function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>
+                          Password <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <PasswordInput
                             placeholder="••••••••"
@@ -272,7 +282,9 @@ function AuthPage() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
+                        <FormLabel>
+                          Confirm Password <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <PasswordInput
                             placeholder="••••••••"

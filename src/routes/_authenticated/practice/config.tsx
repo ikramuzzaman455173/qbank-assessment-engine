@@ -2,8 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/common";
 import { PracticeConfigForm } from "@/features/practice/components";
 
+interface PracticeConfigSearch {
+  mode?: string | undefined;
+  topic?: string | undefined;
+}
+
 export const Route = createFileRoute("/_authenticated/practice/config")({
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown>): PracticeConfigSearch => {
     return {
       mode: (search['mode'] as string) || "all",
       topic: (search['topic'] as string) || undefined,

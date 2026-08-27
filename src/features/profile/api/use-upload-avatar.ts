@@ -25,7 +25,7 @@ export function useUploadAvatar() {
       }
 
       // 2. Upload to Supabase Storage
-      const fileExt = file.name.split(".").pop();
+      const fileExt = file.name.split(".").pop() || "jpg";
       const filePath = `${user.id}/profile.${fileExt}`;
 
       // Upsert the file
@@ -33,20 +33,29 @@ export function useUploadAvatar() {
         .from("avatars")
         .upload(filePath, file, { upsert: true });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        if (uploadError.message?.toLowerCase().includes("bucket not found")) {
+          throw new Error(
+            "Supabase Storage bucket 'avatars' not found. Please create the 'avatars' public bucket in your Supabase Dashboard."
+          );
+        }
+        throw uploadError;
+      }
 
-      // 3. Get public URL
+      // 3. Get public URL with timestamp cache buster
       const { data: { publicUrl } } = supabase.storage
         .from("avatars")
         .getPublicUrl(filePath);
 
+      const finalUrl = `${publicUrl}?t=${Date.now()}`;
+
       // 4. Update Profile
       await updateProfile.mutateAsync({
         id: user.id,
-        avatarUrl: publicUrl,
+        avatarUrl: finalUrl,
       });
 
-      return publicUrl;
+      return finalUrl;
     } catch (err: any) {
       setError(err);
       throw err;

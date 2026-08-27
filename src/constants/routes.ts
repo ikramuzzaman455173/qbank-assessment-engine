@@ -1,5 +1,7 @@
 export const ROUTES = {
   landing: "/",
+  privacy: "/privacy",
+  terms: "/terms",
   auth: "/auth",
   dashboard: "/dashboard",
   profile: "/profile",

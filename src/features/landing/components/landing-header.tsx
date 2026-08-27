@@ -18,6 +18,9 @@ export function LandingHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    if (typeof window !== "undefined" && window.location.pathname !== "/") {
+      return;
+    }
     e.preventDefault();
     const element = document.getElementById(targetId);
     if (element) {
@@ -41,7 +44,7 @@ export function LandingHeader() {
           {NAV_LINKS.map(({ label, targetId, icon: Icon }) => (
             <a
               key={targetId}
-              href={`#${targetId}`}
+              href={`/#${targetId}`}
               onClick={(e) => scrollToSection(e, targetId)}
               className="flex items-center gap-1.5 transition-colors hover:text-foreground cursor-pointer"
             >
@@ -85,7 +88,7 @@ export function LandingHeader() {
             {NAV_LINKS.map(({ label, targetId, icon: Icon }) => (
               <a
                 key={targetId}
-                href={`#${targetId}`}
+                href={`/#${targetId}`}
                 onClick={(e) => scrollToSection(e, targetId)}
                 className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >

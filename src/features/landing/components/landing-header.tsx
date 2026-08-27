@@ -11,7 +11,8 @@ const NAV_LINKS = [
   { label: "Features", targetId: "features" },
   { label: "Live Demo", targetId: "interactive-demo", icon: Sparkles },
   { label: "How It Works", targetId: "how-it-works" },
-  { label: "Benefits", targetId: "stats" },
+  { label: "Why Us", targetId: "comparison" },
+  { label: "FAQ", targetId: "faq" },
 ];
 
 export function LandingHeader() {

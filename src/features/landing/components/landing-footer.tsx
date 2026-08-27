@@ -58,6 +58,20 @@ export function LandingFooter() {
             >
               Workflow
             </a>
+            <a
+              href="/#comparison"
+              onClick={(e) => scrollToSection(e, "comparison")}
+              className="hover:text-foreground transition-colors cursor-pointer"
+            >
+              Methodology
+            </a>
+            <a
+              href="/#faq"
+              onClick={(e) => scrollToSection(e, "faq")}
+              className="hover:text-foreground transition-colors cursor-pointer"
+            >
+              FAQ
+            </a>
             <Link to={ROUTES.privacy} className="hover:text-foreground transition-colors">
               Privacy Policy
             </Link>

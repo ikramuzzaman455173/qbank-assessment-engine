@@ -56,6 +56,13 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 function mapAuthError(error: any): string {
   const message = error?.message || "";
 
+  if (
+    message.includes("Failed to fetch") ||
+    message.includes("NetworkError") ||
+    message.includes("fetch failed")
+  ) {
+    return "Cannot connect to Supabase server. Please check your internet connection or verify if your Supabase project is active/unpaused in Supabase Dashboard.";
+  }
   if (message.includes("Invalid login credentials")) {
     return "Email or password is incorrect.";
   }

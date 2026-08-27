@@ -234,3 +234,27 @@
   mask-image: radial-gradient(circle at 100% 50%, transparent 12px, black 12.5px);
 }
 
+/* Circular View Transition for Theme Switcher */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Light Mode Transition (Dark to Light: old view shrinks on top) */
+::view-transition-old(root) {
+  z-index: 9999;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Dark Mode Transition (Light to Dark: new dark view expands on top) */
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
+.dark::view-transition-new(root) {
+  z-index: 9999;
+}
+
+

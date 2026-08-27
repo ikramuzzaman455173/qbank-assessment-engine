@@ -66,7 +66,7 @@ export function DeleteAccountDialog() {
             <Input 
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
-              placeholder="DELETE"
+              placeholder="Type DELETE in capital letters to confirm"
               className="border-destructive/50 focus-visible:ring-destructive"
             />
           </div>

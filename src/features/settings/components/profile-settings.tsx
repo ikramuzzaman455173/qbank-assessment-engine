@@ -154,7 +154,7 @@ export function ProfileSettings() {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder="e.g., John Doe / মোহাম্মদ করিম" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,9 +168,9 @@ export function ProfileSettings() {
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="johndoe" {...field} />
+                      <Input placeholder="e.g., jdoe99 or learner_pro" {...field} />
                     </FormControl>
-                    <FormDescription>This is how you will appear to others.</FormDescription>
+                    <FormDescription>This is how you will appear across the platform.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -184,7 +184,7 @@ export function ProfileSettings() {
                     <FormLabel>Bio (Optional)</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Tell us a little bit about yourself" 
+                        placeholder="e.g., Preparing for BCS / Medical / University admission tests. Focusing on Biology & Chemistry..." 
                         className="resize-none" 
                         {...field} 
                       />

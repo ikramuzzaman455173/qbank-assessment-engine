@@ -143,7 +143,7 @@ export function PreferencesSettings() {
                     <FormItem>
                       <FormLabel>Default Question Count</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input type="number" min={1} max={500} placeholder="e.g., 20 (1 - 500)" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -199,7 +199,7 @@ export function PreferencesSettings() {
                     <FormItem>
                       <FormLabel>Default Practice Question Count</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input type="number" min={1} max={500} placeholder="e.g., 10 (1 - 500)" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

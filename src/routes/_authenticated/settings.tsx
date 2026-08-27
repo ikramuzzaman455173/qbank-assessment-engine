@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { 
   User, 
   Settings2, 
+  Sparkles,
   Bell, 
   Database, 
   ShieldCheck, 
@@ -12,6 +13,7 @@ import {
 import { PageHeader } from "@/components/common";
 import { ProfileSettings } from "@/features/settings/components/profile-settings";
 import { PreferencesSettings } from "@/features/settings/components/preferences-settings";
+import { AiSettings } from "@/features/settings/components/ai-settings";
 import { NotificationSettings } from "@/features/settings/components/notification-settings";
 import { DataManagementSettings } from "@/features/settings/components/data-management-settings";
 import { SecuritySettings } from "@/features/settings/components/security-settings";
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/_authenticated/settings")({
 type SettingsTab = 
   | "profile" 
   | "preferences" 
+  | "ai"
   | "notifications" 
   | "data" 
   | "security" 
@@ -38,9 +41,10 @@ type SettingsTab =
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
 
-  const tabs: Array<{ id: SettingsTab; label: string; icon: any; destructive?: boolean }> = [
+  const tabs: Array<{ id: SettingsTab; label: string; icon: any; destructive?: boolean; badge?: string }> = [
     { id: "profile", label: "Profile", icon: User },
     { id: "preferences", label: "Preferences", icon: Settings2 },
+    { id: "ai", label: "AI & API Keys", icon: Sparkles },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "data", label: "Data Management", icon: Database },
     { id: "security", label: "Security", icon: ShieldCheck },
@@ -82,6 +86,7 @@ function SettingsPage() {
         <main className="flex-1 w-full min-w-0 max-w-4xl">
           {activeTab === "profile" && <ProfileSettings />}
           {activeTab === "preferences" && <PreferencesSettings />}
+          {activeTab === "ai" && <AiSettings />}
           {activeTab === "notifications" && <NotificationSettings />}
           {activeTab === "data" && <DataManagementSettings />}
           {activeTab === "security" && <SecuritySettings />}

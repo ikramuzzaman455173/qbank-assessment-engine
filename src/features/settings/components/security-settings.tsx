@@ -96,7 +96,7 @@ export function SecuritySettings() {
                   <FormItem>
                     <FormLabel>New Password</FormLabel>
                     <FormControl>
-                      <PasswordInput {...field} />
+                      <PasswordInput placeholder="Enter new password (min. 6 characters)" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -110,7 +110,7 @@ export function SecuritySettings() {
                   <FormItem>
                     <FormLabel>Confirm New Password</FormLabel>
                     <FormControl>
-                      <PasswordInput {...field} />
+                      <PasswordInput placeholder="Re-enter new password to confirm" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

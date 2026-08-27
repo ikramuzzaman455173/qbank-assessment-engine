@@ -124,7 +124,7 @@ export function QuestionForm({
                               <FormItem className="w-full space-y-0">
                                 <FormControl>
                                   <Input
-                                    placeholder={`Option ${opt}`}
+                                    placeholder={`Option ${opt} answer text...`}
                                     {...inputField}
                                     className={
                                       radioField.value === opt
@@ -157,7 +157,7 @@ export function QuestionForm({
               <FormLabel>Explanation</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Explain why the answer is correct..."
+                  placeholder="Explain why the answer is correct and provide context or tips..."
                   className="resize-none"
                   {...field}
                   value={field.value || ""}

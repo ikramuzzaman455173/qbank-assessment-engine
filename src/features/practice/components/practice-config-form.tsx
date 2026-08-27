@@ -168,6 +168,7 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                           type="number" 
                           min={1} 
                           max={eligibleCount || 100}
+                          placeholder="e.g., 10"
                           {...field} 
                           onChange={e => field.onChange(parseInt(e.target.value, 10))}
                         />
@@ -216,7 +217,7 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                   <FormItem>
                     <FormLabel>Topic Filter (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Leave blank for all" {...field} value={field.value || ""} />
+                      <Input placeholder="e.g. Physiology (leave blank for all)" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

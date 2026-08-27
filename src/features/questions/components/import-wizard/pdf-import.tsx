@@ -3,11 +3,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { AlertCircle, Upload, FileText, Loader2, ShieldAlert } from "lucide-react";
+import { 
+  AlertCircle, 
+  Upload, 
+  FileText, 
+  Loader2, 
+  ShieldAlert, 
+  Sparkles, 
+  Zap, 
+  Key, 
+  CheckCircle2,
+  ExternalLink 
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useProcessPdf } from "../../api/use-process-pdf";
 import { useCreateSource } from "../../api/use-create-source";
+import { useGeminiKey } from "@/features/settings/api/use-gemini-key";
 import type { ParsedQuestionResult, RawQuestion } from "./schema";
 import { rawQuestionSchema } from "./schema";
 
@@ -24,6 +45,11 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
   const [progress, setProgress] = useState<number>(0);
   const [stageMessage, setStageMessage] = useState<string>("");
   
+  // Quick in-place API Key dialog state
+  const [showKeyDialog, setShowKeyDialog] = useState(false);
+  const [quickApiKey, setQuickApiKey] = useState("");
+  
+  const { status: keyStatus, saveKey, isSaving } = useGeminiKey();
   const progressTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const processPdfMutation = useProcessPdf();
@@ -187,14 +213,48 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
     }
   };
 
+  const handleSaveQuickKey = async () => {
+    if (!quickApiKey.trim()) return;
+    try {
+      await saveKey(quickApiKey);
+      setShowKeyDialog(false);
+      setError(null);
+    } catch (err) {
+      // Error handled by hook toast
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Import PDF</CardTitle>
-          <CardDescription>
-            Upload a PDF document and we'll automatically extract the multiple choice questions from it.
-          </CardDescription>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="space-y-1">
+              <CardTitle>Import PDF</CardTitle>
+              <CardDescription>
+                Upload a PDF document and we'll automatically extract the multiple choice questions from it.
+              </CardDescription>
+            </div>
+            
+            {/* AI Engine Status Badge */}
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              {keyStatus.source === "custom" ? (
+                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 text-xs py-1 flex items-center gap-1.5">
+                  <CheckCircle2 className="size-3 text-emerald-500" />
+                  Personal Key Active
+                </Badge>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowKeyDialog(true)}
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-2.5 py-1 rounded-full border transition-colors"
+                >
+                  <Zap className="size-3 text-amber-500" />
+                  <span>Shared Quota (Add Custom Key)</span>
+                </button>
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           
@@ -239,10 +299,30 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
           </div>
 
           {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
+            <Alert variant="destructive" className="space-y-2">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 mt-0.5" />
+                <div className="space-y-1">
+                  <AlertTitle>Extraction Error</AlertTitle>
+                  <AlertDescription className="text-xs leading-relaxed">{error}</AlertDescription>
+                </div>
+              </div>
+              
+              {/* Quick Action to Add Custom Key if error happens */}
+              {(error.includes("quota") || error.includes("rate limit") || error.includes("Key") || error.includes("key")) && (
+                <div className="pt-2 flex items-center gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setShowKeyDialog(true)}
+                    className="bg-background text-foreground text-xs"
+                  >
+                    <Key className="size-3.5 mr-1.5 text-primary" />
+                    Add Free Gemini API Key
+                  </Button>
+                </div>
+              )}
             </Alert>
           )}
           
@@ -291,6 +371,61 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Quick In-Place Gemini API Key Dialog */}
+      <Dialog open={showKeyDialog} onOpenChange={setShowKeyDialog}>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Key className="size-5 text-primary" />
+              Configure Personal Gemini API Key
+            </DialogTitle>
+            <DialogDescription>
+              Add your free Google Gemini API key to avoid shared rate limit issues and extract MCQs with full speed.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase text-muted-foreground">
+                Google Gemini API Key
+              </label>
+              <Input
+                type="password"
+                placeholder="AIzaSy... (Paste your key here)"
+                value={quickApiKey}
+                onChange={(e) => setQuickApiKey(e.target.value)}
+                className="font-mono text-sm"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Don't have a key yet? Get one 100% free from{" "}
+                <a
+                  href="https://aistudio.google.com/app/apikey"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary underline font-medium inline-flex items-center gap-0.5"
+                >
+                  Google AI Studio <ExternalLink className="size-2.5" />
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" size="sm" onClick={() => setShowKeyDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={handleSaveQuickKey} 
+              disabled={!quickApiKey.trim() || isSaving}
+            >
+              {isSaving ? <Loader2 className="size-4 animate-spin mr-1.5" /> : <CheckCircle2 className="size-4 mr-1.5" />}
+              Save & Activate
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

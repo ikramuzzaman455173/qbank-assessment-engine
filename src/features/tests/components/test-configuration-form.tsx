@@ -194,7 +194,7 @@ export function TestConfigurationForm() {
                   <FormItem>
                     <FormLabel>Topic Filter</FormLabel>
                     <FormControl>
-                      <Input placeholder="Leave blank for all" {...field} value={field.value || ""} />
+                      <Input placeholder="e.g. Routing Protocols (leave blank for all)" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -253,6 +253,7 @@ export function TestConfigurationForm() {
                             type="number" 
                             min={1} 
                             max={eligibleCount || 100} 
+                            placeholder="e.g., 20"
                             {...field} 
                             onChange={e => field.onChange(parseInt(e.target.value, 10))}
                           />

@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { getActiveGeminiApiKey } from "@/lib/gemini-config";
 
 interface ProcessPdfArgs {
   file?: File;
@@ -27,11 +28,11 @@ async function fileToBase64(blob: Blob): Promise<string> {
 export function useProcessPdf() {
   return useMutation({
     mutationFn: async ({ file, storagePath }: ProcessPdfArgs) => {
-      // 1. Check for API key
-      const geminiApiKey = import.meta.env["VITE_GEMINI_API_KEY"];
+      // 1. Check for active API key (Custom user key or System default)
+      const geminiApiKey = getActiveGeminiApiKey();
       if (!geminiApiKey) {
         throw new Error(
-          "Missing VITE_GEMINI_API_KEY in your .env file. Please get a free API key from Google AI Studio (aistudio.google.com) and add it to your .env file."
+          "No active Gemini API key found. Please add your free Google Gemini API key in Settings -> AI & API Keys or enter it below to proceed."
         );
       }
 
@@ -145,7 +146,29 @@ Rules:
       }
 
       console.error("Gemini API Error details:", lastErrorText);
-      throw new Error(`Failed to process PDF with AI: ${lastErrorText || "Check console for details."}`);
+      let friendlyError = lastErrorText || "An unknown error occurred during AI processing.";
+      try {
+        const parsed = JSON.parse(lastErrorText);
+        if (parsed?.error?.message) {
+          friendlyError = parsed.error.message;
+        }
+      } catch {
+        // Keep raw text
+      }
+
+      if (friendlyError.includes("quota") || friendlyError.includes("RESOURCE_EXHAUSTED") || friendlyError.includes("429")) {
+        throw new Error(
+          "Shared AI rate limit / quota exceeded. Please configure your personal free Gemini API key in Settings -> AI & API Keys to continue without limits."
+        );
+      }
+
+      if (friendlyError.includes("API key not valid") || friendlyError.includes("API_KEY_INVALID")) {
+        throw new Error(
+          "Invalid Gemini API Key provided. Please verify your API key in Settings -> AI & API Keys."
+        );
+      }
+
+      throw new Error(`AI Processing Error: ${friendlyError}`);
     },
   });
 }

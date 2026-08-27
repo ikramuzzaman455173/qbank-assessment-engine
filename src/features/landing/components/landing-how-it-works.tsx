@@ -76,7 +76,7 @@ export function LandingHowItWorks() {
   if (!activeStep) return null;
 
   return (
-    <section id="how-it-works" className="py-20 border-b border-border">
+    <section id="how-it-works" className="scroll-mt-20 py-20 border-b border-border">
       <div className="container-page space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <Badge variant="outline" className="text-xs font-medium uppercase tracking-wider">

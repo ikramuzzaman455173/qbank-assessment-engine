@@ -15,7 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export function LandingFeatures() {
   return (
-    <section id="features" className="py-20 border-b border-border bg-muted/20">
+    <section id="features" className="scroll-mt-20 py-20 border-b border-border bg-muted/20">
       <div className="container-page space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">

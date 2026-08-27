@@ -221,7 +221,7 @@ export function LandingHero() {
           </div>
 
           {/* Right Column: Live Interactive Sandbox Widget */}
-          <div id="interactive-demo" ref={sandboxRef} className="lg:col-span-6">
+          <div id="interactive-demo" ref={sandboxRef} className="scroll-mt-24 lg:col-span-6">
             <div className="relative mx-auto max-w-lg">
               {/* Topic Switcher Pills */}
               <div className="mb-3 flex items-center justify-between gap-2 overflow-x-auto pb-1 text-xs">

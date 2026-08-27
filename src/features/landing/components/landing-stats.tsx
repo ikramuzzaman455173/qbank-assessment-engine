@@ -25,7 +25,7 @@ export function LandingStats() {
   ];
 
   return (
-    <section id="stats" className="py-16 border-b border-border bg-muted/20">
+    <section id="stats" className="scroll-mt-20 py-16 border-b border-border bg-muted/20">
       <div className="container-page">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {highlights.map((item, idx) => {

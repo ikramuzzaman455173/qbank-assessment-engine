@@ -55,6 +55,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setTheme = useCallback((next: Theme) => {
     setThemeState(next);
     window.localStorage.setItem(STORAGE_KEY, next);
+    const resolved = next === "system" ? (systemPrefersDark() ? "dark" : "light") : next;
+    setResolvedTheme(resolved);
+    applyTheme(resolved);
   }, []);
 
   const toggleTheme = useCallback(() => {

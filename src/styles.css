@@ -204,29 +204,18 @@
     outline-offset: 2px;
   }
 
-  /* Circular View Transition Rules inside base layer */
+  /* Circular View Transition Rules for Theme Toggle */
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;
     mix-blend-mode: normal;
-    display: block;
-    position: fixed;
-    inset: 0;
   }
 
-  /* When switching to Light: old dark view is on top so it shrinks inwards */
-  html:not(.dark)::view-transition-old(root) {
-    z-index: 9999;
-  }
-  html:not(.dark)::view-transition-new(root) {
+  ::view-transition-old(root) {
     z-index: 1;
   }
 
-  /* When switching to Dark: new dark view is on top so it expands outwards */
-  html.dark::view-transition-old(root) {
-    z-index: 1;
-  }
-  html.dark::view-transition-new(root) {
+  ::view-transition-new(root) {
     z-index: 9999;
   }
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { flushSync } from "react-dom";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/app/providers/theme-provider";
 import { Button } from "@/components/ui/button";
@@ -31,12 +32,12 @@ export function ThemeToggle() {
       Math.max(y, window.innerHeight - y),
     );
 
-    const isGoingToDark = nextTheme === "dark";
-
     // Start View Transition
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const transition = (document as any).startViewTransition(async () => {
-      setTheme(nextTheme);
+    const transition = (document as any).startViewTransition(() => {
+      flushSync(() => {
+        setTheme(nextTheme);
+      });
     });
 
     transition.ready.then(() => {
@@ -45,31 +46,18 @@ export function ThemeToggle() {
         `circle(${endRadius}px at ${x}px ${y}px)`,
       ];
 
-      if (isGoingToDark) {
-        // Light -> Dark: Dark view expands outward from the button
-        document.documentElement.animate(
-          {
-            clipPath: clipPath,
-          },
-          {
-            duration: 450,
-            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-            pseudoElement: "::view-transition-new(root)",
-          },
-        );
-      } else {
-        // Dark -> Light: Dark view shrinks inward into the sun button (revealing the bright canvas underneath)
-        document.documentElement.animate(
-          {
-            clipPath: [...clipPath].reverse(),
-          },
-          {
-            duration: 450,
-            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-            pseudoElement: "::view-transition-old(root)",
-          },
-        );
-      }
+      // Expand the new theme outward from the button in a silky-smooth circular ripple
+      document.documentElement.animate(
+        {
+          clipPath,
+        },
+        {
+          duration: 420,
+          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          pseudoElement: "::view-transition-new(root)",
+          fill: "forwards",
+        },
+      );
     });
   };
 

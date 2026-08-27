@@ -203,6 +203,32 @@
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
   }
+
+  /* Circular View Transition Rules inside base layer */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+    display: block;
+    position: fixed;
+    inset: 0;
+  }
+
+  /* When switching to Light: old dark view is on top so it shrinks inwards */
+  html:not(.dark)::view-transition-old(root) {
+    z-index: 9999;
+  }
+  html:not(.dark)::view-transition-new(root) {
+    z-index: 1;
+  }
+
+  /* When switching to Dark: new dark view is on top so it expands outwards */
+  html.dark::view-transition-old(root) {
+    z-index: 1;
+  }
+  html.dark::view-transition-new(root) {
+    z-index: 9999;
+  }
 }
 
 @utility container-page {
@@ -227,34 +253,11 @@
 }
 
 @utility ticket-notch-left {
+  -webkit-mask-image: radial-gradient(circle at 0% 50%, transparent 12px, black 12.5px);
   mask-image: radial-gradient(circle at 0% 50%, transparent 12px, black 12.5px);
 }
 
 @utility ticket-notch-right {
+  -webkit-mask-image: radial-gradient(circle at 100% 50%, transparent 12px, black 12.5px);
   mask-image: radial-gradient(circle at 100% 50%, transparent 12px, black 12.5px);
 }
-
-/* Circular View Transition for Theme Switcher */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-/* Light Mode Transition (Dark to Light: old view shrinks on top) */
-::view-transition-old(root) {
-  z-index: 9999;
-}
-::view-transition-new(root) {
-  z-index: 1;
-}
-
-/* Dark Mode Transition (Light to Dark: new dark view expands on top) */
-.dark::view-transition-old(root) {
-  z-index: 1;
-}
-.dark::view-transition-new(root) {
-  z-index: 9999;
-}
-
-

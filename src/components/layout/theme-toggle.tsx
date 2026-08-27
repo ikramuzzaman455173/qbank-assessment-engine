@@ -45,20 +45,31 @@ export function ThemeToggle() {
         `circle(${endRadius}px at ${x}px ${y}px)`,
       ];
 
-      // Light -> Dark: Dark view expands from the button corner
-      // Dark -> Light: Dark view shrinks into the button corner revealing the light mode
-      document.documentElement.animate(
-        {
-          clipPath: isGoingToDark ? clipPath : [...clipPath].reverse(),
-        },
-        {
-          duration: 420,
-          easing: "ease-in-out",
-          pseudoElement: isGoingToDark
-            ? "::view-transition-new(root)"
-            : "::view-transition-old(root)",
-        },
-      );
+      if (isGoingToDark) {
+        // Light -> Dark: Dark view expands outward from the button
+        document.documentElement.animate(
+          {
+            clipPath: clipPath,
+          },
+          {
+            duration: 450,
+            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+            pseudoElement: "::view-transition-new(root)",
+          },
+        );
+      } else {
+        // Dark -> Light: Dark view shrinks inward into the sun button (revealing the bright canvas underneath)
+        document.documentElement.animate(
+          {
+            clipPath: [...clipPath].reverse(),
+          },
+          {
+            duration: 450,
+            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+            pseudoElement: "::view-transition-old(root)",
+          },
+        );
+      }
     });
   };
 
@@ -72,9 +83,9 @@ export function ThemeToggle() {
       className="relative overflow-hidden cursor-pointer transition-transform hover:scale-105 active:scale-95"
     >
       {resolvedTheme === "dark" ? (
-        <Sun className="size-4 rotate-0 scale-100 transition-all text-amber-400" aria-hidden="true" />
+        <Sun className="size-4 rotate-0 scale-100 transition-all duration-300 text-amber-400" aria-hidden="true" />
       ) : (
-        <Moon className="size-4 rotate-0 scale-100 transition-all text-slate-700 dark:text-slate-200" aria-hidden="true" />
+        <Moon className="size-4 rotate-0 scale-100 transition-all duration-300 text-slate-700 dark:text-slate-200" aria-hidden="true" />
       )}
     </Button>
   );

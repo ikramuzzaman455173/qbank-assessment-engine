@@ -214,3 +214,23 @@
     padding-inline: 1.5rem;
   }
 }
+
+@utility bg-canvas-dots {
+  background-image: radial-gradient(oklch(0.5 0 0 / 15%) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@utility bg-canvas-grid {
+  background-image: linear-gradient(to right, oklch(0.5 0 0 / 8%) 1px, transparent 1px),
+                    linear-gradient(to bottom, oklch(0.5 0 0 / 8%) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+@utility ticket-notch-left {
+  mask-image: radial-gradient(circle at 0% 50%, transparent 12px, black 12.5px);
+}
+
+@utility ticket-notch-right {
+  mask-image: radial-gradient(circle at 100% 50%, transparent 12px, black 12.5px);
+}
+

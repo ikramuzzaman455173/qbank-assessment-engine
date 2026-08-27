@@ -52,42 +52,68 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Needs Your Attention</CardTitle>
-        <CardDescription>Recommended areas to focus your practice.</CardDescription>
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base font-semibold">Needs Your Attention</CardTitle>
+              <span className="text-[11px] font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20">
+                {areasToFocus.length} {areasToFocus.length === 1 ? "Topic" : "Topics"}
+              </span>
+            </div>
+            <CardDescription>Targeted focus areas where your accuracy is below 70%.</CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {areasToFocus.map((topic, index) => (
-            <div 
-              key={index}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-lg border p-5 shadow-sm transition-all hover:shadow-md hover:border-primary/50"
-            >
-              <div className="absolute top-0 right-0 w-16 h-16 bg-destructive/10 rounded-bl-full -z-10 transition-transform group-hover:scale-110" />
-              
-              <div>
-                <div className="flex items-center gap-2 text-destructive mb-2">
-                  <AlertCircle className="w-4 h-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider">Weak Topic</span>
+          {areasToFocus.map((topic, index) => {
+            const acc = Math.round(topic.accuracy);
+            return (
+              <div 
+                key={index}
+                className="group relative flex flex-col justify-between overflow-hidden rounded-xl border bg-card/60 p-4 shadow-sm transition-all hover:shadow-md hover:border-primary/50"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Review Priority</span>
+                    </div>
+                    <span className="text-xs font-bold text-foreground bg-muted px-2 py-0.5 rounded">
+                      {acc}% Acc
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-sm line-clamp-1 text-foreground" title={topic.topic}>
+                      {topic.topic}
+                    </h4>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {topic.attempts} questions answered in this topic
+                    </p>
+                  </div>
+
+                  {/* Visual Progress Bar */}
+                  <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className="bg-amber-500 h-1.5 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.max(acc, 5)}%` }}
+                    />
+                  </div>
                 </div>
-                <h4 className="font-semibold text-base line-clamp-1" title={topic.topic}>
-                  {topic.topic}
-                </h4>
-                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                  Your accuracy is {Math.round(topic.accuracy)}% across {topic.attempts} attempts.
-                </p>
+                
+                <div className="mt-4 pt-3 border-t">
+                  <Button variant="ghost" size="sm" className="w-full justify-between p-0 h-8 font-medium text-xs text-primary hover:bg-transparent" asChild>
+                    <Link to="/practice/config" search={{ mode: "topic", topic: topic.topic }}>
+                      <span>Start Targeted Practice</span>
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
-              
-              <div className="mt-4 pt-4 border-t border-border/50">
-                <Button variant="ghost" className="w-full justify-between p-0 h-auto font-medium hover:bg-transparent hover:text-primary" asChild>
-                  <Link to="/practice/config" search={{ mode: "topic", topic: topic.topic }}>
-                    Practice Now
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </CardContent>
     </Card>

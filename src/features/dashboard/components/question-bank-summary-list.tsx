@@ -53,53 +53,65 @@ export function QuestionBankSummaryList({ banks, loading }: QuestionBankSummaryL
 
   return (
     <Card className="col-span-1 lg:col-span-2">
-      <CardHeader>
-        <CardTitle>Your Question Banks</CardTitle>
-        <CardDescription>Overview of your study materials and progress.</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between pb-3">
+        <div className="space-y-1">
+          <CardTitle className="text-base font-semibold">Your Question Banks</CardTitle>
+          <CardDescription>Overview of your question repositories and readiness.</CardDescription>
+        </div>
+        <Button variant="outline" size="sm" className="text-xs h-8" asChild>
+          <Link to="/question-banks">
+            View All ({banks.length})
+          </Link>
+        </Button>
       </CardHeader>
       <CardContent className="grid gap-4 sm:grid-cols-2">
-        {banks.map((bank) => (
-          <div 
-            key={bank.id} 
-            className="group flex flex-col justify-between border rounded-lg p-4 hover:border-primary/50 hover:bg-muted/30 transition-colors"
-          >
-            <div>
-              <div className="flex items-start justify-between">
-                <h4 className="font-semibold text-lg line-clamp-1 flex-1 pr-4" title={bank.name}>
-                  {bank.name}
-                </h4>
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary shrink-0">
-                  <FolderHeart className="w-4 h-4" />
+        {banks.map((bank) => {
+          const acc = Math.round(bank.avg_accuracy || 0);
+          return (
+            <div 
+              key={bank.id} 
+              className="group flex flex-col justify-between rounded-xl border bg-card/60 p-4 hover:border-primary/50 hover:bg-muted/30 transition-all shadow-sm"
+            >
+              <div>
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className="font-semibold text-sm line-clamp-1 flex-1 text-foreground group-hover:text-primary transition-colors" title={bank.name}>
+                    {bank.name}
+                  </h4>
+                  <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary shrink-0">
+                    <FolderHeart className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+                
+                <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5 font-medium text-foreground">
+                    <FileQuestion className="w-3.5 h-3.5 text-primary" />
+                    <span>{bank.question_count} Questions</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>{acc}% Accuracy</span>
+                  </div>
                 </div>
               </div>
               
-              <div className="mt-4 grid grid-cols-2 gap-y-2 gap-x-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <FileQuestion className="w-4 h-4" />
-                  <span>{bank.question_count} Qs</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>{Math.round(bank.avg_accuracy)}% Acc.</span>
+              <div className="mt-4 pt-3 border-t flex items-center justify-between text-xs">
+                <span className="text-[11px] text-muted-foreground">
+                  {bank.last_activity 
+                    ? `Active ${format(parseISO(bank.last_activity), "MMM d")}`
+                    : "Ready to practice"}
+                </span>
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm" className="h-7 text-xs px-2 hover:text-primary" asChild>
+                    <Link to="/question-banks/$bankId" params={{ bankId: bank.id }}>
+                      View
+                      <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
-            
-            <div className="mt-4 pt-4 border-t flex items-center justify-between text-xs text-muted-foreground">
-              <span>
-                {bank.last_activity 
-                  ? `Active ${format(parseISO(bank.last_activity), "MMM d")}`
-                  : "No activity yet"}
-              </span>
-              <Button variant="ghost" size="sm" className="h-8 group-hover:text-primary px-2" asChild>
-                <Link to="/question-banks/$bankId" params={{ bankId: bank.id }}>
-                  View Bank
-                  <ChevronRight className="w-4 h-4 ml-1" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </CardContent>
     </Card>
   );

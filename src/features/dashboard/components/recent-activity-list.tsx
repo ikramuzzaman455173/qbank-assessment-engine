@@ -55,53 +55,55 @@ export function RecentActivityList({ activities, loading }: RecentActivityListPr
         <CardTitle>Recent Activity</CardTitle>
         <CardDescription>Your latest practice sessions and tests.</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {activities.map((activity) => {
           const isPractice = activity.mode === "practice";
           const Icon = isPractice ? Target : CheckCircle2;
-          const iconColor = isPractice ? "text-blue-500 bg-blue-500/10" : "text-green-500 bg-green-500/10";
-          
+          const score = Math.round(activity.percentage || 0);
+          const isGoodScore = score >= 75;
+          const isPassScore = score >= 50;
+
+          const badgeStyle = isGoodScore 
+            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" 
+            : isPassScore 
+            ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" 
+            : "bg-destructive/10 text-destructive border-destructive/20";
+
           return (
-            <div key={activity.id} className="flex items-start justify-between">
-              <div className="flex items-start gap-4">
-                <div className={`p-2 rounded-full ${iconColor}`}>
+            <Link 
+              key={activity.id} 
+              to="/attempts/$attemptId/result" 
+              params={{ attemptId: activity.id }}
+              className="flex items-center justify-between p-3 rounded-lg border border-transparent hover:border-border hover:bg-muted/50 transition-all group"
+            >
+              <div className="flex items-start gap-3 min-w-0 pr-2">
+                <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${isPractice ? "bg-blue-500/10 text-blue-600 dark:text-blue-400" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"}`}>
                   <Icon className="w-4 h-4" />
                 </div>
-                <div>
-                  <h4 className="text-sm font-semibold line-clamp-1">{activity.title}</h4>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                <div className="min-w-0">
+                  <h4 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors" title={activity.title}>
+                    {activity.title}
+                  </h4>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mt-1">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {format(parseISO(activity.submitted_at), "MMM d, h:mm a")}
                     </span>
                     <span>•</span>
                     <span>
-                      {activity.answered_questions} / {activity.total_questions} Qs
+                      {activity.answered_questions}/{activity.total_questions} Qs
                     </span>
-                  </div>
-                  <div className="mt-2 flex gap-2">
-                    <Badge variant="outline" className="text-[10px] uppercase">
-                      {isPractice ? activity.practice_mode || "Practice" : "Test"}
-                    </Badge>
-                    <Badge 
-                      variant={activity.percentage && activity.percentage >= 70 ? "secondary" : "destructive"} 
-                      className="text-[10px]"
-                    >
-                      {Math.round(activity.percentage || 0)}%
-                    </Badge>
                   </div>
                 </div>
               </div>
-              <div className="flex-shrink-0">
-                {/* Depending on routing, we might link to a review page later. 
-                    For now, we just show a subtle button indicating action */}
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" asChild>
-                  <Link to="/">
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant="outline" className={`text-xs font-semibold ${badgeStyle}`}>
+                  {score}%
+                </Badge>
+                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
               </div>
-            </div>
+            </Link>
           );
         })}
       </CardContent>

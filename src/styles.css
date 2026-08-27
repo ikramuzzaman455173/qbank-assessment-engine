@@ -211,12 +211,20 @@
     mix-blend-mode: normal;
   }
 
-  ::view-transition-old(root) {
+  /* Light -> Dark: New dark view is on top and expands outward */
+  .dark::view-transition-old(root) {
     z-index: 1;
   }
-
-  ::view-transition-new(root) {
+  .dark::view-transition-new(root) {
     z-index: 9999;
+  }
+
+  /* Dark -> Light: Old dark view is on top and shrinks inward into the sun */
+  html:not(.dark)::view-transition-old(root) {
+    z-index: 9999;
+  }
+  html:not(.dark)::view-transition-new(root) {
+    z-index: 1;
   }
 }
 

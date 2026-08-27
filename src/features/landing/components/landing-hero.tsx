@@ -132,23 +132,33 @@ export function LandingHero() {
   };
 
   return (
-    <section className="relative overflow-hidden py-16 md:py-24 border-b border-border bg-background">
-      <div className="container-page">
+    <section className="relative overflow-hidden py-16 md:py-24 border-b border-border bg-canvas-dots bg-background">
+      {/* Subtle ambient light */}
+      <div className="pointer-events-none absolute -top-24 left-1/4 size-96 rounded-full bg-primary/5 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 right-1/4 size-96 rounded-full bg-primary/5 blur-3xl" />
+
+      <div className="container-page relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-          {/* Left Column: Clear, Focused Hero Copy */}
+          {/* Left Column: Hero Copy with Marker Highlights & Playful Badges */}
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/60 px-3.5 py-1 text-xs font-medium text-muted-foreground shadow-2xs">
+            <div className="inline-flex items-center gap-2 rounded-full border border-dashed border-primary/50 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground shadow-2xs rotate-[-1deg] hover:rotate-0 transition-transform">
+              <span className="flex size-2 rounded-full bg-emerald-500 animate-ping" />
               <Sparkles className="size-3.5 text-primary" />
               <span>Intelligent Exam Prep & Question Bank</span>
             </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.12]">
-              Master Any Subject with{" "}
-              <span className="text-primary underline decoration-primary/30 decoration-2 underline-offset-4">
-                Smart Questions
-              </span>{" "}
-              & Timed Tests.
-            </h1>
+            <div className="relative">
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.14]">
+                Master Any Subject with{" "}
+                <span className="relative inline-block px-1.5 py-0.5 rounded bg-primary/10 border-b-2 border-dashed border-primary">
+                  Smart Questions
+                  <span className="absolute -top-3.5 -right-6 hidden sm:inline-block rotate-6 rounded-md bg-amber-400 dark:bg-amber-500 text-amber-950 font-mono text-[10px] font-bold px-1.5 py-0.5 shadow-xs uppercase tracking-wider">
+                    AI Powered ✨
+                  </span>
+                </span>{" "}
+                & Timed Tests.
+              </h1>
+            </div>
 
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
               Transform PDFs and study materials into interactive question banks in seconds.
@@ -156,7 +166,7 @@ export function LandingHero() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-              <Button asChild size="lg" className="w-full sm:w-auto gap-2 shadow-xs font-medium">
+              <Button asChild size="lg" className="w-full sm:w-auto gap-2 shadow-sm font-medium hover:scale-105 transition-transform">
                 <Link to={ROUTES.auth}>
                   <span>Get Started Free</span>
                   <ArrowRight className="size-4" />
@@ -166,33 +176,33 @@ export function LandingHero() {
                 variant="outline"
                 size="lg"
                 onClick={triggerSandboxAction}
-                className="w-full sm:w-auto gap-2 cursor-pointer"
+                className="w-full sm:w-auto gap-2 cursor-pointer border-dashed hover:border-solid hover:bg-card"
               >
                 <Play className="size-3.5 fill-current" />
                 <span>Try Live Demo</span>
               </Button>
             </div>
 
-            <div className="flex items-center justify-center lg:justify-start gap-6 pt-2 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-500" />
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 text-xs text-muted-foreground">
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border bg-card px-2.5 py-1 rotate-[-1deg] shadow-2xs">
+                <CheckCircle2 className="size-3.5 text-emerald-500" />
                 <span>PDF AI Ingestion</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-500" />
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border bg-card px-2.5 py-1 rotate-[1deg] shadow-2xs">
+                <CheckCircle2 className="size-3.5 text-emerald-500" />
                 <span>Timed Exam Mode</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-500" />
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border bg-card px-2.5 py-1 rotate-[-1deg] shadow-2xs">
+                <CheckCircle2 className="size-3.5 text-emerald-500" />
                 <span>Topic Diagnostics</span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Clean Live Interactive Quiz Card */}
+          {/* Right Column: Live Interactive Quiz Desk */}
           <div id="interactive-demo" ref={sandboxRef} className="scroll-mt-24 lg:col-span-6">
             <div className="mx-auto max-w-lg space-y-3">
-              {/* Topic Selector Tabs */}
+              {/* Topic Selector Tabs with Dashed Style */}
               <div className="flex items-center justify-between gap-2 overflow-x-auto text-xs pb-1">
                 <div className="flex items-center gap-1.5">
                   {DEMO_QUESTIONS.map((q, idx) => (
@@ -201,10 +211,10 @@ export function LandingHero() {
                       type="button"
                       onClick={() => handleTopicSwitch(idx)}
                       className={cn(
-                        "px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer shrink-0",
+                        "px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer shrink-0 border",
                         currentIdx === idx
-                          ? "bg-primary text-primary-foreground font-semibold shadow-2xs"
-                          : "bg-muted/70 text-muted-foreground hover:text-foreground hover:bg-muted",
+                          ? "bg-primary text-primary-foreground font-semibold border-primary shadow-2xs scale-105"
+                          : "border-dashed border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted",
                       )}
                     >
                       {q.topic}
@@ -212,26 +222,28 @@ export function LandingHero() {
                   ))}
                 </div>
 
-                <span className="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-0.5 rounded border border-border shrink-0">
+                <span className="text-xs text-muted-foreground font-mono bg-card px-2 py-0.5 rounded border border-dashed border-border shrink-0">
                   Q{currentIdx + 1}/{DEMO_QUESTIONS.length}
                 </span>
               </div>
 
-              {/* Clean Quiz Card */}
-              <Card className="border border-border bg-card shadow-sm rounded-xl overflow-hidden">
-                <CardHeader className="pb-3 border-b border-border bg-muted/20">
+              {/* Quiz Desk Card with Binder Header & Dashed Borders */}
+              <Card className="border-2 border-dashed border-border bg-card/95 shadow-md rounded-xl overflow-hidden">
+                <div className="h-1.5 bg-gradient-to-r from-primary/30 via-primary/70 to-primary/30 w-full" />
+
+                <CardHeader className="pb-3 border-b border-dashed border-border/80 bg-muted/30">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs font-normal">
+                      <Badge variant="secondary" className="text-xs font-normal border border-border">
                         {activeQ.topic}
                       </Badge>
                       <Badge
                         variant="outline"
                         className={cn(
-                          "text-xs font-normal",
-                          activeQ.difficulty === "Easy" && "text-emerald-600 dark:text-emerald-400",
-                          activeQ.difficulty === "Medium" && "text-amber-600 dark:text-amber-400",
-                          activeQ.difficulty === "Hard" && "text-red-600 dark:text-red-400",
+                          "text-xs font-normal border-dashed",
+                          activeQ.difficulty === "Easy" && "text-emerald-600 dark:text-emerald-400 border-emerald-500/40 bg-emerald-500/5",
+                          activeQ.difficulty === "Medium" && "text-amber-600 dark:text-amber-400 border-amber-500/40 bg-amber-500/5",
+                          activeQ.difficulty === "Hard" && "text-red-600 dark:text-red-400 border-red-500/40 bg-red-500/5",
                         )}
                       >
                         {activeQ.difficulty}
@@ -255,10 +267,10 @@ export function LandingHero() {
                       const isSelected = selectedOption === opt.id;
                       const isThisCorrect = opt.id === activeQ.correct;
 
-                      let stateStyle = "border-border/80 bg-background hover:bg-muted/40 hover:border-foreground/30";
+                      let stateStyle = "border-border/80 bg-background hover:bg-muted/40 hover:border-foreground/40 hover:translate-x-1";
                       if (isAnswered) {
                         if (isThisCorrect) {
-                          stateStyle = "border-emerald-500 bg-emerald-500/10 text-foreground font-medium";
+                          stateStyle = "border-emerald-500 bg-emerald-500/10 text-foreground font-medium shadow-2xs";
                         } else if (isSelected && !isThisCorrect) {
                           stateStyle = "border-red-500 bg-red-500/10 text-foreground";
                         } else {
@@ -307,8 +319,8 @@ export function LandingHero() {
                       className={cn(
                         "p-3 rounded-lg border text-xs sm:text-sm animate-in fade-in-50 duration-200",
                         isCorrect
-                          ? "bg-emerald-500/5 border-emerald-500/30 text-emerald-950 dark:text-emerald-200"
-                          : "bg-red-500/5 border-red-500/30 text-red-950 dark:text-red-200",
+                          ? "bg-emerald-500/5 border-emerald-500/40 text-emerald-950 dark:text-emerald-200"
+                          : "bg-red-500/5 border-red-500/40 text-red-950 dark:text-red-200",
                       )}
                     >
                       <div className="flex items-center justify-between mb-1 font-semibold">
@@ -329,14 +341,14 @@ export function LandingHero() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setShowExplanation((prev) => !prev)}
-                          className="h-6 px-2 text-xs"
+                          className="h-6 px-2 text-xs hover:bg-muted"
                         >
                           <HelpCircle className="size-3.5 mr-1" />
                           {showExplanation ? "Hide" : "Show"} Solution
                         </Button>
                       </div>
                       {showExplanation && (
-                        <p className="text-muted-foreground text-xs leading-relaxed pt-1.5 border-t border-border/40 mt-1">
+                        <p className="text-muted-foreground text-xs leading-relaxed pt-2 border-t border-dashed border-border/60 mt-1">
                           {activeQ.explanation}
                         </p>
                       )}
@@ -344,7 +356,7 @@ export function LandingHero() {
                   )}
 
                   {/* Controls */}
-                  <div className="flex items-center justify-between pt-2 border-t border-border/60">
+                  <div className="flex items-center justify-between pt-2 border-t border-dashed border-border/70">
                     <Button
                       variant="ghost"
                       size="sm"

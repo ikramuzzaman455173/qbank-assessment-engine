@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, FileUp, LineChart, PlayCircle } from "lucide-react";
+import { CheckCircle2, FileUp, LineChart, PlayCircle, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -75,13 +75,14 @@ export function LandingHowItWorks() {
   if (!activeStep) return null;
 
   return (
-    <section id="how-it-works" className="scroll-mt-20 py-20 border-b border-border bg-background">
+    <section id="how-it-works" className="scroll-mt-20 py-20 border-b border-border bg-canvas-grid bg-background relative">
       <div className="container-page space-y-12">
-        {/* Clean Section Header */}
+        {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <Badge variant="outline" className="text-xs font-medium uppercase tracking-wider">
-            Simple 3-Step Flow
-          </Badge>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-primary/50 bg-muted/60 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary shadow-2xs rotate-[1deg]">
+            <Sparkles className="size-3 text-primary" />
+            <span>Simple 3-Step Flow</span>
+          </div>
           <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
             How Knowledge Canvas Works
           </h2>
@@ -92,8 +93,10 @@ export function LandingHowItWorks() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Left Column: Interactive Step Selectors */}
-          <div className="lg:col-span-5 flex flex-col justify-between gap-3">
+          {/* Left Column: Interactive Step Selectors with Dashed Connector Line */}
+          <div className="lg:col-span-5 flex flex-col justify-between gap-4 relative">
+            <div className="hidden sm:block absolute left-8 top-10 bottom-10 w-0.5 border-l-2 border-dashed border-border/80 z-0" />
+
             {STEPS.map((step) => {
               const Icon = step.icon;
               const isActive = step.id === activeStepId;
@@ -104,24 +107,24 @@ export function LandingHowItWorks() {
                   type="button"
                   onClick={() => setActiveStepId(step.id)}
                   className={cn(
-                    "text-left p-5 rounded-xl border transition-all cursor-pointer flex items-start gap-4",
+                    "text-left p-5 rounded-xl border-2 transition-all duration-300 cursor-pointer flex items-start gap-4 relative z-10",
                     isActive
-                      ? "border-primary bg-card shadow-xs"
-                      : "border-border/80 bg-muted/20 hover:bg-muted/50 hover:border-border text-muted-foreground",
+                      ? "border-primary bg-card shadow-md -rotate-1 scale-[1.02]"
+                      : "border-dashed border-border bg-card/70 hover:bg-card hover:border-solid hover:border-border text-muted-foreground",
                   )}
                 >
                   <div
                     className={cn(
-                      "flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors",
+                      "flex size-11 shrink-0 items-center justify-center rounded-lg transition-all font-mono font-bold shadow-2xs",
                       isActive
-                        ? "bg-primary text-primary-foreground font-semibold"
+                        ? "bg-primary text-primary-foreground scale-110"
                         : "bg-muted text-muted-foreground",
                     )}
                   >
                     <Icon className="size-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className={cn("text-base font-semibold", isActive ? "text-foreground" : "text-muted-foreground")}>
+                    <h3 className={cn("text-base font-bold", isActive ? "text-foreground" : "text-muted-foreground")}>
                       {step.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -133,15 +136,15 @@ export function LandingHowItWorks() {
             })}
           </div>
 
-          {/* Right Column: Clean Preview Card */}
+          {/* Right Column: Clean Preview Card with Dashed Border */}
           <div className="lg:col-span-7">
-            <Card className="h-full border border-border bg-card shadow-xs flex flex-col justify-between overflow-hidden rounded-xl">
-              <CardHeader className="border-b border-border bg-muted/20 pb-4">
+            <Card className="h-full border-2 border-dashed border-border bg-card/95 shadow-md flex flex-col justify-between overflow-hidden rounded-xl">
+              <CardHeader className="border-b border-dashed border-border/80 bg-muted/30 pb-4">
                 <div className="flex items-center justify-between">
-                  <Badge variant="secondary" className="font-mono text-xs">
+                  <Badge variant="secondary" className="font-mono text-xs border border-border">
                     {activeStep.badge}
                   </Badge>
-                  <span className="text-xs text-muted-foreground">Workflow Overview</span>
+                  <span className="text-xs text-muted-foreground font-mono">Stage Overview</span>
                 </div>
                 <CardTitle className="text-xl font-bold pt-2 text-foreground">
                   {activeStep.previewTitle}
@@ -153,22 +156,22 @@ export function LandingHowItWorks() {
 
               <CardContent className="p-6 space-y-6 flex-1 flex flex-col justify-between">
                 <div className="space-y-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block font-mono">
                     Core Benefits:
                   </span>
                   <div className="space-y-2.5">
                     {activeStep.previewPoints.map((pt, i) => (
-                      <div key={i} className="flex items-start gap-2.5 text-sm">
+                      <div key={i} className="flex items-start gap-2.5 text-sm p-2 rounded-md bg-muted/20 border border-border/60">
                         <CheckCircle2 className="size-4.5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span className="text-foreground/90">{pt}</span>
+                        <span className="text-foreground/90 font-medium">{pt}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-border">
+                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-dashed border-border/80">
                   {activeStep.mockStats.map((st, i) => (
-                    <div key={i} className="rounded-lg border border-border bg-muted/30 p-3">
+                    <div key={i} className="rounded-lg border border-dashed border-border bg-muted/40 p-3">
                       <span className="text-xs text-muted-foreground block">{st.label}</span>
                       <span className="text-lg font-bold font-mono text-foreground block pt-0.5">
                         {st.value}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, HelpCircle, MessageSquare } from "lucide-react";
+import { ChevronDown, HelpCircle, MessageSquare, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -48,13 +48,14 @@ export function LandingFAQ() {
   };
 
   return (
-    <section id="faq" className="scroll-mt-20 py-20 border-b border-border bg-muted/20">
+    <section id="faq" className="scroll-mt-20 py-20 border-b border-border bg-muted/30 relative">
       <div className="container-page max-w-3xl space-y-10">
         {/* Section Header */}
         <div className="text-center max-w-xl mx-auto space-y-3">
-          <Badge variant="outline" className="text-xs font-medium uppercase tracking-wider">
-            FAQ
-          </Badge>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-primary/50 bg-background px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary shadow-2xs rotate-[1.5deg]">
+            <HelpCircle className="size-3 text-primary" />
+            <span>Got Questions?</span>
+          </div>
           <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
             Frequently Asked Questions
           </h2>
@@ -63,7 +64,7 @@ export function LandingFAQ() {
           </p>
         </div>
 
-        {/* Clean Accordion List */}
+        {/* Clean Accordion List with Dashed Borders */}
         <div className="space-y-3">
           {FAQS.map((faq) => {
             const isOpen = openIds.includes(faq.id);
@@ -71,8 +72,10 @@ export function LandingFAQ() {
               <div
                 key={faq.id}
                 className={cn(
-                  "rounded-xl border transition-all duration-200 overflow-hidden bg-card",
-                  isOpen ? "border-foreground/30 shadow-2xs" : "border-border hover:border-foreground/20",
+                  "rounded-xl border-2 transition-all duration-200 overflow-hidden bg-card",
+                  isOpen
+                    ? "border-primary/50 shadow-xs"
+                    : "border-dashed border-border hover:border-foreground/30",
                 )}
               >
                 <button
@@ -94,7 +97,7 @@ export function LandingFAQ() {
                 </button>
 
                 {isOpen && (
-                  <div className="px-4 sm:px-5 pb-5 pt-1 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border/60 animate-in fade-in-50 duration-200">
+                  <div className="px-4 sm:px-5 pb-5 pt-1 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-dashed border-border/80 animate-in fade-in-50 duration-200">
                     {faq.answer}
                   </div>
                 )}
@@ -103,13 +106,13 @@ export function LandingFAQ() {
           })}
         </div>
 
-        {/* Clean Direct Contact Callout */}
-        <div className="p-5 rounded-xl border border-border bg-card flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        {/* Direct Help Callout */}
+        <div className="p-5 rounded-xl border-2 border-dashed border-border bg-card flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="space-y-0.5">
             <h4 className="font-semibold text-sm text-foreground">Have a specific question?</h4>
             <p className="text-xs text-muted-foreground">Feel free to reach out to the developer directly.</p>
           </div>
-          <Button variant="outline" size="sm" asChild className="gap-1.5 shadow-2xs">
+          <Button variant="outline" size="sm" asChild className="border-dashed gap-1.5 shadow-2xs hover:border-solid">
             <a href="https://github.com/ikramuzzaman455173" target="_blank" rel="noopener noreferrer">
               <MessageSquare className="size-3.5" />
               <span>Contact Developer</span>

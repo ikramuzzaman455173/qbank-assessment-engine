@@ -15,13 +15,13 @@ import {
   Users,
 } from "lucide-react";
 
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes";
 import { LandingFooter } from "@/features/landing/components/landing-footer";
-import { LandingHeader } from "@/features/landing/components/landing-header";
 
 export const Route = createFileRoute("/terms")({
   component: TermsOfServicePage,
@@ -55,19 +55,20 @@ export function TermsOfServicePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground scroll-smooth">
-      <LandingHeader />
-
-      <main className="flex-1 py-12 md:py-16">
+      <main className="flex-1 py-8 md:py-12">
         <div className="container-page max-w-4xl space-y-10">
-          {/* Top Navigation & Date */}
-          <div className="flex items-center justify-between">
+          {/* Top Navigation Bar (Headerless, clean) */}
+          <div className="flex items-center justify-between border-b border-border/60 pb-4">
             <Button variant="ghost" size="sm" asChild className="gap-1.5 text-muted-foreground hover:text-foreground">
               <Link to={ROUTES.landing}>
                 <ArrowLeft className="size-4" />
                 <span>Back to Home</span>
               </Link>
             </Button>
-            <span className="text-xs text-muted-foreground">Effective Date: {lastUpdated}</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground hidden sm:inline">Effective Date: {lastUpdated}</span>
+              <ThemeToggle />
+            </div>
           </div>
 
           {/* Header Banner */}

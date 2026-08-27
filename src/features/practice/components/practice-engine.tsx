@@ -186,9 +186,10 @@ export function PracticeEngine({
         handleSelectOption(key);
         return;
       }
-      if (numberKeys[e.key]) {
+      const mappedNumber = numberKeys[e.key];
+      if (mappedNumber) {
         e.preventDefault();
-        handleSelectOption(numberKeys[e.key]);
+        handleSelectOption(mappedNumber);
         return;
       }
 

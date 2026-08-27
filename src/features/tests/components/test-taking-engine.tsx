@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Bookmark, Send, Maximize, Minimize2, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Test, Attempt, TestQuestion, AttemptAnswer } from "@/types/domain";
+import { Test, Attempt, TestQuestion, AttemptAnswer, CorrectAnswer } from "@/types/domain";
 import { useSaveAnswer } from "../api/use-save-answer";
 import { useSubmitAttempt } from "../api/use-submit-attempt";
 import { QuestionPalette } from "./question-palette";
@@ -55,15 +55,16 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
 
   const handleSelectOption = useCallback((optionId: string) => {
     if (!currentQuestion) return;
+    const val = optionId as CorrectAnswer;
     // Optimistic update
     const existing = answers.find(a => a.testQuestionId === currentQuestion.id);
     const newAnswer: AttemptAnswer = existing 
-      ? { ...existing, selectedAnswer: optionId, answeredAt: new Date().toISOString() }
+      ? { ...existing, selectedAnswer: val, answeredAt: new Date().toISOString() }
       : { 
           id: `temp-${Date.now()}`, 
           attemptId: attempt.id, 
           testQuestionId: currentQuestion.id, 
-          selectedAnswer: optionId, 
+          selectedAnswer: val, 
           isCorrect: null, 
           isMarkedForReview: false, 
           answeredAt: new Date().toISOString() 
@@ -82,7 +83,7 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
     saveAnswerMutation.mutate({
       attemptId: attempt.id,
       testQuestionId: currentQuestion.id,
-      selectedAnswer: optionId,
+      selectedAnswer: val,
       isMarkedForReview: newAnswer.isMarkedForReview
     });
   }, [currentQuestion, answers, attempt.id, saveAnswerMutation]);
@@ -174,9 +175,10 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
         handleSelectOption(key);
         return;
       }
-      if (numberKeys[e.key]) {
+      const mappedNumber = numberKeys[e.key];
+      if (mappedNumber) {
         e.preventDefault();
-        handleSelectOption(numberKeys[e.key]);
+        handleSelectOption(mappedNumber);
         return;
       }
 

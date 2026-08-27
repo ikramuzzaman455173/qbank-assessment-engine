@@ -34,6 +34,20 @@ export function ThemeToggle() {
 
     const isGoingToDark = nextTheme === "dark";
 
+    // Clean up any stale animations from previous transitions before starting
+    if (typeof document.getAnimations === "function") {
+      document.getAnimations().forEach((a) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const pseudo = (a.effect as any)?.pseudoElement;
+        if (
+          pseudo === "::view-transition-new(root)" ||
+          pseudo === "::view-transition-old(root)"
+        ) {
+          a.cancel();
+        }
+      });
+    }
+
     // Start View Transition
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transition = (document as any).startViewTransition(() => {
@@ -48,14 +62,17 @@ export function ThemeToggle() {
         `circle(${endRadius}px at ${x}px ${y}px)`,
       ];
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let anim: any = null;
+
       if (isGoingToDark) {
         // Light -> Dark: Dark view expands outward from the moon button
-        document.documentElement.animate(
+        anim = document.documentElement.animate(
           {
             clipPath: clipPath,
           },
           {
-            duration: 450,
+            duration: 400,
             easing: "cubic-bezier(0.4, 0, 0.2, 1)",
             pseudoElement: "::view-transition-new(root)",
             fill: "forwards",
@@ -63,18 +80,26 @@ export function ThemeToggle() {
         );
       } else {
         // Dark -> Light: Old dark view smoothly shrinks inward into the sun button
-        document.documentElement.animate(
+        anim = document.documentElement.animate(
           {
             clipPath: [...clipPath].reverse(),
           },
           {
-            duration: 450,
+            duration: 400,
             easing: "cubic-bezier(0.4, 0, 0.2, 1)",
             pseudoElement: "::view-transition-old(root)",
             fill: "forwards",
           },
         );
       }
+
+      // Once the transition completes, cancel the forwards-fill animation
+      // so subsequent clicks start fresh without conflicting clipPath state
+      transition.finished.finally(() => {
+        if (anim) {
+          anim.cancel();
+        }
+      });
     });
   };
 

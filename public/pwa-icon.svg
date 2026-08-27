@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="50%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="50%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded rectangle -->
+  <rect width="512" height="512" rx="115" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Ambient Glow Overlay -->
+  <circle cx="256" cy="180" r="160" fill="url(#glowGrad)" />
+
+  <!-- Subtle Border Stroke -->
+  <rect width="508" height="508" x="2" y="2" rx="113" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="4"/>
+
+  <!-- Graduation Cap Icon -->
+  <g filter="url(#shadow)" transform="translate(64, 80) scale(0.75)">
+    <!-- Cap Diamond / Top -->
+    <path d="M256 64 L480 176 L256 288 L32 176 Z" fill="url(#capGrad)" />
+    
+    <!-- Cap Rim Highlight -->
+    <path d="M256 64 L480 176 L256 288 L32 176 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="6" />
+
+    <!-- Skull Cap Body -->
+    <path d="M112 216 V312 C112 376 256 416 256 416 C256 416 400 376 400 312 V216 L256 288 Z" fill="#F8FAFC" />
+    
+    <!-- Tassel String and Hanging Knot -->
+    <path d="M420 200 V340" stroke="#38BDF8" stroke-width="12" stroke-linecap="round" />
+    <circle cx="420" cy="356" r="16" fill="#38BDF8" />
+  </g>
+</svg>

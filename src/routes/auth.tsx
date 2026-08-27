@@ -22,11 +22,16 @@ import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
 import { supabase } from "@/integrations/supabase/client";
 
+const authSearchSchema = z.object({
+  redirect: z.string().optional(),
+});
+
 export const Route = createFileRoute("/auth")({
-  beforeLoad: async () => {
+  validateSearch: (search: Record<string, unknown>) => authSearchSchema.parse(search),
+  beforeLoad: async ({ search }) => {
     const { data } = await supabase.auth.getSession();
     if (data.session) {
-      throw redirect({ to: ROUTES.dashboard });
+      throw redirect({ to: (search?.redirect || ROUTES.dashboard) as any });
     }
   },
   component: AuthPage,
@@ -78,6 +83,8 @@ function mapAuthError(error: any): string {
 
 function AuthPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
+  const targetDestination = search.redirect || ROUTES.dashboard;
   const [isLoading, setIsLoading] = useState(false);
 
   const signInForm = useForm<SignInValues>({
@@ -100,7 +107,7 @@ function AuthPage() {
       if (error) throw error;
 
       toast.success("Successfully signed in!");
-      void navigate({ to: ROUTES.dashboard });
+      void navigate({ to: targetDestination as any });
     } catch (error: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast.error(mapAuthError(error as any));
@@ -124,7 +131,7 @@ function AuthPage() {
       if (error) throw error;
 
       toast.success("Account created successfully! You are now signed in.");
-      void navigate({ to: ROUTES.dashboard });
+      void navigate({ to: targetDestination as any });
     } catch (error: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast.error(mapAuthError(error as any));
@@ -138,7 +145,7 @@ function AuthPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}${ROUTES.dashboard}`,
+          redirectTo: `${window.location.origin}${targetDestination}`,
         },
       });
       if (error) throw error;
@@ -170,6 +177,13 @@ function AuthPage() {
           <CardDescription>
             Your comprehensive platform for question banks and testing.
           </CardDescription>
+          {search.redirect && (
+            <div className="pt-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                🔒 Please sign in to access your requested page
+              </span>
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">

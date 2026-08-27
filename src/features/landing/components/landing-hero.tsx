@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/features/auth/hooks/use-session";
 
 interface DemoQuestion {
   id: number;
@@ -73,6 +74,7 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
 ];
 
 export function LandingHero() {
+  const { session } = useSession();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState<"A" | "B" | "C" | "D" | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -167,8 +169,8 @@ export function LandingHero() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
               <Button asChild size="lg" className="w-full sm:w-auto gap-2 shadow-sm font-medium hover:scale-105 transition-transform">
-                <Link to={ROUTES.auth}>
-                  <span>Get Started Free</span>
+                <Link to={session ? ROUTES.dashboard : ROUTES.auth}>
+                  <span>{session ? "Go to Dashboard" : "Get Started Free"}</span>
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>

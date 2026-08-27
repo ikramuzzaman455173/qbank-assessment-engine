@@ -2,8 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle, Sparkles, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
+import { useSession } from "@/features/auth/hooks/use-session";
 
 export function LandingCTA() {
+  const { session } = useSession();
+
   return (
     <section className="py-14 md:py-20 border-b border-border bg-canvas-dots bg-background relative overflow-hidden">
       <div className="container-page">
@@ -31,16 +34,18 @@ export function LandingCTA() {
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
                 <Button asChild size="lg" className="w-full sm:w-auto gap-2 shadow-sm font-medium hover:scale-105 transition-transform">
-                  <Link to={ROUTES.auth}>
-                    <span>Claim Your Free Account</span>
+                  <Link to={session ? ROUTES.dashboard : ROUTES.auth}>
+                    <span>{session ? "Go to Dashboard" : "Claim Your Free Account"}</span>
                     <ArrowRight className="size-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-dashed hover:border-solid">
-                  <Link to={ROUTES.auth}>
-                    <span>Sign In</span>
-                  </Link>
-                </Button>
+                {!session && (
+                  <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-dashed hover:border-solid">
+                    <Link to={ROUTES.auth}>
+                      <span>Sign In</span>
+                    </Link>
+                  </Button>
+                )}
               </div>
 
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-1 text-xs text-muted-foreground">

@@ -6,6 +6,7 @@ import { Brand } from "@/components/layout/brand";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
+import { useSession } from "@/features/auth/hooks/use-session";
 
 const NAV_LINKS = [
   { label: "Features", targetId: "features" },
@@ -15,6 +16,7 @@ const NAV_LINKS = [
 ];
 
 export function LandingHeader() {
+  const { session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
@@ -57,15 +59,27 @@ export function LandingHeader() {
         {/* Action Buttons & Mobile Menu Trigger */}
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
-          <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-            <Link to={ROUTES.auth}>Sign In</Link>
-          </Button>
-          <Button size="sm" asChild className="hidden xs:inline-flex gap-1.5 shadow-xs font-medium">
-            <Link to={ROUTES.auth}>
-              <span>Get Started</span>
-              <ArrowRight className="size-3.5" aria-hidden="true" />
-            </Link>
-          </Button>
+
+          {session ? (
+            <Button size="sm" asChild className="gap-1.5 shadow-xs font-medium">
+              <Link to={ROUTES.dashboard}>
+                <span>Dashboard</span>
+                <ArrowRight className="size-3.5" aria-hidden="true" />
+              </Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
+                <Link to={ROUTES.auth}>Sign In</Link>
+              </Button>
+              <Button size="sm" asChild className="hidden xs:inline-flex gap-1.5 shadow-xs font-medium">
+                <Link to={ROUTES.auth}>
+                  <span>Get Started</span>
+                  <ArrowRight className="size-3.5" aria-hidden="true" />
+                </Link>
+              </Button>
+            </>
+          )}
 
           {/* Mobile hamburger button */}
           <Button
@@ -98,17 +112,28 @@ export function LandingHeader() {
             ))}
           </nav>
           <div className="pt-2 border-t border-border flex flex-col gap-2">
-            <Button variant="outline" size="sm" asChild className="w-full justify-center">
-              <Link to={ROUTES.auth} onClick={() => setMobileMenuOpen(false)}>
-                Sign In
-              </Link>
-            </Button>
-            <Button size="sm" asChild className="w-full justify-center gap-1.5 shadow-xs font-medium">
-              <Link to={ROUTES.auth} onClick={() => setMobileMenuOpen(false)}>
-                <span>Get Started</span>
-                <ArrowRight className="size-3.5" aria-hidden="true" />
-              </Link>
-            </Button>
+            {session ? (
+              <Button size="sm" asChild className="w-full justify-center gap-1.5 shadow-xs font-medium">
+                <Link to={ROUTES.dashboard} onClick={() => setMobileMenuOpen(false)}>
+                  <span>Go to Dashboard</span>
+                  <ArrowRight className="size-3.5" aria-hidden="true" />
+                </Link>
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" asChild className="w-full justify-center">
+                  <Link to={ROUTES.auth} onClick={() => setMobileMenuOpen(false)}>
+                    Sign In
+                  </Link>
+                </Button>
+                <Button size="sm" asChild className="w-full justify-center gap-1.5 shadow-xs font-medium">
+                  <Link to={ROUTES.auth} onClick={() => setMobileMenuOpen(false)}>
+                    <span>Get Started</span>
+                    <ArrowRight className="size-3.5" aria-hidden="true" />
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

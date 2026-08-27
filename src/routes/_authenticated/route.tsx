@@ -6,17 +6,35 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
+    // 1. Fast-path local session check (Instant, 0ms)
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      throw redirect({
+        to: "/auth",
+        search: {
+          redirect: location.pathname + (location.searchStr ? location.searchStr : ""),
+        },
+      });
+    }
+
+    // 2. Validate with Supabase auth
     const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
+    if (error || !data.user) {
+      throw redirect({
+        to: "/auth",
+        search: {
+          redirect: location.pathname + (location.searchStr ? location.searchStr : ""),
+        },
+      });
+    }
+
     return { user: data.user };
   },
   pendingComponent: () => (
-    <AppShell>
-      <div className="flex h-[50vh] items-center justify-center">
-        <LoadingState label="Loading application..." />
-      </div>
-    </AppShell>
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <LoadingState label="Verifying session..." />
+    </div>
   ),
   component: AuthenticatedLayout,
 });

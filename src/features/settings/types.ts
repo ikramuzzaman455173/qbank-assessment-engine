@@ -20,6 +20,7 @@ export interface UserPreferences {
   immediate_feedback: boolean;
   show_explanations: boolean;
   notification_preferences: Record<string, any>;
+  gemini_api_key?: string | null;
   created_at: string;
   updated_at: string;
 }

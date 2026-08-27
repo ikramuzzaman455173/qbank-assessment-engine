@@ -10,6 +10,7 @@ import {
   AlertTriangle 
 } from "lucide-react";
 
+import { z } from "zod";
 import { PageHeader } from "@/components/common";
 import { ProfileSettings } from "@/features/settings/components/profile-settings";
 import { PreferencesSettings } from "@/features/settings/components/preferences-settings";
@@ -18,16 +19,6 @@ import { NotificationSettings } from "@/features/settings/components/notificatio
 import { DataManagementSettings } from "@/features/settings/components/data-management-settings";
 import { SecuritySettings } from "@/features/settings/components/security-settings";
 import { DangerZone } from "@/features/settings/components/danger-zone";
-
-export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({
-    meta: [
-      { title: "Settings — QBank" },
-      { name: "description", content: "Account and application preferences." },
-    ],
-  }),
-  component: SettingsPage,
-});
 
 type SettingsTab = 
   | "profile" 
@@ -38,8 +29,32 @@ type SettingsTab =
   | "security" 
   | "danger";
 
+const settingsSearchSchema = z.object({
+  tab: z.enum(["profile", "preferences", "ai", "notifications", "data", "security", "danger"]).optional(),
+});
+
+export const Route = createFileRoute("/_authenticated/settings")({
+  validateSearch: (search: Record<string, unknown>) => settingsSearchSchema.parse(search),
+  head: () => ({
+    meta: [
+      { title: "Settings — QBank" },
+      { name: "description", content: "Account and application preferences." },
+    ],
+  }),
+  component: SettingsPage,
+});
+
 function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const activeTab: SettingsTab = search.tab || "profile";
+
+  const handleTabChange = (tabId: SettingsTab) => {
+    void navigate({
+      search: (prev) => ({ ...prev, tab: tabId }),
+      replace: true,
+    });
+  };
 
   const tabs: Array<{ id: SettingsTab; label: string; icon: any; destructive?: boolean; badge?: string }> = [
     { id: "profile", label: "Profile", icon: User },
@@ -67,7 +82,7 @@ function SettingsPage() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap md:whitespace-normal
                     ${isActive 
                       ? (tab.destructive ? 'bg-destructive text-destructive-foreground' : 'bg-primary text-primary-foreground') 

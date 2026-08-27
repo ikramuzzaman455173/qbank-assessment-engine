@@ -54,12 +54,14 @@ function DashboardPage() {
               
               {/* AI Key Status Badge */}
               {geminiStatus.source === "custom" ? (
-                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 text-xs py-0.5 px-2 flex items-center gap-1">
-                  <CheckCircle2 className="size-3 text-emerald-500" />
-                  Personal AI Active
-                </Badge>
+                <Link to="/settings" search={{ tab: "ai" }} className="inline-flex">
+                  <Badge variant="outline" className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 text-xs py-0.5 px-2 flex items-center gap-1 cursor-pointer transition-colors">
+                    <CheckCircle2 className="size-3 text-emerald-500" />
+                    Personal AI Active
+                  </Badge>
+                </Link>
               ) : (
-                <Link to="/settings" className="inline-flex">
+                <Link to="/settings" search={{ tab: "ai" }} className="inline-flex">
                   <Badge variant="outline" className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/20 text-xs py-0.5 px-2 flex items-center gap-1 cursor-pointer transition-colors">
                     <Zap className="size-3 text-amber-500" />
                     Shared AI Quota (Configure)
@@ -90,6 +92,12 @@ function DashboardPage() {
                 <Link to="/question-banks">
                   <FolderPlus className="size-4" />
                   Question Banks
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" className="gap-1.5 bg-background/80 hover:bg-primary/10 hover:border-primary/30 transition-all" asChild>
+                <Link to="/settings" search={{ tab: "ai" }}>
+                  <Sparkles className="size-4 text-primary" />
+                  API & AI Keys
                 </Link>
               </Button>
             </div>

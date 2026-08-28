@@ -11,12 +11,14 @@ export interface QuestionFilters {
   pageSize?: number | undefined;
 }
 
-export function useQuestions(bankId: string, filters: QuestionFilters = {}) {
+export function useQuestions(bankId?: string, filters: QuestionFilters = {}) {
   const { page = 1, pageSize = 20, searchQuery, difficulty, topic } = filters;
 
   return useQuery({
-    queryKey: questionKeys.list(bankId, filters),
+    queryKey: questionKeys.list(bankId ?? "", filters),
     queryFn: async (): Promise<Paginated<Question>> => {
+      if (!bankId) return { items: [], total: 0, page: 1, pageSize: 20, totalPages: 0 };
+
       let query = (supabase as any)
         .from("questions")
         .select("*", { count: "exact" })

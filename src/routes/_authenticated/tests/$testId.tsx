@@ -44,7 +44,11 @@ export function TestDetailsPage() {
   };
 
   const handleResume = () => {
-    navigate({ to: ROUTES.attemptTest(testId) });
+    void navigate({ 
+      to: "/tests/$testId/attempt", 
+      params: { testId },
+      search: currentAttempt ? { attemptId: currentAttempt.id } : undefined,
+    });
   };
 
   if (isLoading || isAttemptLoading) return <LoadingState label="Loading test details..." />;
@@ -75,8 +79,14 @@ export function TestDetailsPage() {
         
         <div className="flex items-center gap-2">
           {currentAttempt ? (
-            <Button size="lg" onClick={handleResume} className="gap-2">
-              <Play className="w-5 h-5 fill-current" /> Resume Attempt
+            <Button size="lg" asChild className="gap-2">
+              <Link 
+                to="/tests/$testId/attempt" 
+                params={{ testId }}
+                search={{ attemptId: currentAttempt.id }}
+              >
+                <Play className="w-5 h-5 fill-current" /> Resume Attempt
+              </Link>
             </Button>
           ) : (
             <Button 
@@ -239,8 +249,14 @@ export function TestDetailsPage() {
                           </Link>
                         </Button>
                       ) : (
-                        <Button size="sm" onClick={handleResume}>
-                          <Play className="w-4 h-4 mr-1.5 fill-current" /> Resume
+                        <Button size="sm" asChild>
+                          <Link 
+                            to="/tests/$testId/attempt" 
+                            params={{ testId }}
+                            search={{ attemptId: att.id }}
+                          >
+                            <Play className="w-4 h-4 mr-1.5 fill-current" /> Resume
+                          </Link>
                         </Button>
                       )}
                     </div>

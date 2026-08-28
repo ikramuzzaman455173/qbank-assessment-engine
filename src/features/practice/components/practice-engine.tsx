@@ -21,6 +21,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Link } from "@tanstack/react-router";
 import type { Question } from "@/types/domain";
 import { useSavePracticeAttempt } from "../api/use-save-practice-attempt";
 import { TestTimer } from "@/features/tests/components/test-timer";
@@ -353,11 +354,16 @@ export function PracticeEngine({
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-wrap justify-center gap-4 bg-muted/20 border-t py-4">
+          <CardFooter className="flex flex-wrap justify-center gap-3 bg-muted/20 border-t py-4">
             <Button onClick={handleRestart} variant="outline" size="lg">
               <RotateCcw className="mr-2 h-4 w-4" /> Retake Test
             </Button>
-            <Button onClick={onFinish} size="lg">
+            <Link to="/practice/config">
+              <Button variant="default" size="lg">
+                <ArrowRight className="mr-2 h-4 w-4" /> New Practice
+              </Button>
+            </Link>
+            <Button onClick={onFinish} variant="secondary" size="lg">
               Done & Return
             </Button>
           </CardFooter>

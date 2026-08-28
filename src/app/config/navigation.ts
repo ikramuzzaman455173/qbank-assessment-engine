@@ -39,7 +39,7 @@ export const primaryNavigation: readonly NavItem[] = [
   },
   {
     label: "Practice",
-    to: ROUTES.practice,
+    to: ROUTES.practiceConfig,
     icon: Target,
     description: "Focused practice on weak questions",
   },

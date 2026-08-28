@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router';
 import { useQuestions } from '@/features/questions/api/use-questions';
 import { PracticeEngine } from '@/features/practice/components';
 import { LoadingState, ErrorState } from '@/components/common';
@@ -37,18 +37,17 @@ export const Route = createFileRoute('/_authenticated/practice/')({
     
     return result;
   },
+  beforeLoad: ({ search }) => {
+    if (!search.bankId) {
+      throw redirect({ to: '/practice/config' });
+    }
+  },
   component: PracticeRoute,
 });
 
 function PracticeRoute() {
   const search = Route.useSearch() as PracticeSearch;
   const navigate = useNavigate();
-
-  // If no bankId is provided, redirect to config
-  if (!search.bankId) {
-    void navigate({ to: '/practice/config' as any, replace: true });
-    return null;
-  }
 
   const filters: Record<string, any> = { pageSize: search.totalQuestions };
   if (search.difficulty) filters['difficulty'] = search.difficulty;

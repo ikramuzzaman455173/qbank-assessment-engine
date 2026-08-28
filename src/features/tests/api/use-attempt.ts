@@ -9,7 +9,10 @@ export function useCurrentAttempt(testId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attempts")
-        .select("*")
+        .select(`
+          *,
+          attempt_answers (*)
+        `)
         .eq("test_id", testId)
         .eq("status", "in_progress")
         .order("created_at", { ascending: false })
@@ -36,7 +39,16 @@ export function useCurrentAttempt(testId: string) {
         percentage: data.percentage,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
-      } as Attempt;
+        answers: (data.attempt_answers || []).map((ans: any) => ({
+          id: ans.id,
+          attemptId: ans.attempt_id,
+          testQuestionId: ans.test_question_id,
+          selectedAnswer: ans.selected_answer,
+          isCorrect: ans.is_correct,
+          isMarkedForReview: ans.is_marked_for_review,
+          answeredAt: ans.answered_at,
+        })),
+      } as Attempt & { answers: AttemptAnswer[] };
     },
     enabled: !!testId,
   });

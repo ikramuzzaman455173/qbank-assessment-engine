@@ -17,7 +17,7 @@ export function useQuestions(bankId?: string, filters: QuestionFilters = {}) {
   return useQuery({
     queryKey: questionKeys.list(bankId ?? "", filters),
     queryFn: async (): Promise<Paginated<Question>> => {
-      if (!bankId) return { items: [], total: 0, page: 1, pageSize: 20, totalPages: 0 };
+      if (!bankId) return { items: [], total: 0, page: 1, pageSize: 20 };
 
       let query = (supabase as any)
         .from("questions")

@@ -97,7 +97,7 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
   // Auto-select first bank when loaded if none selected
   useEffect(() => {
     if (banks && banks.length > 0 && !form.getValues("bankId")) {
-      form.setValue("bankId", banks[0].id);
+      form.setValue("bankId", banks[0]?.id as string);
     }
   }, [banks, form]);
 

@@ -12,11 +12,13 @@ import {
   Eye, 
   HelpCircle, 
   Award,
-  Layers
+  Layers,
+  Trash2
 } from "lucide-react";
 import { useTest } from "@/features/tests/api/use-test";
 import { useCreateAttempt } from "@/features/tests/api/use-create-attempt";
 import { useCurrentAttempt, useTestAttempts } from "@/features/tests/api/use-attempt";
+import { useDeleteAttempt } from "@/features/tests/api/use-delete-attempt";
 import { ROUTES } from "@/constants/routes";
 
 export const Route = createFileRoute("/_authenticated/tests/$testId")({
@@ -37,6 +39,7 @@ export function TestDetailsPage() {
   const { data: attempts, isLoading: isHistoryLoading } = useTestAttempts(testId);
   
   const createAttemptMutation = useCreateAttempt();
+  const deleteAttemptMutation = useDeleteAttempt();
 
   const handleStartFresh = () => {
     if (!test) return;
@@ -44,10 +47,11 @@ export function TestDetailsPage() {
   };
 
   const handleResume = () => {
+    if (!currentAttempt) return;
     void navigate({ 
       to: "/tests/$testId/attempt", 
       params: { testId },
-      search: currentAttempt ? { attemptId: currentAttempt.id } : undefined,
+      search: { attemptId: currentAttempt.id },
     });
   };
 
@@ -77,17 +81,22 @@ export function TestDetailsPage() {
           description={`Question Bank: ${test.bankName || "General"}`}
         />
         
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {currentAttempt ? (
-            <Button size="lg" asChild className="gap-2">
-              <Link 
-                to="/tests/$testId/attempt" 
-                params={{ testId }}
-                search={{ attemptId: currentAttempt.id }}
-              >
+            <>
+              <Button size="lg" className="gap-2" onClick={handleResume}>
                 <Play className="w-5 h-5 fill-current" /> Resume Attempt
-              </Link>
-            </Button>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={handleStartFresh}
+                disabled={createAttemptMutation.isPending}
+                className="gap-2"
+              >
+                <RotateCcw className="w-4 h-4" /> Start Fresh Attempt
+              </Button>
+            </>
           ) : (
             <Button 
               size="lg" 
@@ -242,23 +251,42 @@ export function TestDetailsPage() {
                         </div>
                       )}
 
-                      {isCompleted ? (
-                        <Button size="sm" variant="outline" asChild>
-                          <Link to={`/attempts/${att.id}/result` as any}>
-                            <Eye className="w-4 h-4 mr-1.5" /> View Result
-                          </Link>
-                        </Button>
-                      ) : (
-                        <Button size="sm" asChild>
-                          <Link 
-                            to="/tests/$testId/attempt" 
-                            params={{ testId }}
-                            search={{ attemptId: att.id }}
+                      <div className="flex items-center gap-2">
+                        {isCompleted ? (
+                          <Button size="sm" variant="outline" asChild>
+                            <Link to={`/attempts/${att.id}/result` as any}>
+                              <Eye className="w-4 h-4 mr-1.5" /> View Result
+                            </Link>
+                          </Button>
+                        ) : (
+                          <Button 
+                            size="sm" 
+                            onClick={() => {
+                              navigate({
+                                to: "/tests/$testId/attempt",
+                                params: { testId },
+                                search: { attemptId: att.id }
+                              });
+                            }}
                           >
                             <Play className="w-4 h-4 mr-1.5 fill-current" /> Resume
-                          </Link>
+                          </Button>
+                        )}
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="text-muted-foreground hover:text-destructive h-8 w-8 p-0"
+                          title="Delete attempt"
+                          disabled={deleteAttemptMutation.isPending}
+                          onClick={() => {
+                            if (window.confirm("Are you sure you want to delete this attempt?")) {
+                              deleteAttemptMutation.mutate({ attemptId: att.id, testId });
+                            }
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </Button>
-                      )}
+                      </div>
                     </div>
                   </div>
                 </Card>

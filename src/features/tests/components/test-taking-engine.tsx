@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Bookmark, Send, Maximize, Minimize2, Keyboard } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bookmark, Send, Maximize, Minimize2, Keyboard, LogOut } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Test, Attempt, TestQuestion, AttemptAnswer, CorrectAnswer } from "@/types/domain";
@@ -262,6 +263,18 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
               title={isFullscreen ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
             >
               {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+              className="gap-1 text-xs h-8"
+              title="Pause test and return to test details"
+            >
+              <Link to="/tests/$testId" params={{ testId: test.id }}>
+                <LogOut className="h-3.5 w-3.5" /> Pause & Exit
+              </Link>
             </Button>
           </div>
         </div>

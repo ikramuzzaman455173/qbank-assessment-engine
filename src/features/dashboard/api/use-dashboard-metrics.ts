@@ -1,11 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardMetrics } from "@/types/dashboard";
+import { isGuestSession, GUEST_METRICS } from "@/features/auth/demo-guest-data";
 
 export function useDashboardMetrics(days: number = 30) {
   return useQuery({
-    queryKey: ["dashboard-metrics", days],
+    queryKey: ["dashboard-metrics", days, isGuestSession()],
     queryFn: async (): Promise<DashboardMetrics> => {
+      if (isGuestSession()) {
+        return GUEST_METRICS;
+      }
+
       try {
         const { data, error } = await supabase.rpc("get_dashboard_metrics", {
           p_days: days,
@@ -18,8 +23,10 @@ export function useDashboardMetrics(days: number = 30) {
 
         return data as DashboardMetrics;
       } catch (err) {
+        if (isGuestSession()) {
+          return GUEST_METRICS;
+        }
         // Fallback to empty data if the RPC is missing or fails
-        // This is a graceful degradation so the UI doesn't break
         return {
           total_questions: 0,
           questions_practiced: 0,

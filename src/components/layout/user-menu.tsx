@@ -19,6 +19,8 @@ import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/profile/api/use-profile";
 import { supabase } from "@/integrations/supabase/client";
 
+import { clearGuestSession } from "@/features/auth/demo-guest-data";
+
 export function UserMenu() {
   const { user } = useSession();
   const { data: profile } = useProfile();
@@ -31,9 +33,14 @@ export function UserMenu() {
   async function handleSignOut() {
     setIsLoggingOut(true);
     try {
+      clearGuestSession();
       await queryClient.cancelQueries();
       queryClient.clear();
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn("Supabase signout failed:", err);
+      }
       setShowLogoutModal(false);
       void navigate({ to: ROUTES.auth, replace: true });
     } finally {

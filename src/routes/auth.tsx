@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, KeyRound, Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,6 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
 import { supabase } from "@/integrations/supabase/client";
+import { DEMO_CREDENTIALS, isGuestSession, setGuestSession } from "@/features/auth/demo-guest-data";
 
 const authSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -29,6 +30,9 @@ const authSearchSchema = z.object({
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => authSearchSchema.parse(search),
   beforeLoad: async ({ search }) => {
+    if (isGuestSession()) {
+      throw redirect({ to: (search?.redirect || ROUTES.dashboard) as any });
+    }
     const { data } = await supabase.auth.getSession();
     if (data.session) {
       throw redirect({ to: (search?.redirect || ROUTES.dashboard) as any });
@@ -86,6 +90,7 @@ function AuthPage() {
   const search = Route.useSearch();
   const targetDestination = search.redirect || ROUTES.dashboard;
   const [isLoading, setIsLoading] = useState(false);
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
 
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -96,6 +101,62 @@ function AuthPage() {
     resolver: zodResolver(signUpSchema),
     defaultValues: { fullName: "", email: "", password: "", confirmPassword: "" },
   });
+
+  const handleAutofillDemo = () => {
+    signInForm.setValue("email", DEMO_CREDENTIALS.email);
+    signInForm.setValue("password", DEMO_CREDENTIALS.password);
+    toast.info("Demo credentials loaded! You can now click 'Sign In' or use 1-Click Guest Login.");
+  };
+
+  const handleGuestLogin = async () => {
+    setIsGuestLoading(true);
+    try {
+      // 1. Try real Supabase auth if backend is online
+      try {
+        const { error: signInErr } = await supabase.auth.signInWithPassword({
+          email: DEMO_CREDENTIALS.email,
+          password: DEMO_CREDENTIALS.password,
+        });
+
+        if (!signInErr) {
+          localStorage.removeItem("kc_guest_session");
+          toast.success("Welcome, Reviewer! Signed in with Demo Account.");
+          void navigate({ to: targetDestination as any });
+          return;
+        }
+
+        if (signInErr.message?.includes("Invalid login credentials")) {
+          const { error: signUpErr } = await supabase.auth.signUp({
+            email: DEMO_CREDENTIALS.email,
+            password: DEMO_CREDENTIALS.password,
+            options: {
+              data: { full_name: "Guest Reviewer (Demo)" },
+            },
+          });
+          if (!signUpErr) {
+            localStorage.removeItem("kc_guest_session");
+            toast.success("Welcome, Reviewer! Demo account initialized.");
+            void navigate({ to: targetDestination as any });
+            return;
+          }
+        }
+      } catch (networkErr) {
+        console.warn(
+          "Supabase network not reachable, falling back to instant guest session:",
+          networkErr,
+        );
+      }
+
+      // 2. Instant Guest Session fallback (Zero-latency, 100% reliable)
+      setGuestSession();
+      toast.success("Welcome! Entered Guest Reviewer demo mode.");
+      void navigate({ to: targetDestination as any });
+    } catch (err: unknown) {
+      toast.error("Could not start guest session. Please try again.");
+    } finally {
+      setIsGuestLoading(false);
+    }
+  };
 
   const handleSignIn = async (values: SignInValues) => {
     setIsLoading(true);
@@ -230,6 +291,23 @@ function AuthPage() {
                       </FormItem>
                     )}
                   />
+                  <div className="flex items-center justify-between text-xs pt-0.5">
+                    <button
+                      type="button"
+                      onClick={handleAutofillDemo}
+                      className="text-primary hover:underline font-medium inline-flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <KeyRound className="size-3" />
+                      Autofill demo credentials
+                    </button>
+                    <Link
+                      to="/reset-password"
+                      className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
@@ -313,14 +391,43 @@ function AuthPage() {
             </TabsContent>
           </Tabs>
 
-          {/* <div className="relative mt-8 mb-6">
+          {/* Guest / Recruiter Demo Fast Access */}
+          <div className="relative mt-6 mb-4">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+              <span className="bg-card px-2.5 text-muted-foreground font-semibold">
+                For Recruiters & Quick Review
+              </span>
             </div>
-          </div> */}
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-primary/40 bg-primary/5 hover:bg-primary/10 text-foreground font-semibold py-5 flex items-center justify-center gap-2 group shadow-2xs hover:border-primary transition-all cursor-pointer"
+            onClick={handleGuestLogin}
+            disabled={isLoading || isGuestLoading}
+          >
+            {isGuestLoading ? (
+              <>
+                <Loader2 className="size-4 animate-spin text-primary" />
+                <span>Entering Guest Mode...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="size-4 text-primary group-hover:scale-110 transition-transform" />
+                <span>⚡ Continue as Guest (1-Click Demo)</span>
+                <ArrowRight className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
+          </Button>
+
+          <p className="mt-2.5 text-center text-[11px] text-muted-foreground leading-relaxed">
+            Instantly explore pre-populated question banks, real-time tests & analytics without
+            registering.
+          </p>
 
           {/*<Button
             variant="outline"

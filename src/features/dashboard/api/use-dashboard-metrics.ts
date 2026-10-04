@@ -37,6 +37,7 @@ export function useDashboardMetrics(days: number = 30) {
           weak_topics: [],
           recent_activity: [],
           bank_summaries: [],
+          difficulty_distribution: [],
         };
       }
     },

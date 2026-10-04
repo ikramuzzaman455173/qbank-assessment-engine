@@ -2,8 +2,9 @@ import { useState, useMemo } from "react";
 import { TrendPoint } from "@/types/dashboard";
 import { format, parseISO } from "date-fns";
 import {
-  ComposedChart,
+  AreaChart,
   Area,
+  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -22,19 +23,18 @@ import {
   PlayCircle,
   Activity,
   BarChart3,
-  Layers,
   Target,
   Award,
-  HelpCircle,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { ROUTES } from "@/constants/routes";
 
 interface PerformanceTrendChartProps {
   data: TrendPoint[];
   loading?: boolean;
 }
 
-type ChartViewMode = "accuracy" | "volume" | "combined";
+type ChartViewMode = "accuracy" | "volume";
 
 export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartProps) {
   const [viewMode, setViewMode] = useState<ChartViewMode>("accuracy");
@@ -93,23 +93,19 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
 
   if (loading) {
     return (
-      <Card className="col-span-1 lg:col-span-3">
+      <Card className="col-span-1 lg:col-span-3 border-border/70 shadow-xs">
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="space-y-1.5">
-              <Skeleton className="h-5 w-44" />
-              <Skeleton className="h-3.5 w-72" />
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-48 rounded-lg" />
+              <Skeleton className="h-4 w-72 rounded-md" />
             </div>
-            <Skeleton className="h-8 w-48 rounded-lg" />
+            <Skeleton className="h-9 w-44 rounded-xl" />
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="h-16 w-full rounded-xl" />
-            ))}
-          </div>
-          <Skeleton className="h-[260px] w-full rounded-xl" />
+          <Skeleton className="h-12 w-full rounded-xl" />
+          <Skeleton className="h-[290px] w-full rounded-2xl" />
         </CardContent>
       </Card>
     );
@@ -117,27 +113,32 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
 
   if (!data || data.length === 0) {
     return (
-      <Card className="col-span-1 lg:col-span-3 overflow-hidden border-border/80">
+      <Card className="col-span-1 lg:col-span-3 overflow-hidden border-border/80 shadow-xs">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-semibold">Performance Trend</CardTitle>
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Activity className="size-4 text-primary" />
+              Performance Trajectory
+            </CardTitle>
             <Badge variant="outline" className="text-muted-foreground text-xs font-normal">
-              No Activity
+              No Recorded Activity
             </Badge>
           </div>
-          <CardDescription>Accuracy and question volume trajectory over time.</CardDescription>
+          <CardDescription>
+            Historical trajectory of your score accuracy and practice sessions.
+          </CardDescription>
         </CardHeader>
-        <CardContent className="h-[300px] flex flex-col items-center justify-center text-center p-6 bg-muted/10 rounded-xl m-4 border border-dashed">
+        <CardContent className="h-[280px] flex flex-col items-center justify-center text-center p-6 bg-muted/10 rounded-2xl m-4 border border-dashed border-border/70">
           <div className="p-3.5 rounded-2xl bg-primary/10 text-primary mb-3 shadow-inner">
             <TrendingUp className="w-6 h-6" />
           </div>
-          <h4 className="font-semibold text-foreground text-sm">No Trend Data Yet</h4>
+          <h4 className="font-semibold text-foreground text-sm">No Performance Trend Data</h4>
           <p className="text-xs text-muted-foreground mt-1 max-w-xs leading-relaxed">
-            Practice questions or complete formal tests to visualize your daily accuracy score
-            trajectory.
+            Practice questions or take formal tests to visualize your daily score curve and
+            progress.
           </p>
-          <Button size="sm" className="mt-4 gap-1.5 shadow-sm" asChild>
-            <Link to="/practice/config">
+          <Button size="sm" className="mt-4 gap-1.5 rounded-xl shadow-xs" asChild>
+            <Link to={ROUTES.practiceConfig}>
               <PlayCircle className="w-4 h-4" />
               Start First Practice
             </Link>
@@ -148,30 +149,30 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
   }
 
   return (
-    <Card className="col-span-1 lg:col-span-3 overflow-hidden border-border/80 shadow-sm transition-all hover:shadow-md">
+    <Card className="col-span-1 lg:col-span-3 overflow-hidden border border-border/70 bg-card shadow-xs rounded-2xl transition-all">
       {/* 1. Header with Title & View Mode Selector */}
       <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/40">
         <div className="space-y-1">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             <CardTitle className="text-base font-semibold tracking-tight text-foreground flex items-center gap-2">
               <Activity className="size-4 text-primary" />
-              Performance Trend
+              Performance Trajectory
             </CardTitle>
 
-            {/* Momentum Badge */}
+            {/* Momentum Pill */}
             {chartData.length > 1 ? (
               <Badge
                 variant="outline"
-                className={`text-[11px] py-0.5 px-2 font-medium flex items-center gap-1 ${
+                className={`text-[11px] py-0.5 px-2 rounded-full font-semibold flex items-center gap-1 ${
                   stats.isImproving
-                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                    : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                    ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+                    : "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30"
                 }`}
               >
                 {stats.isImproving ? (
                   <>
                     <TrendingUp className="size-3 text-emerald-500" />
-                    {stats.delta > 0 ? `+${stats.delta}% Gain` : "Consistent"}
+                    {stats.delta > 0 ? `+${stats.delta}% Gain` : "Consistent Pace"}
                   </>
                 ) : (
                   <>
@@ -183,147 +184,118 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
             ) : (
               <Badge
                 variant="outline"
-                className="bg-primary/10 text-primary border-primary/20 text-[11px] py-0.5 px-2"
+                className="bg-primary/10 text-primary border-primary/20 text-[11px] py-0.5 px-2 rounded-full font-semibold"
               >
-                Live Data
+                Active Trend
               </Badge>
             )}
           </div>
           <CardDescription className="text-xs">
-            Score trajectory and question volume across practice sessions & tests.
+            Dynamic accuracy curve and questions completed across all evaluations.
           </CardDescription>
         </div>
 
-        {/* View Mode Controls */}
-        <div className="flex items-center bg-muted/60 p-0.5 rounded-lg border border-border/60 self-start sm:self-auto text-xs">
+        {/* View Mode Segmented Switcher */}
+        <div className="flex items-center bg-muted/60 p-1 rounded-xl border border-border/60 self-start sm:self-auto text-xs">
           <button
             type="button"
             onClick={() => setViewMode("accuracy")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
               viewMode === "accuracy"
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-background text-foreground shadow-xs font-semibold"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Activity className="size-3" />
-            Accuracy
+            <Activity className="size-3.5" />
+            Accuracy (%)
           </button>
           <button
             type="button"
             onClick={() => setViewMode("volume")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
               viewMode === "volume"
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-background text-foreground shadow-xs font-semibold"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <BarChart3 className="size-3" />
-            Questions
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("combined")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-medium transition-all ${
-              viewMode === "combined"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Layers className="size-3" />
-            Combined
+            <BarChart3 className="size-3.5" />
+            Questions (Vol)
           </button>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4 pt-4">
-        {/* 2. Micro KPI Stats Ribbon */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          <div className="bg-muted/30 hover:bg-muted/50 transition-colors border border-border/40 rounded-xl p-2.5 flex flex-col justify-between">
-            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Latest Score
-              <Activity className="size-3 text-primary/70" />
-            </span>
-            <div className="flex items-baseline gap-1.5 mt-1">
-              <span className="text-xl font-bold tracking-tight text-foreground">
-                {stats.currentAccuracy}%
-              </span>
-              <span className="text-[11px] text-muted-foreground">accuracy</span>
-            </div>
+        {/* 2. Compact Inline Key Stats Ribbon */}
+        <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4 px-4 py-2.5 rounded-xl bg-muted/30 border border-border/50 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">Latest Score:</span>
+            <span className="font-bold text-foreground text-sm">{stats.currentAccuracy}%</span>
           </div>
 
-          <div className="bg-muted/30 hover:bg-muted/50 transition-colors border border-border/40 rounded-xl p-2.5 flex flex-col justify-between">
-            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Period Average
-              <Target className="size-3 text-blue-500/70" />
-            </span>
-            <div className="flex items-baseline gap-1.5 mt-1">
-              <span className="text-xl font-bold tracking-tight text-foreground">
-                {stats.avgAccuracy}%
-              </span>
-              <span className="text-[11px] text-muted-foreground">mean</span>
-            </div>
+          <div className="hidden sm:block h-3.5 w-px bg-border/60" />
+
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">Period Average:</span>
+            <span className="font-bold text-foreground text-sm">{stats.avgAccuracy}%</span>
           </div>
 
-          <div className="bg-muted/30 hover:bg-muted/50 transition-colors border border-border/40 rounded-xl p-2.5 flex flex-col justify-between">
-            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Peak Accuracy
-              <Award className="size-3 text-amber-500/70" />
+          <div className="hidden sm:block h-3.5 w-px bg-border/60" />
+
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">Peak Score:</span>
+            <span className="font-bold text-amber-600 dark:text-amber-400 text-sm flex items-center gap-1">
+              <Award className="size-3.5" />
+              {stats.peakAccuracy}%
             </span>
-            <div className="flex items-baseline gap-1.5 mt-1">
-              <span className="text-xl font-bold tracking-tight text-amber-600 dark:text-amber-400">
-                {stats.peakAccuracy}%
-              </span>
-              <span className="text-[11px] text-muted-foreground">best day</span>
-            </div>
           </div>
 
-          <div className="bg-muted/30 hover:bg-muted/50 transition-colors border border-border/40 rounded-xl p-2.5 flex flex-col justify-between">
-            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Practiced
-              <HelpCircle className="size-3 text-purple-500/70" />
+          <div className="hidden sm:block h-3.5 w-px bg-border/60" />
+
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">Total Questions:</span>
+            <span className="font-bold text-foreground text-sm">
+              {stats.totalAnswered} answered
             </span>
-            <div className="flex items-baseline gap-1.5 mt-1">
-              <span className="text-xl font-bold tracking-tight text-foreground">
-                {stats.totalAnswered}
-              </span>
-              <span className="text-[11px] text-muted-foreground">questions</span>
-            </div>
+          </div>
+
+          <div className="hidden sm:block h-3.5 w-px bg-border/60" />
+
+          <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+            <Target className="size-3.5" />
+            <span>Target Benchmark: 75%</span>
           </div>
         </div>
 
-        {/* 3. Interactive Chart Canvas */}
-        <div className="h-[250px] w-full pt-1">
+        {/* 3. Spacious, Ultra-Smooth Chart Canvas */}
+        <div className="h-[290px] w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chartData} margin={{ top: 12, right: 12, left: -16, bottom: 0 }}>
-              <defs>
-                {/* Accuracy Area Gradient */}
-                <linearGradient id="performanceAccuracyGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4} />
-                  <stop offset="60%" stopColor="#6366f1" stopOpacity={0.12} />
-                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.0} />
-                </linearGradient>
-                {/* Bar Gradient */}
-                <linearGradient id="performanceVolumeGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#6366f1" stopOpacity={0.4} />
-                </linearGradient>
-              </defs>
+            {viewMode === "accuracy" ? (
+              <AreaChart data={chartData} margin={{ top: 14, right: 14, left: -14, bottom: 0 }}>
+                <defs>
+                  {/* Subtle, eye-warming gradient for accuracy curve */}
+                  <linearGradient id="performanceAccuracyGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#6366f1" stopOpacity={0.35} />
+                    <stop offset="50%" stopColor="#6366f1" stopOpacity={0.12} />
+                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
 
-              <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/40" />
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  vertical={false}
+                  className="stroke-border/30"
+                />
 
-              <XAxis
-                dataKey="formattedDate"
-                tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: 11, fill: "currentColor" }}
-                className="text-muted-foreground"
-                tickMargin={8}
-              />
+                <XAxis
+                  dataKey="formattedDate"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 11, fill: "currentColor" }}
+                  className="text-muted-foreground"
+                  tickMargin={10}
+                />
 
-              {/* Left YAxis: Accuracy % */}
-              {(viewMode === "accuracy" || viewMode === "combined") && (
                 <YAxis
-                  yAxisId="accuracyAxis"
                   tickLine={false}
                   axisLine={false}
                   tick={{ fontSize: 11, fill: "currentColor" }}
@@ -332,13 +304,102 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
                   ticks={[0, 25, 50, 75, 100]}
                   tickFormatter={(val) => `${val}%`}
                 />
-              )}
 
-              {/* Right YAxis: Volume */}
-              {(viewMode === "volume" || viewMode === "combined") && (
+                {/* Target Benchmark Line at 75% */}
+                <ReferenceLine
+                  y={75}
+                  stroke="#10b981"
+                  strokeDasharray="4 4"
+                  strokeOpacity={0.7}
+                  strokeWidth={1.5}
+                  label={{
+                    value: "Target 75%",
+                    position: "insideTopRight",
+                    fill: "#10b981",
+                    fontSize: 10.5,
+                    fontWeight: 600,
+                  }}
+                />
+
+                {/* Glassmorphic Interactive Tooltip */}
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload || !payload.length) return null;
+                    const item = payload[0]?.payload;
+                    const acc = item?.accuracy ?? 0;
+                    const isAboveTarget = acc >= 75;
+
+                    return (
+                      <div className="bg-popover/95 backdrop-blur-md border border-border/80 rounded-xl shadow-xl p-3 text-xs space-y-2 min-w-[170px] z-50">
+                        <div className="font-semibold text-foreground flex items-center justify-between border-b border-border/50 pb-1.5">
+                          <span>{label}</span>
+                          <span
+                            className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full ${
+                              isAboveTarget
+                                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25"
+                                : "bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25"
+                            }`}
+                          >
+                            {isAboveTarget ? "Above Target" : "Review Needed"}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Accuracy:</span>
+                            <span className="font-bold text-foreground text-sm">{acc}%</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Questions Answered:</span>
+                            <span className="font-medium text-foreground">
+                              {item?.answered ?? 0} Qs
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+
+                <Area
+                  type="monotone"
+                  dataKey="accuracy"
+                  stroke="#6366f1"
+                  strokeWidth={2.5}
+                  fill="url(#performanceAccuracyGradient)"
+                  activeDot={{
+                    r: 5,
+                    stroke: "#6366f1",
+                    strokeWidth: 2,
+                    fill: "#ffffff",
+                  }}
+                />
+              </AreaChart>
+            ) : (
+              /* Bar Chart for Question Volume */
+              <BarChart data={chartData} margin={{ top: 14, right: 14, left: -14, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="performanceVolumeGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0.6} />
+                  </linearGradient>
+                </defs>
+
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  vertical={false}
+                  className="stroke-border/30"
+                />
+
+                <XAxis
+                  dataKey="formattedDate"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 11, fill: "currentColor" }}
+                  className="text-muted-foreground"
+                  tickMargin={10}
+                />
+
                 <YAxis
-                  yAxisId="volumeAxis"
-                  orientation={viewMode === "combined" ? "right" : "left"}
                   tickLine={false}
                   axisLine={false}
                   tick={{ fontSize: 11, fill: "currentColor" }}
@@ -346,111 +407,42 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
                   allowDecimals={false}
                   tickFormatter={(val) => `${val} Qs`}
                 />
-              )}
 
-              {/* Target Benchmark Reference Line */}
-              {(viewMode === "accuracy" || viewMode === "combined") && (
-                <ReferenceLine
-                  yAxisId="accuracyAxis"
-                  y={75}
-                  stroke="#10b981"
-                  strokeDasharray="4 4"
-                  strokeOpacity={0.6}
-                  strokeWidth={1.5}
-                  label={{
-                    value: "Target 75%",
-                    position: "insideTopRight",
-                    fill: "#10b981",
-                    fontSize: 10,
-                    fontWeight: 600,
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload || !payload.length) return null;
+                    const item = payload[0]?.payload;
+
+                    return (
+                      <div className="bg-popover/95 backdrop-blur-md border border-border/80 rounded-xl shadow-xl p-3 text-xs space-y-1.5 min-w-[150px] z-50">
+                        <div className="font-semibold text-foreground border-b border-border/50 pb-1">
+                          {label}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Questions Answered:</span>
+                          <span className="font-bold text-foreground text-sm">
+                            {item?.answered ?? 0}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Accuracy:</span>
+                          <span className="font-medium text-foreground">
+                            {item?.accuracy ?? 0}%
+                          </span>
+                        </div>
+                      </div>
+                    );
                   }}
                 />
-              )}
 
-              {/* Custom Interactive Tooltip */}
-              <Tooltip
-                content={({ active, payload, label }) => {
-                  if (!active || !payload || !payload.length) return null;
-                  const item = payload[0]?.payload;
-                  const acc = item?.accuracy ?? 0;
-                  const isAboveTarget = acc >= 75;
-
-                  return (
-                    <div className="bg-popover/95 backdrop-blur-md border border-border/80 rounded-xl shadow-xl p-3 text-xs space-y-2 min-w-[170px] z-50">
-                      <div className="font-semibold text-foreground flex items-center justify-between border-b border-border/60 pb-1.5">
-                        <span>{label}</span>
-                        <span
-                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                            isAboveTarget
-                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                              : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                          }`}
-                        >
-                          {isAboveTarget ? "Above Target" : "Review Area"}
-                        </span>
-                      </div>
-
-                      <div className="space-y-1.5 pt-0.5">
-                        <div className="flex justify-between items-center gap-3">
-                          <span className="text-muted-foreground flex items-center gap-1.5">
-                            <span className="size-2 rounded-full bg-blue-500" />
-                            Accuracy:
-                          </span>
-                          <span className="font-bold text-foreground text-sm">{acc}%</span>
-                        </div>
-
-                        <div className="flex justify-between items-center gap-3">
-                          <span className="text-muted-foreground flex items-center gap-1.5">
-                            <span className="size-2 rounded-full bg-purple-500" />
-                            Questions:
-                          </span>
-                          <span className="font-semibold text-foreground">
-                            {item?.answered || 0} Qs
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }}
-              />
-
-              {/* Bar Layer for Questions Volume */}
-              {(viewMode === "volume" || viewMode === "combined") && (
                 <Bar
-                  yAxisId="volumeAxis"
                   dataKey="answered"
-                  fill="url(#performanceVolumeGrad)"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={viewMode === "combined" ? 24 : 36}
-                  opacity={viewMode === "combined" ? 0.75 : 0.95}
+                  fill="url(#performanceVolumeGradient)"
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={48}
                 />
-              )}
-
-              {/* Area Layer for Accuracy */}
-              {(viewMode === "accuracy" || viewMode === "combined") && (
-                <Area
-                  yAxisId="accuracyAxis"
-                  type="monotone"
-                  dataKey="accuracy"
-                  stroke="#3b82f6"
-                  strokeWidth={2.5}
-                  fillOpacity={1}
-                  fill="url(#performanceAccuracyGrad)"
-                  dot={{
-                    r: 4,
-                    strokeWidth: 2,
-                    fill: "hsl(var(--background))",
-                    stroke: "#3b82f6",
-                  }}
-                  activeDot={{
-                    r: 6,
-                    strokeWidth: 2,
-                    fill: "#3b82f6",
-                    stroke: "#ffffff",
-                  }}
-                />
-              )}
-            </ComposedChart>
+              </BarChart>
+            )}
           </ResponsiveContainer>
         </div>
       </CardContent>

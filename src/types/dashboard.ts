@@ -36,6 +36,13 @@ export interface BankSummary {
   last_activity: ISODateString | null;
 }
 
+export interface DifficultyStat {
+  level: "easy" | "medium" | "hard" | string;
+  label: string;
+  count: number;
+  accuracy: number;
+}
+
 export interface DashboardMetrics {
   total_questions: number;
   questions_practiced: number;
@@ -46,4 +53,5 @@ export interface DashboardMetrics {
   weak_topics: TopicPerformance[];
   recent_activity: RecentActivity[];
   bank_summaries: BankSummary[];
+  difficulty_distribution?: DifficultyStat[];
 }

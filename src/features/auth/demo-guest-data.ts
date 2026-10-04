@@ -198,6 +198,11 @@ export const GUEST_METRICS: DashboardMetrics = {
     { date: "2026-10-02", accuracy: 78, answered: 10 },
     { date: "2026-10-03", accuracy: 88, answered: 10 },
   ],
+  difficulty_distribution: [
+    { level: "easy", label: "Easy", count: 12, accuracy: 91.7 },
+    { level: "medium", label: "Medium", count: 16, accuracy: 81.2 },
+    { level: "hard", label: "Hard", count: 8, accuracy: 62.5 },
+  ],
   strong_topics: [
     {
       topic: "React 19 & Architecture",
@@ -330,4 +335,3 @@ export const GUEST_RESULTS = [
     status: "completed",
   },
 ];
-

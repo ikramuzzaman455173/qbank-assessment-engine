@@ -13,6 +13,8 @@ export const ROUTES = {
   createTest: "/tests/create",
   test: (id: string) => `/tests/${id}`,
   attemptTest: (id: string) => `/tests/${id}/attempt`,
+  results: "/results",
+  attemptResult: (id: string) => `/attempts/${id}/result`,
   practice: "/practice",
   practiceConfig: "/practice/config",
 };

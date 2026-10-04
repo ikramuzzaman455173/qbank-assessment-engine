@@ -1,4 +1,5 @@
 import {
+  Award,
   BarChart3,
   BookOpen,
   ClipboardList,
@@ -36,6 +37,12 @@ export const primaryNavigation: readonly NavItem[] = [
     to: ROUTES.tests,
     icon: ClipboardList,
     description: "Generate and review exam-style tests",
+  },
+  {
+    label: "Results",
+    to: ROUTES.results,
+    icon: Award,
+    description: "Review test scores and past attempts",
   },
   {
     label: "Practice",

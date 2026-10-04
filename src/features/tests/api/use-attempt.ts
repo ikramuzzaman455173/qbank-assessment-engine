@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { attemptKeys } from "./keys";
 import type { Attempt, AttemptAnswer } from "@/types/domain";
+import { isGuestSession, GUEST_QUESTIONS } from "@/features/auth/demo-guest-data";
 
 export function useCurrentAttempt(testId: string) {
   return useQuery({
@@ -95,6 +96,37 @@ export function useAttempt(attemptId: string) {
   return useQuery({
     queryKey: attemptKeys.detail(attemptId),
     queryFn: async () => {
+      if (attemptId.startsWith("demo-attempt-") || isGuestSession()) {
+        const isSecond = attemptId === "demo-attempt-2" || attemptId === "demo-attempt-3";
+        return {
+          id: attemptId,
+          ownerId: "guest-demo-user-id",
+          testId: isSecond ? "demo-test-2" : "demo-test-1",
+          status: "completed",
+          startedAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+          submittedAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+          timeSpentSeconds: 284,
+          totalQuestions: 4,
+          answeredQuestions: 4,
+          correctAnswers: isSecond ? 4 : 3,
+          incorrectAnswers: isSecond ? 0 : 1,
+          unansweredQuestions: 0,
+          score: isSecond ? 4 : 3,
+          percentage: isSecond ? 100 : 75,
+          createdAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+          updatedAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+          answers: GUEST_QUESTIONS.slice(0, 4).map((q, idx) => ({
+            id: `demo-ans-${idx + 1}`,
+            attemptId,
+            testQuestionId: `demo-tq-${idx + 1}`,
+            selectedAnswer: !isSecond && idx === 3 ? "C" : q.correctAnswer,
+            isCorrect: isSecond || idx !== 3,
+            isMarkedForReview: idx === 3,
+            answeredAt: new Date(Date.now() - 1000 * 60 * (5 - idx)).toISOString(),
+          })),
+        } as Attempt & { answers: AttemptAnswer[] };
+      }
+
       const { data, error } = await supabase
         .from("attempts")
         .select(

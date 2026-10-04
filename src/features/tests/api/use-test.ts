@@ -2,11 +2,55 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { testKeys } from "./keys";
 import type { Test, TestQuestion } from "@/types/domain";
+import { isGuestSession, GUEST_QUESTIONS } from "@/features/auth/demo-guest-data";
 
 export function useTest(id: string) {
   return useQuery({
     queryKey: testKeys.detail(id),
     queryFn: async () => {
+      if (id.startsWith("demo-test-") || isGuestSession()) {
+        const isSecond = id === "demo-test-2";
+        return {
+          id,
+          ownerId: "guest-demo-user-id",
+          questionBankId: isSecond ? "demo-bank-2" : "demo-bank-1",
+          title: isSecond
+            ? "Distributed Systems & Storage Assessment"
+            : "React 19 & Full-Stack Core Test",
+          mode: "custom",
+          totalQuestions: 4,
+          difficulty: isSecond ? "hard" : "mixed",
+          topic: isSecond ? "Distributed Systems" : "React 19 & Architecture",
+          source: null,
+          timerEnabled: true,
+          durationSeconds: 600,
+          randomizeQuestions: false,
+          randomizeOptions: false,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          bankName: isSecond
+            ? "Computer Science & System Architecture"
+            : "Full-Stack Web & React Engineering",
+          questions: GUEST_QUESTIONS.slice(0, 4).map((q, idx) => ({
+            id: `demo-tq-${idx + 1}`,
+            testId: id,
+            originalQuestionId: q.id,
+            questionOrder: idx + 1,
+            questionText: q.questionText,
+            optionA: q.optionA,
+            optionB: q.optionB,
+            optionC: q.optionC,
+            optionD: q.optionD,
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation,
+            topic: q.topic,
+            difficulty: q.difficulty,
+            sourceReference: q.sourceReference,
+            createdAt: q.createdAt,
+          })),
+        } as Test & { bankName?: string; questions: TestQuestion[] };
+      }
+
       // Fetch test details and its test_questions
       const { data, error } = await supabase
         .from("tests")

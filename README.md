@@ -4,7 +4,7 @@
     <strong>A high-performance full-stack examination and question bank platform with AI question extraction, timed testing sessions, and granular mastery analytics.</strong>
   </p>
   <p>
-    <a href="https://knowledge-canvas.vercel.app">
+    <a href="https://qbank-core.vercel.app">
       <img src="https://img.shields.io/badge/Live_Demo-Visit_Platform-00C7B7?style=for-the-badge&logo=vercel" alt="Live Demo" />
     </a>
     <img src="https://img.shields.io/badge/Status-Completed-brightgreen?style=for-the-badge" alt="Status" />
@@ -38,7 +38,7 @@ Built on **TanStack Start (Full-Stack SSR with Nitro)** and **React 19**, the pl
 
 Experience the platform live with instant guest evaluation or test credentials:
 
-- **Live Application:** [https://knowledge-canvas.vercel.app](https://knowledge-canvas.vercel.app)
+- **Live Application:** [https://qbank-core.vercel.app](https://qbank-core.vercel.app)
 - **1-Click Reviewer Access:** Click **"Explore as Guest Reviewer"** on the landing page for immediate instant-login with pre-seeded demo assessment data.
 - **Demo Reviewer Credentials:**
   - **Email:** `demo@knowledgecanvas.dev`
@@ -177,9 +177,10 @@ Follow these steps to run QBank locally on your development environment.
 ---
 
 ## 👨‍💻 Author
-
-- **Developer:** [Ikramuzzaman](https://github.com/ikramuzzaman455173)
-- **Portfolio:** [Explore Showcase](https://github.com/ikramuzzaman455173)
+ 
+- **Developer:** [Md. Ikramuzzaman](https://github.com/ikramuzzaman455173)
+- **Portfolio:** [ikramuzzaman.vercel.app](https://ikramuzzaman.vercel.app)
+- **GitHub:** [@ikramuzzaman455173](https://github.com/ikramuzzaman455173)
 - **Role:** Full-Stack Software Engineer (3+ Years Experience)
 
 ---

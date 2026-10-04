@@ -10,7 +10,7 @@ Priority: 10
 Tags: React 19, TanStack Start, TypeScript, PostgreSQL, Supabase, Google Gemini, Tailwind CSS
 Published Date: 2026-10-04
 
-Live URL: https://knowledge-canvas.vercel.app
+Live URL: https://qbank-core.vercel.app
 Repo Frontend URL: https://github.com/ikramuzzaman455173/knowledge-canvas
 Repo Backend URL: https://github.com/ikramuzzaman455173/knowledge-canvas
 Docs URL: https://github.com/ikramuzzaman455173/knowledge-canvas#readme

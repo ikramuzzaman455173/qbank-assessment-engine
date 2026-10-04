@@ -1,3 +1,5 @@
+<img width="1672" height="941" alt="Image" src="https://github.com/user-attachments/assets/856bd794-269b-41f8-8735-af213b49ae40" />
+
 <div align="center">
   <h1>🚀 QBank — Smart MCQ & Assessment Engine</h1>
   <p>

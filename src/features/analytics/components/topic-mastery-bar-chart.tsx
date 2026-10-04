@@ -62,14 +62,14 @@ export function TopicMasteryBarChart({ topics, loading }: TopicMasteryBarChartPr
     const items: ChartItem[] = uniqueTopics.map((t) => {
       const acc = Math.round(t.accuracy);
       let status: "Mastered" | "Proficient" | "Needs Practice" = "Needs Practice";
-      let fillColor = "#f43f5e"; // rose-500
+      let fillColor = "var(--chart-4)"; // Needs Practice (Rose)
 
       if (acc >= 80) {
         status = "Mastered";
-        fillColor = "#10b981"; // emerald-500
+        fillColor = "var(--chart-2)"; // Mastered (Emerald)
       } else if (acc >= 60) {
         status = "Proficient";
-        fillColor = "#f59e0b"; // amber-500
+        fillColor = "var(--chart-3)"; // Proficient (Amber)
       }
 
       return {
@@ -245,19 +245,31 @@ export function TopicMasteryBarChart({ topics, loading }: TopicMasteryBarChartPr
         <div className="flex flex-wrap items-center justify-between text-xs text-muted-foreground gap-2 pb-3 mb-2 border-b border-border/30">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-emerald-500 inline-block" />
+              <span
+                className="size-2 rounded-full inline-block"
+                style={{ backgroundColor: "var(--chart-2)" }}
+              />
               <span>Mastered (≥80%)</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-amber-500 inline-block" />
+              <span
+                className="size-2 rounded-full inline-block"
+                style={{ backgroundColor: "var(--chart-3)" }}
+              />
               <span>Proficient (60-79%)</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-rose-500 inline-block" />
+              <span
+                className="size-2 rounded-full inline-block"
+                style={{ backgroundColor: "var(--chart-4)" }}
+              />
               <span>Needs Practice (&lt;60%)</span>
             </div>
           </div>
-          <div className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+          <div
+            className="text-[11px] font-medium flex items-center gap-1"
+            style={{ color: "var(--chart-2)" }}
+          >
             <CheckCircle2 className="size-3" /> Target Benchmark: 75%
           </div>
         </div>
@@ -272,16 +284,16 @@ export function TopicMasteryBarChart({ topics, loading }: TopicMasteryBarChartPr
               <CartesianGrid
                 strokeDasharray="3 3"
                 horizontal={false}
-                stroke="hsl(var(--border))"
-                strokeOpacity={0.6}
+                stroke="var(--border)"
+                strokeOpacity={0.5}
               />
               <XAxis
                 type="number"
                 domain={[0, 100]}
                 unit="%"
                 tickLine={false}
-                axisLine={{ stroke: "hsl(var(--border))" }}
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                axisLine={{ stroke: "var(--border)" }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
               />
               <YAxis
                 type="category"
@@ -298,7 +310,7 @@ export function TopicMasteryBarChart({ topics, loading }: TopicMasteryBarChartPr
                       y={y}
                       dy={4}
                       textAnchor="end"
-                      fill="hsl(var(--foreground))"
+                      fill="var(--foreground)"
                       fontSize={12}
                       fontWeight={500}
                     >
@@ -342,7 +354,7 @@ export function TopicMasteryBarChart({ topics, loading }: TopicMasteryBarChartPr
                         </div>
                         <div className="flex items-center justify-between text-muted-foreground">
                           <span>Correct Answers:</span>
-                          <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                          <span className="font-medium" style={{ color: "var(--chart-2)" }}>
                             {item.correct} of {item.attempts}
                           </span>
                         </div>
@@ -359,12 +371,12 @@ export function TopicMasteryBarChart({ topics, loading }: TopicMasteryBarChartPr
               />
               <ReferenceLine
                 x={75}
-                stroke="#10b981"
+                stroke="var(--chart-2)"
                 strokeDasharray="4 4"
                 strokeWidth={1.5}
                 label={{
                   value: "Target 75%",
-                  fill: "#10b981",
+                  fill: "var(--chart-2)",
                   fontSize: 10,
                   position: "top",
                   fontWeight: 600,

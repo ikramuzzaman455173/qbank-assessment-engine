@@ -272,50 +272,49 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
             {viewMode === "accuracy" ? (
               <AreaChart data={chartData} margin={{ top: 14, right: 14, left: -14, bottom: 0 }}>
                 <defs>
-                  {/* Subtle, eye-warming gradient for accuracy curve */}
+                  {/* Theme-aware smooth gradient for accuracy curve */}
                   <linearGradient id="performanceAccuracyGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#6366f1" stopOpacity={0.35} />
-                    <stop offset="50%" stopColor="#6366f1" stopOpacity={0.12} />
-                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0.0} />
+                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.35} />
+                    <stop offset="50%" stopColor="var(--chart-1)" stopOpacity={0.12} />
+                    <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
 
                 <CartesianGrid
                   strokeDasharray="4 4"
                   vertical={false}
-                  className="stroke-border/30"
+                  stroke="var(--border)"
+                  strokeOpacity={0.4}
                 />
 
                 <XAxis
                   dataKey="formattedDate"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 11, fill: "currentColor" }}
-                  className="text-muted-foreground"
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                   tickMargin={10}
                 />
 
                 <YAxis
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 11, fill: "currentColor" }}
-                  className="text-muted-foreground"
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                   domain={[0, 100]}
                   ticks={[0, 25, 50, 75, 100]}
                   tickFormatter={(val) => `${val}%`}
                 />
 
-                {/* Target Benchmark Line at 75% */}
+                {/* Target Benchmark Line at 75% using theme success token */}
                 <ReferenceLine
                   y={75}
-                  stroke="#10b981"
+                  stroke="var(--chart-2)"
                   strokeDasharray="4 4"
-                  strokeOpacity={0.7}
+                  strokeOpacity={0.8}
                   strokeWidth={1.5}
                   label={{
                     value: "Target 75%",
                     position: "insideTopRight",
-                    fill: "#10b981",
+                    fill: "var(--chart-2)",
                     fontSize: 10.5,
                     fontWeight: 600,
                   }}
@@ -363,14 +362,14 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
                 <Area
                   type="monotone"
                   dataKey="accuracy"
-                  stroke="#6366f1"
+                  stroke="var(--chart-1)"
                   strokeWidth={2.5}
                   fill="url(#performanceAccuracyGradient)"
                   activeDot={{
                     r: 5,
-                    stroke: "#6366f1",
+                    stroke: "var(--chart-1)",
                     strokeWidth: 2,
-                    fill: "#ffffff",
+                    fill: "var(--card)",
                   }}
                 />
               </AreaChart>
@@ -379,31 +378,30 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
               <BarChart data={chartData} margin={{ top: 14, right: 14, left: -14, bottom: 0 }}>
                 <defs>
                   <linearGradient id="performanceVolumeGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9} />
-                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0.6} />
+                    <stop offset="0%" stopColor="var(--chart-5)" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.7} />
                   </linearGradient>
                 </defs>
 
                 <CartesianGrid
                   strokeDasharray="4 4"
                   vertical={false}
-                  className="stroke-border/30"
+                  stroke="var(--border)"
+                  strokeOpacity={0.4}
                 />
 
                 <XAxis
                   dataKey="formattedDate"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 11, fill: "currentColor" }}
-                  className="text-muted-foreground"
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                   tickMargin={10}
                 />
 
                 <YAxis
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 11, fill: "currentColor" }}
-                  className="text-muted-foreground"
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                   allowDecimals={false}
                   tickFormatter={(val) => `${val} Qs`}
                 />

@@ -23,17 +23,17 @@ interface DifficultyPieItem {
 const DIFFICULTY_CONFIG: Record<string, { label: string; color: string; bgLight: string }> = {
   easy: {
     label: "Easy",
-    color: "#10b981", // emerald-500
+    color: "var(--chart-2)", // Emerald
     bgLight: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   },
   medium: {
     label: "Medium",
-    color: "#f59e0b", // amber-500
+    color: "var(--chart-3)", // Amber
     bgLight: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   },
   hard: {
     label: "Hard",
-    color: "#8b5cf6", // violet-500
+    color: "var(--chart-1)", // Indigo
     bgLight: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20",
   },
 };
@@ -204,7 +204,7 @@ export function DifficultyDonutChart({ data, loading }: DifficultyDonutChartProp
                 paddingAngle={4}
                 dataKey="count"
                 strokeWidth={2}
-                stroke="hsl(var(--card))"
+                stroke="var(--card)"
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />

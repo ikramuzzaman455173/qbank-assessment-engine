@@ -39,13 +39,13 @@ export function JsonImport({ onComplete, onCancel }: JsonImportProps) {
         setError("Please provide JSON content.");
         return;
       }
-      
+
       const parsed = JSON.parse(jsonText);
-      const arrayToProcess = Array.isArray(parsed) 
-        ? parsed 
+      const arrayToProcess = Array.isArray(parsed)
+        ? parsed
         : parsed.questions && Array.isArray(parsed.questions)
-        ? parsed.questions
-        : [parsed]; // fallback to trying to parse a single object
+          ? parsed.questions
+          : [parsed]; // fallback to trying to parse a single object
 
       const results: ParsedQuestionResult[] = arrayToProcess.map((item: any, index: number) => {
         const validation = rawQuestionSchema.safeParse(item);
@@ -78,20 +78,21 @@ export function JsonImport({ onComplete, onCancel }: JsonImportProps) {
         <CardHeader>
           <CardTitle>Import JSON</CardTitle>
           <CardDescription>
-            Upload a .json file or paste your JSON content directly.
-            The JSON should be an array of questions or an object with a "questions" array.
+            Upload a .json file or paste your JSON content directly. The JSON should be an array of
+            questions or an object with a "questions" array.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
-            <Input 
-              type="file" 
-              accept=".json" 
+            <Input
+              id="json-file-input"
+              type="file"
+              accept=".json"
               onChange={handleFileUpload}
               className="flex-1"
             />
             <Button variant="outline" className="shrink-0" asChild>
-              <label className="cursor-pointer">
+              <label htmlFor="json-file-input" className="cursor-pointer">
                 <Upload className="mr-2 h-4 w-4" />
                 Upload File
               </label>
@@ -103,9 +104,7 @@ export function JsonImport({ onComplete, onCancel }: JsonImportProps) {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or paste JSON
-              </span>
+              <span className="bg-background px-2 text-muted-foreground">Or paste JSON</span>
             </div>
           </div>
 
@@ -115,7 +114,9 @@ export function JsonImport({ onComplete, onCancel }: JsonImportProps) {
               setJsonText(e.target.value);
               setError(null);
             }}
-            placeholder={'[\n  {\n    "question_text": "...",\n    "option_a": "...",\n    "option_b": "...",\n    "option_c": "...",\n    "option_d": "...",\n    "correct_answer": "A"\n  }\n]'}
+            placeholder={
+              '[\n  {\n    "question_text": "...",\n    "option_a": "...",\n    "option_b": "...",\n    "option_c": "...",\n    "option_d": "...",\n    "correct_answer": "A"\n  }\n]'
+            }
             className="font-mono text-sm min-h-[300px]"
           />
 
@@ -131,9 +132,7 @@ export function JsonImport({ onComplete, onCancel }: JsonImportProps) {
             <Button variant="outline" onClick={onCancel}>
               Cancel
             </Button>
-            <Button onClick={processJson}>
-              Process JSON
-            </Button>
+            <Button onClick={processJson}>Process JSON</Button>
           </div>
         </CardContent>
       </Card>

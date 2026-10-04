@@ -39,10 +39,7 @@ export function ThemeToggle() {
       document.getAnimations().forEach((a) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const pseudo = (a.effect as any)?.pseudoElement;
-        if (
-          pseudo === "::view-transition-new(root)" ||
-          pseudo === "::view-transition-old(root)"
-        ) {
+        if (pseudo === "::view-transition-new(root)" || pseudo === "::view-transition-old(root)") {
           a.cancel();
         }
       });
@@ -57,10 +54,7 @@ export function ThemeToggle() {
     });
 
     transition.ready.then(() => {
-      const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`,
-      ];
+      const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let anim: any = null;
@@ -113,9 +107,15 @@ export function ThemeToggle() {
       className="relative overflow-hidden cursor-pointer transition-transform hover:scale-105 active:scale-95"
     >
       {resolvedTheme === "dark" ? (
-        <Sun className="size-4 rotate-0 scale-100 transition-all duration-300 text-amber-400" aria-hidden="true" />
+        <Sun
+          className="size-4 rotate-0 scale-100 transition-all duration-300 text-amber-400"
+          aria-hidden="true"
+        />
       ) : (
-        <Moon className="size-4 rotate-0 scale-100 transition-all duration-300 text-slate-700 dark:text-slate-200" aria-hidden="true" />
+        <Moon
+          className="size-4 rotate-0 scale-100 transition-all duration-300 text-slate-700 dark:text-slate-200"
+          aria-hidden="true"
+        />
       )}
     </Button>
   );

@@ -10,8 +10,8 @@ interface PracticeConfigSearch {
 export const Route = createFileRoute("/_authenticated/practice/config")({
   validateSearch: (search: Record<string, unknown>): PracticeConfigSearch => {
     return {
-      mode: (search['mode'] as string) || "all",
-      topic: (search['topic'] as string) || undefined,
+      mode: (search["mode"] as string) || "all",
+      topic: (search["topic"] as string) || undefined,
     };
   },
   component: PracticeConfigPage,
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/practice/config")({
 
 function PracticeConfigPage() {
   const { mode, topic } = Route.useSearch();
-  
+
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
       <PageHeader

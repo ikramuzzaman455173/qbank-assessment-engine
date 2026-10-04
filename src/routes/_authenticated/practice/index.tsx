@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router';
-import { useQuestions } from '@/features/questions/api/use-questions';
-import { PracticeEngine } from '@/features/practice/components';
-import { LoadingState, ErrorState } from '@/components/common';
+import { useMemo } from "react";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
+import { useQuestions } from "@/features/questions/api/use-questions";
+import { PracticeEngine } from "@/features/practice/components";
+import { LoadingState, ErrorState } from "@/components/common";
 
 interface PracticeSearch {
   bankId?: string;
@@ -16,30 +17,30 @@ interface PracticeSearch {
   randomizeOptions: boolean;
 }
 
-export const Route = createFileRoute('/_authenticated/practice/')({
+export const Route = createFileRoute("/_authenticated/practice/")({
   validateSearch: (search: Record<string, unknown>): PracticeSearch => {
-    const rawSeconds = search['durationSeconds'] ? Number(search['durationSeconds']) : undefined;
-    const rawMinutes = search['durationMinutes'] ? Number(search['durationMinutes']) : undefined;
+    const rawSeconds = search["durationSeconds"] ? Number(search["durationSeconds"]) : undefined;
+    const rawMinutes = search["durationMinutes"] ? Number(search["durationMinutes"]) : undefined;
 
     const result: PracticeSearch = {
-      practiceMode: (search['practiceMode'] as string) || "all",
-      totalQuestions: Number(search['totalQuestions']) || 10,
-      randomizeQuestions: search['randomizeQuestions'] !== "false",
-      randomizeOptions: search['randomizeOptions'] !== "false",
-      timerEnabled: search['timerEnabled'] === true || search['timerEnabled'] === "true",
+      practiceMode: (search["practiceMode"] as string) || "all",
+      totalQuestions: Number(search["totalQuestions"]) || 10,
+      randomizeQuestions: search["randomizeQuestions"] !== "false",
+      randomizeOptions: search["randomizeOptions"] !== "false",
+      timerEnabled: search["timerEnabled"] === true || search["timerEnabled"] === "true",
       durationMinutes: rawMinutes || 10,
       durationSeconds: rawSeconds ?? (rawMinutes ? rawMinutes * 60 : 600),
     };
-    
-    if (search['bankId']) result.bankId = search['bankId'] as string;
-    if (search['difficulty']) result.difficulty = search['difficulty'] as string;
-    if (search['topic']) result.topic = search['topic'] as string;
-    
+
+    if (search["bankId"]) result.bankId = search["bankId"] as string;
+    if (search["difficulty"]) result.difficulty = search["difficulty"] as string;
+    if (search["topic"]) result.topic = search["topic"] as string;
+
     return result;
   },
   beforeLoad: ({ search }) => {
     if (!search.bankId) {
-      throw redirect({ to: '/practice/config' });
+      throw redirect({ to: "/practice/config" });
     }
   },
   component: PracticeRoute,
@@ -50,30 +51,33 @@ function PracticeRoute() {
   const navigate = useNavigate();
 
   const filters: Record<string, any> = { pageSize: search.totalQuestions };
-  if (search.difficulty) filters['difficulty'] = search.difficulty;
-  if (search.topic) filters['topic'] = search.topic;
+  if (search.difficulty) filters["difficulty"] = search.difficulty;
+  if (search.topic) filters["topic"] = search.topic;
 
   const { data, isLoading, error } = useQuestions(search.bankId, filters);
+
+  // Stable client-side randomization so order doesn't jump during renders
+  const questions = useMemo(() => {
+    const items = data?.items || [];
+    if (!search.randomizeQuestions || items.length === 0) return items;
+    return [...items].sort(() => Math.random() - 0.5);
+  }, [data?.items, search.randomizeQuestions]);
 
   if (isLoading) return <LoadingState label="Preparing your practice session..." />;
   if (error) return <ErrorState title="Error" description={error.message} />;
 
-  // Basic client-side randomization since the backend query just returns top N
-  let questions = data?.items || [];
-  if (search.randomizeQuestions) {
-    questions = [...questions].sort(() => Math.random() - 0.5);
-  }
-
   return (
     <div className="py-6">
-      <PracticeEngine 
-        questions={questions} 
+      <PracticeEngine
+        questions={questions}
         bankId={search.bankId}
         randomizeOptions={search.randomizeOptions}
         defaultMode={search.practiceMode === "instant" ? "instant" : "exam"}
         timerEnabled={search.timerEnabled}
         durationSeconds={search.durationSeconds}
-        onFinish={() => void navigate({ to: '/question-banks/$bankId', params: { bankId: search.bankId! } })}
+        onFinish={() =>
+          void navigate({ to: "/question-banks/$bankId", params: { bankId: search.bankId! } })
+        }
       />
     </div>
   );

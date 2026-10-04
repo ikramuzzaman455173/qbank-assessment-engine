@@ -89,7 +89,7 @@ function AuthPage() {
 
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
-    defaultValues: { email: "hat74920@gmail.com", password: "hat74920" },
+    defaultValues: { email: "", password: "" },
   });
 
   const signUpForm = useForm<SignUpValues>({
@@ -224,11 +224,7 @@ function AuthPage() {
                           Password <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
-                          <PasswordInput
-                            placeholder="••••••••"
-                            disabled={isLoading}
-                            {...field}
-                          />
+                          <PasswordInput placeholder="••••••••" disabled={isLoading} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -288,11 +284,7 @@ function AuthPage() {
                           Password <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
-                          <PasswordInput
-                            placeholder="••••••••"
-                            disabled={isLoading}
-                            {...field}
-                          />
+                          <PasswordInput placeholder="••••••••" disabled={isLoading} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -307,11 +299,7 @@ function AuthPage() {
                           Confirm Password <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
-                          <PasswordInput
-                            placeholder="••••••••"
-                            disabled={isLoading}
-                            {...field}
-                          />
+                          <PasswordInput placeholder="••••••••" disabled={isLoading} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

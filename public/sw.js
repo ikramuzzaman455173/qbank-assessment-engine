@@ -16,7 +16,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_ASSETS);
-    })
+    }),
   );
   self.skipWaiting();
 });
@@ -30,9 +30,9 @@ self.addEventListener("activate", (event) => {
           if (name !== CACHE_NAME) {
             return caches.delete(name);
           }
-        })
+        }),
       );
-    })
+    }),
   );
   self.clients.claim();
 });
@@ -69,7 +69,7 @@ self.addEventListener("fetch", (event) => {
             return cachedResponse;
           }
           return cache.match(OFFLINE_URL);
-        })
+        }),
     );
     return;
   }
@@ -97,13 +97,11 @@ self.addEventListener("fetch", (event) => {
           .catch(() => cachedResponse);
 
         return cachedResponse || fetchPromise;
-      })
+      }),
     );
     return;
   }
 
   // 4. Default: Network with Cache fallback
-  event.respondWith(
-    fetch(request).catch(() => caches.match(request))
-  );
+  event.respondWith(fetch(request).catch(() => caches.match(request)));
 });

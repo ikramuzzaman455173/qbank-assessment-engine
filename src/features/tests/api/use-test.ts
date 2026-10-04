@@ -10,7 +10,8 @@ export function useTest(id: string) {
       // Fetch test details and its test_questions
       const { data, error } = await supabase
         .from("tests")
-        .select(`
+        .select(
+          `
           *,
           question_banks ( name ),
           test_questions (
@@ -30,7 +31,8 @@ export function useTest(id: string) {
             source_reference,
             created_at
           )
-        `)
+        `,
+        )
         .eq("id", id)
         .single();
 
@@ -53,8 +55,7 @@ export function useTest(id: string) {
         createdAt: data.created_at,
         updatedAt: data.updated_at,
         bankName: data.question_banks?.name,
-        // @ts-ignore
-        questions: (data.test_questions || [])
+        questions: ((data as any).test_questions || [])
           .sort((a: any, b: any) => a.question_order - b.question_order)
           .map((q: any) => ({
             id: q.id,

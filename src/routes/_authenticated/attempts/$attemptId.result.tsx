@@ -12,9 +12,7 @@ import { useCreateAttempt } from "@/features/tests/api/use-create-attempt";
 
 export const Route = createFileRoute("/_authenticated/attempts/$attemptId/result")({
   head: () => ({
-    meta: [
-      { title: "Test Result — QBank" },
-    ],
+    meta: [{ title: "Test Result — QBank" }],
   }),
   component: AttemptResultPage,
 });
@@ -25,7 +23,7 @@ function AttemptResultPage() {
 
   const { data: attempt, isLoading: isAttemptLoading, error: attemptError } = useAttempt(attemptId);
   const { data: test, isLoading: isTestLoading, error: testError } = useTest(attempt?.testId || "");
-  
+
   const createAttemptMutation = useCreateAttempt();
 
   const handleRetake = () => {
@@ -33,8 +31,15 @@ function AttemptResultPage() {
     createAttemptMutation.mutate({ testId: test.id, totalQuestions: test.totalQuestions });
   };
 
-  if (isAttemptLoading || (attempt && isTestLoading)) return <LoadingState label="Loading results..." />;
-  if (attemptError || testError) return <ErrorState title="Error" description={(attemptError || testError)?.message || "Something went wrong"} />;
+  if (isAttemptLoading || (attempt && isTestLoading))
+    return <LoadingState label="Loading results..." />;
+  if (attemptError || testError)
+    return (
+      <ErrorState
+        title="Error"
+        description={(attemptError || testError)?.message || "Something went wrong"}
+      />
+    );
   if (!attempt || !test) return null;
 
   return (
@@ -45,12 +50,7 @@ function AttemptResultPage() {
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="space-y-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="-ml-3 text-muted-foreground mb-2"
-            asChild
-          >
+          <Button variant="ghost" size="sm" className="-ml-3 text-muted-foreground mb-2" asChild>
             <Link to={ROUTES.test(test.id)}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Test Details

@@ -1,5 +1,14 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Bookmark, Send, Maximize, Minimize2, Keyboard, LogOut } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Bookmark,
+  Send,
+  Maximize,
+  Minimize2,
+  Keyboard,
+  LogOut,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -18,7 +27,7 @@ interface TestTakingEngineProps {
 }
 
 export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
-  const questions = test.questions || [];
+  const questions = useMemo(() => test.questions || [], [test.questions]);
   const initialAnswers = attempt.answers || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,9 +45,9 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
   const submitMutation = useSubmitAttempt();
 
   const currentQuestion = questions[currentIndex];
-  const orderedQuestionIds = useMemo(() => questions.map(q => q.id), [questions]);
-  
-  const currentAnswer = answers.find(a => a.testQuestionId === currentQuestion?.id);
+  const orderedQuestionIds = useMemo(() => questions.map((q) => q.id), [questions]);
+
+  const currentAnswer = answers.find((a) => a.testQuestionId === currentQuestion?.id);
 
   const options = useMemo(() => {
     if (!currentQuestion) return [];
@@ -49,65 +58,83 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
       { id: "D", text: currentQuestion.optionD },
     ];
     if (test.randomizeOptions) {
-      return [...baseOptions].sort(() => Math.random() - 0.5);
+      // Deterministic per-question shuffle using question id and attempt id as seed
+      const seed = `${currentQuestion.id}-${attempt.id}`;
+      let hash = 0;
+      for (let i = 0; i < seed.length; i++) {
+        hash = (hash << 5) - hash + seed.charCodeAt(i);
+        hash |= 0;
+      }
+      const shuffled = [...baseOptions];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        hash = (hash * 9301 + 49297) % 233280;
+        const j = Math.abs(hash) % (i + 1);
+        const temp = shuffled[i]!;
+        shuffled[i] = shuffled[j]!;
+        shuffled[j] = temp;
+      }
+      return shuffled;
     }
     return baseOptions;
-  }, [currentQuestion, test.randomizeOptions]);
+  }, [currentQuestion, test.randomizeOptions, attempt.id]);
 
-  const handleSelectOption = useCallback((optionId: string) => {
-    if (!currentQuestion) return;
-    const val = optionId as CorrectAnswer;
-    // Optimistic update
-    const existing = answers.find(a => a.testQuestionId === currentQuestion.id);
-    const newAnswer: AttemptAnswer = existing 
-      ? { ...existing, selectedAnswer: val, answeredAt: new Date().toISOString() }
-      : { 
-          id: `temp-${Date.now()}`, 
-          attemptId: attempt.id, 
-          testQuestionId: currentQuestion.id, 
-          selectedAnswer: val, 
-          isCorrect: null, 
-          isMarkedForReview: false, 
-          answeredAt: new Date().toISOString() 
-        };
-        
-    setAnswers(prev => {
-      const idx = prev.findIndex(a => a.testQuestionId === currentQuestion.id);
-      if (idx >= 0) {
-        const next = [...prev];
-        next[idx] = newAnswer;
-        return next;
-      }
-      return [...prev, newAnswer];
-    });
+  const handleSelectOption = useCallback(
+    (optionId: string) => {
+      if (!currentQuestion) return;
+      const val = optionId as CorrectAnswer;
+      // Optimistic update
+      const existing = answers.find((a) => a.testQuestionId === currentQuestion.id);
+      const newAnswer: AttemptAnswer = existing
+        ? { ...existing, selectedAnswer: val, answeredAt: new Date().toISOString() }
+        : {
+            id: `temp-${Date.now()}`,
+            attemptId: attempt.id,
+            testQuestionId: currentQuestion.id,
+            selectedAnswer: val,
+            isCorrect: null,
+            isMarkedForReview: false,
+            answeredAt: new Date().toISOString(),
+          };
 
-    saveAnswerMutation.mutate({
-      attemptId: attempt.id,
-      testQuestionId: currentQuestion.id,
-      selectedAnswer: val,
-      isMarkedForReview: newAnswer.isMarkedForReview
-    });
-  }, [currentQuestion, answers, attempt.id, saveAnswerMutation]);
+      setAnswers((prev) => {
+        const idx = prev.findIndex((a) => a.testQuestionId === currentQuestion.id);
+        if (idx >= 0) {
+          const next = [...prev];
+          next[idx] = newAnswer;
+          return next;
+        }
+        return [...prev, newAnswer];
+      });
+
+      saveAnswerMutation.mutate({
+        attemptId: attempt.id,
+        testQuestionId: currentQuestion.id,
+        selectedAnswer: val,
+        isMarkedForReview: newAnswer.isMarkedForReview,
+      });
+    },
+    [currentQuestion, answers, attempt.id, saveAnswerMutation],
+  );
 
   const handleToggleMark = useCallback(() => {
     if (!currentQuestion) return;
-    const existing = answers.find(a => a.testQuestionId === currentQuestion.id);
+    const existing = answers.find((a) => a.testQuestionId === currentQuestion.id);
     const isMarked = !existing?.isMarkedForReview;
-    
-    const newAnswer: AttemptAnswer = existing 
+
+    const newAnswer: AttemptAnswer = existing
       ? { ...existing, isMarkedForReview: isMarked }
-      : { 
-          id: `temp-${Date.now()}`, 
-          attemptId: attempt.id, 
-          testQuestionId: currentQuestion.id, 
-          selectedAnswer: null, 
-          isCorrect: null, 
-          isMarkedForReview: isMarked, 
-          answeredAt: null 
+      : {
+          id: `temp-${Date.now()}`,
+          attemptId: attempt.id,
+          testQuestionId: currentQuestion.id,
+          selectedAnswer: null,
+          isCorrect: null,
+          isMarkedForReview: isMarked,
+          answeredAt: null,
         };
 
-    setAnswers(prev => {
-      const idx = prev.findIndex(a => a.testQuestionId === currentQuestion.id);
+    setAnswers((prev) => {
+      const idx = prev.findIndex((a) => a.testQuestionId === currentQuestion.id);
       if (idx >= 0) {
         const next = [...prev];
         next[idx] = newAnswer;
@@ -120,29 +147,34 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
       attemptId: attempt.id,
       testQuestionId: currentQuestion.id,
       selectedAnswer: newAnswer.selectedAnswer,
-      isMarkedForReview: isMarked
+      isMarkedForReview: isMarked,
     });
   }, [currentQuestion, answers, attempt.id, saveAnswerMutation]);
 
-  const handleToggleStrike = useCallback((optionId: string) => {
-    if (!currentQuestion) return;
-    setStrikeThrough(prev => {
-      const existing = prev[currentQuestion.id] ? new Set(prev[currentQuestion.id]) : new Set<string>();
-      if (existing.has(optionId)) {
-        existing.delete(optionId);
-      } else {
-        existing.add(optionId);
-      }
-      return { ...prev, [currentQuestion.id]: existing };
-    });
-  }, [currentQuestion]);
+  const handleToggleStrike = useCallback(
+    (optionId: string) => {
+      if (!currentQuestion) return;
+      setStrikeThrough((prev) => {
+        const existing = prev[currentQuestion.id]
+          ? new Set(prev[currentQuestion.id])
+          : new Set<string>();
+        if (existing.has(optionId)) {
+          existing.delete(optionId);
+        } else {
+          existing.add(optionId);
+        }
+        return { ...prev, [currentQuestion.id]: existing };
+      });
+    },
+    [currentQuestion],
+  );
 
   const handleNext = useCallback(() => {
-    setCurrentIndex(prev => Math.min(questions.length - 1, prev + 1));
+    setCurrentIndex((prev) => Math.min(questions.length - 1, prev + 1));
   }, [questions.length]);
 
   const handlePrevious = useCallback(() => {
-    setCurrentIndex(prev => Math.max(0, prev - 1));
+    setCurrentIndex((prev) => Math.max(0, prev - 1));
   }, []);
 
   const handleTimeUp = () => {
@@ -170,16 +202,21 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
         return;
       }
 
-      // A/B/C/D or 1/2/3/4 = select option
+      // Number keys 1-4 = select 1st, 2nd, 3rd, 4th displayed option
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= 4) {
+        const selectedOpt = options[num - 1];
+        if (selectedOpt) {
+          e.preventDefault();
+          handleSelectOption(selectedOpt.id);
+          return;
+        }
+      }
+
+      // A/B/C/D = select option by ID
       if (optionKeys.includes(key)) {
         e.preventDefault();
         handleSelectOption(key);
-        return;
-      }
-      const mappedNumber = numberKeys[e.key];
-      if (mappedNumber) {
-        e.preventDefault();
-        handleSelectOption(mappedNumber);
         return;
       }
 
@@ -219,23 +256,34 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [currentIndex, questions.length, handleNext, handlePrevious, handleSelectOption, handleToggleMark, handleToggleStrike, toggleFullscreen]);
+  }, [
+    currentIndex,
+    questions.length,
+    handleNext,
+    handlePrevious,
+    handleSelectOption,
+    handleToggleMark,
+    handleToggleStrike,
+    toggleFullscreen,
+    options,
+  ]);
 
   if (!currentQuestion || questions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto p-6 bg-card rounded-xl border shadow-sm my-12">
         <h2 className="text-xl font-bold mb-2">No Questions Found</h2>
-        <p className="text-sm text-muted-foreground mb-6">This test does not contain any questions yet.</p>
+        <p className="text-sm text-muted-foreground mb-6">
+          This test does not contain any questions yet.
+        </p>
         <Button onClick={() => window.history.back()}>Go Back</Button>
       </div>
     );
   }
 
-  const unansweredCount = test.totalQuestions - answers.filter(a => !!a.selectedAnswer).length;
+  const unansweredCount = test.totalQuestions - answers.filter((a) => !!a.selectedAnswer).length;
 
   return (
     <div className="flex flex-col lg:flex-row h-full w-full min-h-[calc(100vh-6rem)] gap-6 p-4 md:p-6">
-      
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col space-y-4 max-w-4xl">
         <div className="flex items-center justify-between bg-card p-4 rounded-lg border shadow-sm">
@@ -247,10 +295,10 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
           </div>
           <div className="flex items-center gap-3">
             {test.timerEnabled && test.durationSeconds && (
-              <TestTimer 
-                durationSeconds={test.durationSeconds} 
-                startedAt={attempt.startedAt} 
-                onExpire={handleTimeUp} 
+              <TestTimer
+                durationSeconds={test.durationSeconds}
+                startedAt={attempt.startedAt}
+                onExpire={handleTimeUp}
               />
             )}
 
@@ -290,7 +338,7 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
             {options.map((opt) => {
               const isSelected = currentAnswer?.selectedAnswer === opt.id;
               const isStruck = strikeThrough[currentQuestion.id]?.has(opt.id) ?? false;
-              
+
               return (
                 <div
                   key={opt.id}
@@ -301,16 +349,18 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
                   }}
                   className={cn(
                     "flex items-start gap-3 p-4 rounded-lg border transition-all duration-200 cursor-pointer select-none",
-                    isSelected 
-                      ? "border-primary bg-primary/5 ring-1 ring-primary" 
+                    isSelected
+                      ? "border-primary bg-primary/5 ring-1 ring-primary"
                       : "border-border hover:border-primary/50 hover:bg-muted/50",
-                    isStruck && "opacity-40 line-through decoration-2"
+                    isStruck && "opacity-40 line-through decoration-2",
                   )}
                 >
-                  <span className={cn(
-                    "font-bold min-w-[1.5rem]",
-                    isSelected ? "text-primary" : "text-muted-foreground"
-                  )}>
+                  <span
+                    className={cn(
+                      "font-bold min-w-[1.5rem]",
+                      isSelected ? "text-primary" : "text-muted-foreground",
+                    )}
+                  >
                     {opt.id}.
                   </span>
                   <span className="flex-1 whitespace-pre-wrap leading-relaxed">{opt.text}</span>
@@ -319,20 +369,25 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
             })}
           </CardContent>
           <CardFooter className="flex items-center justify-between border-t p-4 bg-muted/20">
-            <Button 
-              variant="outline" 
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-            >
+            <Button variant="outline" onClick={handlePrevious} disabled={currentIndex === 0}>
               <ChevronLeft className="mr-2 h-4 w-4" /> Previous
             </Button>
-            
-            <Button 
+
+            <Button
               variant={currentAnswer?.isMarkedForReview ? "secondary" : "outline"}
-              className={currentAnswer?.isMarkedForReview ? "text-amber-700 border-amber-300 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700 hover:bg-amber-100" : ""}
+              className={
+                currentAnswer?.isMarkedForReview
+                  ? "text-amber-700 border-amber-300 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700 hover:bg-amber-100"
+                  : ""
+              }
               onClick={handleToggleMark}
             >
-              <Bookmark className={cn("mr-2 h-4 w-4", currentAnswer?.isMarkedForReview ? "fill-current" : "")} />
+              <Bookmark
+                className={cn(
+                  "mr-2 h-4 w-4",
+                  currentAnswer?.isMarkedForReview ? "fill-current" : "",
+                )}
+              />
               {currentAnswer?.isMarkedForReview ? "Marked" : "Mark for Review"}
             </Button>
 
@@ -355,18 +410,38 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
               <Keyboard className="h-3.5 w-3.5" />
               <span className="font-medium">Shortcuts:</span>
               <span>
-                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">A-D</kbd> answer
+                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                  A-D
+                </kbd>{" "}
+                answer
                 <span className="mx-1.5">·</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">←→</kbd> navigate
+                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                  ←→
+                </kbd>{" "}
+                navigate
                 <span className="mx-1.5">·</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">M</kbd> mark
+                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                  M
+                </kbd>{" "}
+                mark
                 <span className="mx-1.5">·</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">Shift+A-D</kbd> eliminate
+                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                  Shift+A-D
+                </kbd>{" "}
+                eliminate
                 <span className="mx-1.5">·</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">F</kbd> focus mode
+                <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                  F
+                </kbd>{" "}
+                focus mode
               </span>
             </div>
-            <button onClick={() => setShowKeyHints(false)} className="text-muted-foreground/60 hover:text-foreground ml-4">✕</button>
+            <button
+              onClick={() => setShowKeyHints(false)}
+              className="text-muted-foreground/60 hover:text-foreground ml-4"
+            >
+              ✕
+            </button>
           </div>
         )}
       </div>
@@ -375,10 +450,12 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
       <div className="w-full lg:w-80 flex flex-col gap-4">
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
-            <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Question Navigator</h3>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
+              Question Navigator
+            </h3>
           </CardHeader>
           <CardContent>
-            <QuestionPalette 
+            <QuestionPalette
               totalQuestions={test.totalQuestions}
               currentIndex={currentIndex}
               answers={answers}
@@ -389,32 +466,36 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
           <CardFooter className="flex flex-col gap-3 border-t pt-4 bg-muted/20">
             <div className="grid grid-cols-2 gap-2 text-xs w-full">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700"></div> 
+                <div className="w-3 h-3 rounded-sm bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700"></div>
                 Answered
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-muted/30 border border-border"></div> 
+                <div className="w-3 h-3 rounded-sm bg-muted/30 border border-border"></div>
                 Unanswered
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-sm bg-amber-100 dark:bg-amber-950/40 border border-amber-400 dark:border-amber-600 relative">
                   <Bookmark className="h-2 w-2 absolute -top-1 -right-1 text-amber-600 fill-current" />
-                </div> 
+                </div>
                 Marked
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-primary text-primary-foreground"></div> 
+                <div className="w-3 h-3 rounded-sm bg-primary text-primary-foreground"></div>
                 Current
               </div>
             </div>
-            <Button variant="default" className="w-full mt-2" onClick={() => setIsSubmitDialogOpen(true)}>
+            <Button
+              variant="default"
+              className="w-full mt-2"
+              onClick={() => setIsSubmitDialogOpen(true)}
+            >
               Submit Test
             </Button>
           </CardFooter>
         </Card>
       </div>
 
-      <SubmitTestDialog 
+      <SubmitTestDialog
         open={isSubmitDialogOpen}
         onOpenChange={setIsSubmitDialogOpen}
         unansweredCount={unansweredCount}

@@ -38,28 +38,35 @@ export function SubmitTestDialog({
             {!isComplete ? (
               <>
                 <p className="font-semibold text-destructive">
-                  You have {unansweredCount} unanswered {unansweredCount === 1 ? "question" : "questions"}.
+                  You have {unansweredCount} unanswered{" "}
+                  {unansweredCount === 1 ? "question" : "questions"}.
                 </p>
                 <p>
-                  Are you sure you want to submit your test now? You will not be able to return to this attempt.
+                  Are you sure you want to submit your test now? You will not be able to return to
+                  this attempt.
                 </p>
               </>
             ) : (
               <p>
-                You have answered all {totalQuestions} questions. Are you ready to submit your test and view your results?
+                You have answered all {totalQuestions} questions. Are you ready to submit your test
+                and view your results?
               </p>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isSubmitting}>Continue Test</AlertDialogCancel>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={(e) => {
               e.preventDefault(); // Prevent closing immediately to show loading state if desired, but AlertDialogAction closes by default.
               onConfirm();
             }}
             disabled={isSubmitting}
-            className={!isComplete ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""}
+            className={
+              !isComplete
+                ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                : ""
+            }
           >
             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Submit Test

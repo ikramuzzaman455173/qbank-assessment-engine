@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { 
-  Loader2, 
-  Sparkles, 
-  Clock, 
-  SlidersHorizontal, 
-  CheckCircle2, 
-  BookOpen, 
-  ArrowRight 
+import {
+  Loader2,
+  Sparkles,
+  Clock,
+  SlidersHorizontal,
+  CheckCircle2,
+  BookOpen,
+  ArrowRight,
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -64,7 +64,13 @@ type ConfigValues = z.infer<typeof configSchema>;
 
 const QUICK_QUESTION_PRESETS = [5, 10, 20, 30];
 
-export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode: string, initialTopic?: string | undefined }) {
+export function PracticeConfigForm({
+  initialMode,
+  initialTopic,
+}: {
+  initialMode: string;
+  initialTopic?: string | undefined;
+}) {
   const { data: banks, isLoading: isBanksLoading } = useQuestionBanks();
   const navigate = useNavigate();
   const [generateError, setGenerateError] = useState<string | null>(null);
@@ -129,21 +135,22 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
 
   const onSubmit = (values: ConfigValues) => {
     setGenerateError(null);
-    const finalCount = eligibleCount > 0 ? Math.min(values.totalQuestions, eligibleCount) : values.totalQuestions;
-    
+    const finalCount =
+      eligibleCount > 0 ? Math.min(values.totalQuestions, eligibleCount) : values.totalQuestions;
+
     void navigate({
       to: "/practice",
       search: {
         bankId: values.bankId,
         practiceMode: values.practiceMode,
         totalQuestions: finalCount,
-        difficulty: values.difficulty === "mixed" ? undefined : (values.difficulty || undefined),
+        difficulty: values.difficulty === "mixed" ? undefined : values.difficulty || undefined,
         topic: values.topic || undefined,
         timerEnabled: values.timerEnabled,
-        durationSeconds: values.timerEnabled ? (values.durationSeconds || 600) : undefined,
+        durationSeconds: values.timerEnabled ? values.durationSeconds || 600 : undefined,
         randomizeQuestions: values.randomizeQuestions,
         randomizeOptions: values.randomizeOptions,
-      } as any
+      } as any,
     });
   };
 
@@ -162,7 +169,6 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            
             {/* 1. Visual Mode Selector Cards */}
             <div className="space-y-2.5">
               <Label className="text-sm font-medium text-foreground">Session Style</Label>
@@ -175,15 +181,17 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                     "relative flex items-start gap-3 p-4 rounded-xl border text-left transition-all cursor-pointer",
                     watchPracticeMode === "instant"
                       ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-sm"
-                      : "border-border hover:border-primary/50 hover:bg-muted/40"
+                      : "border-border hover:border-primary/50 hover:bg-muted/40",
                   )}
                 >
-                  <div className={cn(
-                    "p-2.5 rounded-lg shrink-0",
-                    watchPracticeMode === "instant" 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-muted text-muted-foreground"
-                  )}>
+                  <div
+                    className={cn(
+                      "p-2.5 rounded-lg shrink-0",
+                      watchPracticeMode === "instant"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground",
+                    )}
+                  >
                     <Sparkles className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -207,15 +215,17 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                     "relative flex items-start gap-3 p-4 rounded-xl border text-left transition-all cursor-pointer",
                     watchPracticeMode === "exam"
                       ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-sm"
-                      : "border-border hover:border-primary/50 hover:bg-muted/40"
+                      : "border-border hover:border-primary/50 hover:bg-muted/40",
                   )}
                 >
-                  <div className={cn(
-                    "p-2.5 rounded-lg shrink-0",
-                    watchPracticeMode === "exam" 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-muted text-muted-foreground"
-                  )}>
+                  <div
+                    className={cn(
+                      "p-2.5 rounded-lg shrink-0",
+                      watchPracticeMode === "exam"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground",
+                    )}
+                  >
                     <Clock className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -250,14 +260,20 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                   <Select onValueChange={field.onChange} value={field.value || ""}>
                     <FormControl>
                       <SelectTrigger className="h-11">
-                        <SelectValue placeholder={isBanksLoading ? "Loading question banks..." : "Select a Question Bank"} />
+                        <SelectValue
+                          placeholder={
+                            isBanksLoading ? "Loading question banks..." : "Select a Question Bank"
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {banks?.map((b) => (
                         <SelectItem key={b.id} value={b.id}>
                           <span className="font-medium">{b.name}</span>
-                          <span className="text-muted-foreground text-xs ml-2">({b.questionCount} Qs)</span>
+                          <span className="text-muted-foreground text-xs ml-2">
+                            ({b.questionCount} Qs)
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -291,14 +307,14 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                       onClick={() => handleQuickCountSelect(preset)}
                       className={cn(
                         "h-9 px-3.5 rounded-lg text-xs font-medium transition-all",
-                        isSelected && "shadow-sm font-semibold"
+                        isSelected && "shadow-sm font-semibold",
                       )}
                     >
                       {preset} Questions
                     </Button>
                   );
                 })}
-                
+
                 {/* Max questions chip if bank selected */}
                 {eligibleCount > 0 && (
                   <Button
@@ -308,7 +324,7 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                     onClick={() => handleQuickCountSelect(eligibleCount)}
                     className={cn(
                       "h-9 px-3.5 rounded-lg text-xs font-medium",
-                      watchTotalQuestions === eligibleCount && "shadow-sm font-semibold"
+                      watchTotalQuestions === eligibleCount && "shadow-sm font-semibold",
                     )}
                   >
                     All ({eligibleCount})
@@ -340,21 +356,27 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
             </div>
 
             {/* 4. Advanced Filters & Settings Accordion */}
-            <Accordion type="single" collapsible className="w-full border rounded-xl px-4 py-1 bg-muted/20">
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full border rounded-xl px-4 py-1 bg-muted/20"
+            >
               <AccordionItem value="advanced" className="border-none">
                 <AccordionTrigger className="hover:no-underline py-2.5 text-xs text-muted-foreground font-medium">
                   <div className="flex items-center gap-2">
                     <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
                     <span>Advanced Options (Difficulty, Topic & Timer)</span>
                     {(watchDifficulty || watchTopic || watchTimerEnabled) && (
-                      <Badge variant="outline" className="text-[10px] h-4.5 px-1.5 ml-1 bg-background text-primary border-primary/40">
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] h-4.5 px-1.5 ml-1 bg-background text-primary border-primary/40"
+                      >
                         Customized
                       </Badge>
                     )}
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pt-2 pb-4 space-y-4">
-                  
                   {/* Difficulty & Topic Filter */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <FormField
@@ -387,11 +409,11 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                         <FormItem>
                           <FormLabel className="text-xs">Topic Filter</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="e.g. Cardiology" 
-                              className="h-9 text-xs" 
-                              {...field} 
-                              value={field.value || ""} 
+                            <Input
+                              placeholder="e.g. Cardiology"
+                              className="h-9 text-xs"
+                              {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                         </FormItem>
@@ -407,16 +429,15 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-background">
                           <div className="space-y-0.5">
-                            <FormLabel className="text-xs font-medium">Session Countdown Timer</FormLabel>
+                            <FormLabel className="text-xs font-medium">
+                              Session Countdown Timer
+                            </FormLabel>
                             <FormDescription className="text-[11px]">
                               Auto-submits session when countdown expires.
                             </FormDescription>
                           </div>
                           <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -451,13 +472,12 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-background">
                           <div className="space-y-0.5">
                             <FormLabel className="text-xs">Shuffle Questions</FormLabel>
-                            <FormDescription className="text-[11px]">Randomize question sequence</FormDescription>
+                            <FormDescription className="text-[11px]">
+                              Randomize question sequence
+                            </FormDescription>
                           </div>
                           <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -470,19 +490,17 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-background">
                           <div className="space-y-0.5">
                             <FormLabel className="text-xs">Shuffle Choices</FormLabel>
-                            <FormDescription className="text-[11px]">Randomize A, B, C, D choices</FormDescription>
+                            <FormDescription className="text-[11px]">
+                              Randomize A, B, C, D choices
+                            </FormDescription>
                           </div>
                           <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
                           </FormControl>
                         </FormItem>
                       )}
                     />
                   </div>
-
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -495,10 +513,10 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
 
             {/* 5. Start Practice Session Action */}
             <div className="space-y-2 pt-2">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 size="lg"
-                className="w-full text-sm font-semibold h-11 shadow-sm gap-2" 
+                className="w-full text-sm font-semibold h-11 shadow-sm gap-2"
                 disabled={isCountLoading || !watchBankId || eligibleCount === 0}
               >
                 {isCountLoading ? (
@@ -508,19 +526,23 @@ export function PracticeConfigForm({ initialMode, initialTopic }: { initialMode:
                   </>
                 ) : (
                   <>
-                    Start {watchPracticeMode === "exam" ? "Exam Simulation" : "Practice"} ({Math.min(watchTotalQuestions, eligibleCount || watchTotalQuestions)} Questions)
+                    Start {watchPracticeMode === "exam" ? "Exam Simulation" : "Practice"} (
+                    {Math.min(watchTotalQuestions, eligibleCount || watchTotalQuestions)} Questions)
                     <ArrowRight className="h-4 w-4 ml-1" />
                   </>
                 )}
               </Button>
 
               {!watchBankId ? (
-                <p className="text-xs text-center text-muted-foreground">Select a question bank to start practicing.</p>
+                <p className="text-xs text-center text-muted-foreground">
+                  Select a question bank to start practicing.
+                </p>
               ) : eligibleCount === 0 && !isCountLoading ? (
-                <p className="text-xs text-center text-amber-600 dark:text-amber-400">No questions match the current filters. Please adjust difficulty or topic.</p>
+                <p className="text-xs text-center text-amber-600 dark:text-amber-400">
+                  No questions match the current filters. Please adjust difficulty or topic.
+                </p>
               ) : null}
             </div>
-
           </form>
         </Form>
       </CardContent>

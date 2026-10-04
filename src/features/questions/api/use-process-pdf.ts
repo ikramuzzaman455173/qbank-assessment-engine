@@ -32,7 +32,7 @@ export function useProcessPdf() {
       const geminiApiKey = getActiveGeminiApiKey();
       if (!geminiApiKey) {
         throw new Error(
-          "No active Gemini API key found. Please add your free Google Gemini API key in Settings -> AI & API Keys or enter it below to proceed."
+          "No active Gemini API key found. Please add your free Google Gemini API key in Settings -> AI & API Keys or enter it below to proceed.",
         );
       }
 
@@ -47,7 +47,9 @@ export function useProcessPdf() {
           .download(storagePath);
 
         if (downloadError || !fileData) {
-          throw new Error("Failed to download PDF from storage: " + (downloadError?.message || "Unknown error"));
+          throw new Error(
+            "Failed to download PDF from storage: " + (downloadError?.message || "Unknown error"),
+          );
         }
         base64Data = await fileToBase64(fileData);
       } else {
@@ -74,7 +76,14 @@ export function useProcessPdf() {
                 topic: { type: "string" },
                 source_reference: { type: "string" },
               },
-              required: ["question_text", "option_a", "option_b", "option_c", "option_d", "correct_answer"],
+              required: [
+                "question_text",
+                "option_a",
+                "option_b",
+                "option_c",
+                "option_d",
+                "correct_answer",
+              ],
             },
           },
         },
@@ -107,10 +116,11 @@ Rules:
       };
 
       const candidateModels = [
+        "gemini-2.5-flash",
+        "gemini-1.5-flash",
+        "gemini-2.0-flash",
         "gemini-3.7-flash",
-        "gemini-3.6-flash",
         "gemini-3.5-flash",
-        "gemini-3.1-pro",
       ];
       let lastErrorText = "";
 
@@ -122,7 +132,7 @@ Rules:
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(requestBody),
-            }
+            },
           );
 
           if (geminiRes.ok) {
@@ -156,15 +166,22 @@ Rules:
         // Keep raw text
       }
 
-      if (friendlyError.includes("quota") || friendlyError.includes("RESOURCE_EXHAUSTED") || friendlyError.includes("429")) {
+      if (
+        friendlyError.includes("quota") ||
+        friendlyError.includes("RESOURCE_EXHAUSTED") ||
+        friendlyError.includes("429")
+      ) {
         throw new Error(
-          "Shared AI rate limit / quota exceeded. Please configure your personal free Gemini API key in Settings -> AI & API Keys to continue without limits."
+          "Shared AI rate limit / quota exceeded. Please configure your personal free Gemini API key in Settings -> AI & API Keys to continue without limits.",
         );
       }
 
-      if (friendlyError.includes("API key not valid") || friendlyError.includes("API_KEY_INVALID")) {
+      if (
+        friendlyError.includes("API key not valid") ||
+        friendlyError.includes("API_KEY_INVALID")
+      ) {
         throw new Error(
-          "Invalid Gemini API Key provided. Please verify your API key in Settings -> AI & API Keys."
+          "Invalid Gemini API Key provided. Please verify your API key in Settings -> AI & API Keys.",
         );
       }
 

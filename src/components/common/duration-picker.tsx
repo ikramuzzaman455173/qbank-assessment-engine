@@ -142,9 +142,7 @@ export function DurationPicker({
             {formattedSummary} ({currentSeconds.toLocaleString()}s)
           </Badge>
         </div>
-        {isBelowMin && (
-          <span className="text-destructive font-medium">Min: {minSeconds}s</span>
-        )}
+        {isBelowMin && <span className="text-destructive font-medium">Min: {minSeconds}s</span>}
       </div>
 
       {/* Quick Presets */}
@@ -164,10 +162,7 @@ export function DurationPicker({
                   size="sm"
                   variant={isSelected ? "default" : "outline"}
                   onClick={() => onChange(preset.seconds)}
-                  className={cn(
-                    "h-6 px-2 text-xs font-mono rounded-md",
-                    isSelected && "shadow-xs"
-                  )}
+                  className={cn("h-6 px-2 text-xs font-mono rounded-md", isSelected && "shadow-xs")}
                 >
                   {preset.label}
                 </Button>

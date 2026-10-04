@@ -48,11 +48,11 @@ export function DeleteAccountDialog() {
             Delete Account
           </DialogTitle>
           <DialogDescription className="pt-2 text-base text-foreground">
-            This action is permanent and cannot be undone. All of your profile data, 
-            question banks, tests, and practice history will be immediately and permanently deleted.
+            This action is permanent and cannot be undone. All of your profile data, question banks,
+            tests, and practice history will be immediately and permanently deleted.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
           {error && (
             <div className="p-3 text-sm rounded-md bg-destructive/10 text-destructive border border-destructive/20">
@@ -63,7 +63,7 @@ export function DeleteAccountDialog() {
             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Please type <span className="font-bold">DELETE</span> to confirm
             </label>
-            <Input 
+            <Input
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
               placeholder="Type DELETE in capital letters to confirm"
@@ -76,12 +76,16 @@ export function DeleteAccountDialog() {
           <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isDeleting}>
             Cancel
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             onClick={handleDelete}
             disabled={!isConfirmEnabled || isDeleting}
           >
-            {isDeleting ? <Loader2 className="mr-2 size-4 animate-spin" /> : "Permanently Delete Account"}
+            {isDeleting ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              "Permanently Delete Account"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -19,7 +19,9 @@ export function useGeminiKey() {
   const updatePreferences = useUpdatePreferences();
 
   const [status, setStatus] = useState<GeminiKeyStatus>(getGeminiKeyStatus());
-  const [customKey, setCustomKey] = useState<string>(preferences?.gemini_api_key || getCustomGeminiApiKey() || "");
+  const [customKey, setCustomKey] = useState<string>(
+    preferences?.gemini_api_key || getCustomGeminiApiKey() || "",
+  );
 
   // Sync DB key to state and cache
   useEffect(() => {
@@ -32,7 +34,7 @@ export function useGeminiKey() {
       setCustomKey("");
       setStatus(getGeminiKeyStatus());
     }
-  }, [preferences?.gemini_api_key]);
+  }, [preferences]);
 
   const refreshStatus = useCallback(() => {
     setStatus(getGeminiKeyStatus());

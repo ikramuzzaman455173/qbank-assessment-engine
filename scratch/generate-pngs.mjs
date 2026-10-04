@@ -119,8 +119,9 @@ function renderQBankIcon(x, y, size, isMaskable = false) {
   const diamondA = Math.abs(nx) / 0.45 + (ny + 0.2) / 0.25;
   const diamondB = Math.abs(nx) / 0.45 - (ny + 0.2) / 0.25;
 
-  const inDiamond = (diamondA <= 1 && diamondA >= -1 && diamondB <= 1 && diamondB >= -1) || 
-                    (Math.abs(nx) / 0.45 + Math.abs(ny + 0.2) / 0.25 <= 1);
+  const inDiamond =
+    (diamondA <= 1 && diamondA >= -1 && diamondB <= 1 && diamondB >= -1) ||
+    Math.abs(nx) / 0.45 + Math.abs(ny + 0.2) / 0.25 <= 1;
 
   if (inDiamond) {
     // Gradient on Cap: #38BDF8 -> #6366F1 -> #8B5CF6

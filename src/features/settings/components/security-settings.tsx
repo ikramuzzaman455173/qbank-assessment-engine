@@ -23,13 +23,15 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-const passwordSchema = z.object({
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const passwordSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
@@ -52,11 +54,11 @@ export function SecuritySettings() {
     setIsUpdatingPassword(true);
     try {
       const { error } = await supabase.auth.updateUser({
-        password: values.password
+        password: values.password,
       });
 
       if (error) throw error;
-      
+
       toast.success("Password updated successfully");
       form.reset();
     } catch (error: any) {
@@ -96,7 +98,10 @@ export function SecuritySettings() {
                   <FormItem>
                     <FormLabel>New Password</FormLabel>
                     <FormControl>
-                      <PasswordInput placeholder="Enter new password (min. 6 characters)" {...field} />
+                      <PasswordInput
+                        placeholder="Enter new password (min. 6 characters)"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,9 +142,7 @@ export function SecuritySettings() {
           <div className="rounded-lg border p-4 bg-muted/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <p className="font-medium text-sm">Current Session</p>
-              <p className="text-sm text-muted-foreground break-all">
-                Signed in as: {user?.email}
-              </p>
+              <p className="text-sm text-muted-foreground break-all">Signed in as: {user?.email}</p>
             </div>
             <Button variant="secondary" onClick={() => setShowLogoutModal(true)}>
               <LogOut className="mr-2 size-4" />

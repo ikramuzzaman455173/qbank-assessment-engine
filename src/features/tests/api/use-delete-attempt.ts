@@ -7,10 +7,7 @@ export function useDeleteAttempt() {
 
   return useMutation({
     mutationFn: async ({ attemptId, testId }: { attemptId: string; testId?: string }) => {
-      const { error } = await supabase
-        .from("attempts")
-        .delete()
-        .eq("id", attemptId);
+      const { error } = await supabase.from("attempts").delete().eq("id", attemptId);
 
       if (error) {
         throw new Error(error.message);

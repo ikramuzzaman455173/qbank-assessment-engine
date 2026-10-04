@@ -6,9 +6,7 @@ declare namespace Deno {
     toObject(): Record<string, string>;
   }
   export const env: Env;
-  export function serve(
-    handler: (req: Request) => Response | Promise<Response>
-  ): void;
+  export function serve(handler: (req: Request) => Response | Promise<Response>): void;
 }
 
 declare module "https://*" {
@@ -17,4 +15,3 @@ declare module "https://*" {
   export const serve: any;
   export const createClient: any;
 }
-

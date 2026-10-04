@@ -32,7 +32,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           This page didn't load
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {error.message || "Something went wrong on our end. You can try refreshing or head back home."}
+          {error.message ||
+            "Something went wrong on our end. You can try refreshing or head back home."}
         </p>
         {error.stack && (
           <pre className="mt-4 p-4 text-left text-xs bg-muted text-muted-foreground overflow-auto max-w-full max-h-64 rounded">

@@ -28,7 +28,7 @@ export function useSaveAnswer() {
           },
           {
             onConflict: "attempt_id, test_question_id",
-          }
+          },
         )
         .select()
         .single();

@@ -4,16 +4,16 @@ import { PageHeader, LoadingState, ErrorState } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Play, 
-  RotateCcw, 
-  CheckCircle2, 
-  Clock, 
-  Eye, 
-  HelpCircle, 
+import {
+  Play,
+  RotateCcw,
+  CheckCircle2,
+  Clock,
+  Eye,
+  HelpCircle,
   Award,
   Layers,
-  Trash2
+  Trash2,
 } from "lucide-react";
 import { useTest } from "@/features/tests/api/use-test";
 import { useCreateAttempt } from "@/features/tests/api/use-create-attempt";
@@ -23,9 +23,7 @@ import { ROUTES } from "@/constants/routes";
 
 export const Route = createFileRoute("/_authenticated/tests/$testId")({
   head: () => ({
-    meta: [
-      { title: "Test Details — QBank" },
-    ],
+    meta: [{ title: "Test Details — QBank" }],
   }),
   component: TestDetailsPage,
 });
@@ -37,7 +35,7 @@ export function TestDetailsPage() {
   const { data: test, isLoading, error } = useTest(testId);
   const { data: currentAttempt, isLoading: isAttemptLoading } = useCurrentAttempt(testId);
   const { data: attempts, isLoading: isHistoryLoading } = useTestAttempts(testId);
-  
+
   const createAttemptMutation = useCreateAttempt();
   const deleteAttemptMutation = useDeleteAttempt();
 
@@ -48,17 +46,20 @@ export function TestDetailsPage() {
 
   const handleResume = () => {
     if (!currentAttempt) return;
-    void navigate({ 
-      to: "/tests/$testId/attempt", 
+    void navigate({
+      to: "/tests/$testId/attempt",
       params: { testId },
       search: { attemptId: currentAttempt.id },
     });
   };
 
   if (isLoading || isAttemptLoading) return <LoadingState label="Loading test details..." />;
-  if (error || !test) return <ErrorState title="Failed to load test" description={error?.message || "Not found"} />;
+  if (error || !test)
+    return <ErrorState title="Failed to load test" description={error?.message || "Not found"} />;
 
-  const completedAttempts = (attempts || []).filter(a => a.status === "completed" || a.status === "auto_submitted");
+  const completedAttempts = (attempts || []).filter(
+    (a) => a.status === "completed" || a.status === "auto_submitted",
+  );
   const latestCompletedAttempt = completedAttempts[0];
 
   const formatDuration = (seconds?: number | null) => {
@@ -80,16 +81,16 @@ export function TestDetailsPage() {
           title={test.title}
           description={`Question Bank: ${test.bankName || "General"}`}
         />
-        
+
         <div className="flex flex-wrap items-center gap-2">
           {currentAttempt ? (
             <>
               <Button size="lg" className="gap-2" onClick={handleResume}>
                 <Play className="w-5 h-5 fill-current" /> Resume Attempt
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={handleStartFresh}
                 disabled={createAttemptMutation.isPending}
                 className="gap-2"
@@ -98,8 +99,8 @@ export function TestDetailsPage() {
               </Button>
             </>
           ) : (
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={handleStartFresh}
               disabled={createAttemptMutation.isPending}
               className="gap-2"
@@ -136,7 +137,9 @@ export function TestDetailsPage() {
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
             <div className="p-3 bg-muted/40 rounded-lg border">
-              <p className="text-muted-foreground text-xs uppercase font-semibold">Total Questions</p>
+              <p className="text-muted-foreground text-xs uppercase font-semibold">
+                Total Questions
+              </p>
               <p className="font-bold text-2xl text-foreground mt-1">{test.totalQuestions}</p>
             </div>
             <div className="p-3 bg-muted/40 rounded-lg border">
@@ -146,7 +149,9 @@ export function TestDetailsPage() {
             <div className="p-3 bg-muted/40 rounded-lg border">
               <p className="text-muted-foreground text-xs uppercase font-semibold">Timer</p>
               <p className="font-bold text-xl text-foreground mt-1">
-                {test.timerEnabled && test.durationSeconds ? `${Math.round(test.durationSeconds / 60)} min` : "Untimed"}
+                {test.timerEnabled && test.durationSeconds
+                  ? `${Math.round(test.durationSeconds / 60)} min`
+                  : "Untimed"}
               </p>
             </div>
             <div className="p-3 bg-muted/40 rounded-lg border">
@@ -184,9 +189,14 @@ export function TestDetailsPage() {
               </div>
               <h4 className="font-semibold text-base">No Attempts Recorded Yet</h4>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                You haven't completed this test yet. Click "Start Test" above to begin your first attempt.
+                You haven't completed this test yet. Click "Start Test" above to begin your first
+                attempt.
               </p>
-              <Button onClick={handleStartFresh} className="mt-2" disabled={createAttemptMutation.isPending}>
+              <Button
+                onClick={handleStartFresh}
+                className="mt-2"
+                disabled={createAttemptMutation.isPending}
+              >
                 <Play className="w-4 h-4 mr-2 fill-current" /> Start Test Now
               </Button>
             </CardContent>
@@ -198,8 +208,8 @@ export function TestDetailsPage() {
               const pct = Math.round(att.percentage ?? 0);
 
               return (
-                <Card 
-                  key={att.id} 
+                <Card
+                  key={att.id}
                   className="hover:border-primary/50 transition-all shadow-xs overflow-hidden"
                 >
                   <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -211,13 +221,16 @@ export function TestDetailsPage() {
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-base text-foreground">
-                            {new Date(att.submittedAt || att.startedAt).toLocaleDateString(undefined, {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit"
-                            })}
+                            {new Date(att.submittedAt || att.startedAt).toLocaleDateString(
+                              undefined,
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
                           </span>
 
                           {isCompleted ? (
@@ -225,7 +238,10 @@ export function TestDetailsPage() {
                               Completed
                             </Badge>
                           ) : (
-                            <Badge variant="secondary" className="text-amber-700 dark:text-amber-300 bg-amber-500/15 border-amber-500/30 text-xs">
+                            <Badge
+                              variant="secondary"
+                              className="text-amber-700 dark:text-amber-300 bg-amber-500/15 border-amber-500/30 text-xs"
+                            >
                               In Progress
                             </Badge>
                           )}
@@ -234,7 +250,9 @@ export function TestDetailsPage() {
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
                           <span>Time Spent: {formatDuration(att.timeSpentSeconds)}</span>
                           <span>•</span>
-                          <span>Answered: {att.answeredQuestions}/{att.totalQuestions}</span>
+                          <span>
+                            Answered: {att.answeredQuestions}/{att.totalQuestions}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -242,9 +260,7 @@ export function TestDetailsPage() {
                     <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-3 sm:pt-0">
                       {isCompleted && (
                         <div className="text-right">
-                          <div className="text-xl font-extrabold text-foreground">
-                            {pct}%
-                          </div>
+                          <div className="text-xl font-extrabold text-foreground">{pct}%</div>
                           <div className="text-xs text-muted-foreground">
                             {att.correctAnswers ?? 0}/{att.totalQuestions} Correct
                           </div>
@@ -259,22 +275,22 @@ export function TestDetailsPage() {
                             </Link>
                           </Button>
                         ) : (
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             onClick={() => {
                               navigate({
                                 to: "/tests/$testId/attempt",
                                 params: { testId },
-                                search: { attemptId: att.id }
+                                search: { attemptId: att.id },
                               });
                             }}
                           >
                             <Play className="w-4 h-4 mr-1.5 fill-current" /> Resume
                           </Button>
                         )}
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
+                        <Button
+                          size="sm"
+                          variant="ghost"
                           className="text-muted-foreground hover:text-destructive h-8 w-8 p-0"
                           title="Delete attempt"
                           disabled={deleteAttemptMutation.isPending}

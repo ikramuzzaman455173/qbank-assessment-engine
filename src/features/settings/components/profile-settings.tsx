@@ -38,7 +38,7 @@ export function ProfileSettings() {
   const { data: profile, isLoading } = useProfile();
   const updateProfile = useUpdateProfile();
   const { uploadAvatar, removeAvatar, isUploading } = useUploadAvatar();
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProfileFormValues>({
@@ -51,7 +51,11 @@ export function ProfileSettings() {
   });
 
   if (isLoading) {
-    return <div className="p-8 flex justify-center"><Loader2 className="animate-spin text-primary" /></div>;
+    return (
+      <div className="p-8 flex justify-center">
+        <Loader2 className="animate-spin text-primary" />
+      </div>
+    );
   }
 
   const onSubmit = async (values: ProfileFormValues) => {
@@ -104,19 +108,23 @@ export function ProfileSettings() {
           </Avatar>
           <div className="space-y-3">
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
               >
-                {isUploading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Camera className="mr-2 size-4" />}
+                {isUploading ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Camera className="mr-2 size-4" />
+                )}
                 Change Avatar
               </Button>
               {profile?.avatarUrl && (
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
+                <Button
+                  variant="destructive"
+                  size="sm"
                   onClick={handleRemoveAvatar}
                   disabled={isUploading}
                 >
@@ -125,14 +133,12 @@ export function ProfileSettings() {
                 </Button>
               )}
             </div>
-            <p className="text-xs text-muted-foreground">
-              JPG, PNG or WebP. Max size of 5MB.
-            </p>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              accept="image/png, image/jpeg, image/webp" 
+            <p className="text-xs text-muted-foreground">JPG, PNG or WebP. Max size of 5MB.</p>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/png, image/jpeg, image/webp"
               onChange={handleFileChange}
             />
           </div>
@@ -170,7 +176,9 @@ export function ProfileSettings() {
                     <FormControl>
                       <Input placeholder="e.g., jdoe99 or learner_pro" {...field} />
                     </FormControl>
-                    <FormDescription>This is how you will appear across the platform.</FormDescription>
+                    <FormDescription>
+                      This is how you will appear across the platform.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -183,10 +191,10 @@ export function ProfileSettings() {
                   <FormItem>
                     <FormLabel>Bio (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="e.g., Preparing for BCS / Medical / University admission tests. Focusing on Biology & Chemistry..." 
-                        className="resize-none" 
-                        {...field} 
+                      <Textarea
+                        placeholder="e.g., Preparing for BCS / Medical / University admission tests. Focusing on Biology & Chemistry..."
+                        className="resize-none"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />

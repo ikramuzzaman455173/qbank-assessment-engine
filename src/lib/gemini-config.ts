@@ -1,6 +1,6 @@
 /**
  * Gemini API Configuration and Local Storage Helpers
- * 
+ *
  * Provides secure client-side storage of user's personal Google Gemini API keys,
  * status checks, active key resolution (Custom -> System Default), and test connection.
  */
@@ -151,7 +151,7 @@ export async function validateGeminiApiKey(apiKey: string): Promise<{
             contents: [{ parts: [{ text: "Hello" }] }],
             generationConfig: { maxOutputTokens: 5 },
           }),
-        }
+        },
       );
 
       if (response.ok) {

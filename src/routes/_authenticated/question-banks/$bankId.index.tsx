@@ -1,18 +1,24 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
-import { 
-  Plus, 
-  Upload, 
-  Play, 
-  Settings2, 
-  Search, 
-  X, 
-  Filter, 
+import {
+  Plus,
+  Upload,
+  Play,
+  Settings2,
+  Search,
+  X,
+  Filter,
   HelpCircle,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 
-import { ErrorState, LoadingState, PageHeader, EmptyState, AdvancedPagination } from "@/components/common";
+import {
+  ErrorState,
+  LoadingState,
+  PageHeader,
+  EmptyState,
+  AdvancedPagination,
+} from "@/components/common";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +30,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useQuestionBank } from "@/features/question-banks/api/use-question-bank";
 import { useQuestions } from "@/features/questions/api/use-questions";
@@ -75,7 +87,11 @@ function QuestionBankDetailsPage() {
 
   const { data: bank, isLoading: isBankLoading, error: bankError } = useQuestionBank(bankId);
 
-  const { data: questionsData, isLoading: isQuestionsLoading, error: questionsError } = useQuestions(bankId, {
+  const {
+    data: questionsData,
+    isLoading: isQuestionsLoading,
+    error: questionsError,
+  } = useQuestions(bankId, {
     page,
     pageSize,
     searchQuery: debouncedSearch || undefined,
@@ -96,10 +112,19 @@ function QuestionBankDetailsPage() {
       to: "/question-banks/$bankId",
       params: { bankId },
       search: {
-        page: newParams.page ?? (newParams.q !== undefined || newParams.difficulty !== undefined ? 1 : page),
+        page:
+          newParams.page ??
+          (newParams.q !== undefined || newParams.difficulty !== undefined ? 1 : page),
         pageSize: newParams.pageSize ?? pageSize,
-        q: newParams.q !== undefined ? (newParams.q || undefined) : (debouncedSearch || undefined),
-        difficulty: newParams.difficulty !== undefined ? (newParams.difficulty === "all" ? undefined : newParams.difficulty) : (difficulty !== "all" ? difficulty : undefined),
+        q: newParams.q !== undefined ? newParams.q || undefined : debouncedSearch || undefined,
+        difficulty:
+          newParams.difficulty !== undefined
+            ? newParams.difficulty === "all"
+              ? undefined
+              : newParams.difficulty
+            : difficulty !== "all"
+              ? difficulty
+              : undefined,
       } as any,
     });
   };
@@ -129,25 +154,23 @@ function QuestionBankDetailsPage() {
   const hasActiveFilters = Boolean(debouncedSearch || (difficulty && difficulty !== "all"));
 
   const handleCreate = (values: QuestionValues) => {
-    createMutation.mutate(
-      { bankId, ...values } as any,
-      { onSuccess: () => setIsCreateOpen(false) }
-    );
+    createMutation.mutate({ bankId, ...values } as any, {
+      onSuccess: () => setIsCreateOpen(false),
+    });
   };
 
   const handleUpdate = (values: QuestionValues) => {
     if (!questionToEdit) return;
-    updateMutation.mutate(
-      { id: questionToEdit.id, bankId, ...values } as any,
-      { onSuccess: () => setQuestionToEdit(null) }
-    );
+    updateMutation.mutate({ id: questionToEdit.id, bankId, ...values } as any, {
+      onSuccess: () => setQuestionToEdit(null),
+    });
   };
 
   const handleDelete = () => {
     if (!questionToDelete) return;
     deleteMutation.mutate(
       { id: questionToDelete.id, bankId },
-      { onSuccess: () => setQuestionToDelete(null) }
+      { onSuccess: () => setQuestionToDelete(null) },
     );
   };
 
@@ -200,7 +223,9 @@ function QuestionBankDetailsPage() {
           </div>
           {hasActiveFilters && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>Matching search: <strong>{totalQuestions}</strong> questions</span>
+              <span>
+                Matching search: <strong>{totalQuestions}</strong> questions
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -272,9 +297,7 @@ function QuestionBankDetailsPage() {
             <EmptyState
               title="No questions yet"
               description="Add your first question manually or import from a PDF / file."
-              action={
-                <Button onClick={() => setIsCreateOpen(true)}>Add Question</Button>
-              }
+              action={<Button onClick={() => setIsCreateOpen(true)}>Add Question</Button>}
             />
           )
         ) : (

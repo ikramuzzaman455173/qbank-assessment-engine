@@ -13,12 +13,10 @@ interface AttemptSearchParams {
 
 export const Route = createFileRoute("/_authenticated/tests/$testId/attempt")({
   validateSearch: (search: Record<string, unknown>): AttemptSearchParams => ({
-    attemptId: (search['attemptId'] as string) || undefined,
+    attemptId: (search["attemptId"] as string) || undefined,
   }),
   head: () => ({
-    meta: [
-      { title: "Taking Test — QBank" },
-    ],
+    meta: [{ title: "Taking Test — QBank" }],
   }),
   component: TestAttemptPage,
 });
@@ -29,18 +27,18 @@ function TestAttemptPage() {
   const navigate = useNavigate();
 
   const { data: test, isLoading: isTestLoading, error: testError } = useTest(testId);
-  
+
   // If specific attemptId provided, query by id; otherwise query latest in_progress attempt
-  const { 
-    data: specificAttempt, 
-    isLoading: isSpecificAttemptLoading, 
-    error: specificAttemptError 
+  const {
+    data: specificAttempt,
+    isLoading: isSpecificAttemptLoading,
+    error: specificAttemptError,
   } = useAttempt(search.attemptId || "");
 
-  const { 
-    data: currentAttempt, 
-    isLoading: isCurrentAttemptLoading, 
-    error: currentAttemptError 
+  const {
+    data: currentAttempt,
+    isLoading: isCurrentAttemptLoading,
+    error: currentAttemptError,
   } = useCurrentAttempt(search.attemptId ? "" : testId);
 
   const activeAttempt = search.attemptId ? specificAttempt : currentAttempt;
@@ -53,9 +51,11 @@ function TestAttemptPage() {
 
   if (testError || attemptError) {
     return (
-      <ErrorState 
-        title="Failed to load test attempt" 
-        description={(testError || attemptError)?.message || "Something went wrong loading this session."} 
+      <ErrorState
+        title="Failed to load test attempt"
+        description={
+          (testError || attemptError)?.message || "Something went wrong loading this session."
+        }
       />
     );
   }
@@ -70,7 +70,8 @@ function TestAttemptPage() {
             </div>
             <h3 className="text-lg font-bold">No Active Attempt Found</h3>
             <p className="text-sm text-muted-foreground">
-              We couldn't find an in-progress attempt for this test. It may have already been submitted or completed.
+              We couldn't find an in-progress attempt for this test. It may have already been
+              submitted or completed.
             </p>
             <div className="flex flex-col gap-2 pt-2">
               <Button asChild>

@@ -16,7 +16,8 @@ export function DangerZone() {
             <div>
               <h4 className="font-medium">Delete Account</h4>
               <p className="text-sm text-muted-foreground mt-1 max-w-[400px]">
-                Permanently delete your account and all associated data. This action cannot be undone.
+                Permanently delete your account and all associated data. This action cannot be
+                undone.
               </p>
             </div>
             <DeleteAccountDialog />

@@ -10,13 +10,13 @@ export function usePreferences() {
     queryKey: ["user_preferences", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      
+
       const { data, error } = await supabase
         .from("user_preferences")
         .select("*")
         .eq("id", user.id)
         .maybeSingle();
-        
+
       if (error) {
         console.warn("Preferences fetch warning:", error.message);
       }
@@ -49,7 +49,7 @@ export function useUpdatePreferences() {
   return useMutation({
     mutationFn: async (updates: Partial<UserPreferences>) => {
       if (!user) throw new Error("Not authenticated");
-      
+
       const { data, error } = await supabase
         .from("user_preferences")
         .upsert({ id: user.id, ...updates, updated_at: new Date().toISOString() })

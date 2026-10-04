@@ -9,10 +9,12 @@ export function useTests(bankId?: string) {
     queryFn: async () => {
       let query = supabase
         .from("tests")
-        .select(`
+        .select(
+          `
           *,
           question_banks ( name )
-        `)
+        `,
+        )
         .order("created_at", { ascending: false });
 
       if (bankId) {

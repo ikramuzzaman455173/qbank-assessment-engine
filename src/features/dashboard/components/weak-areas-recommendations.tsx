@@ -42,7 +42,8 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
             <BrainCircuit className="w-10 h-10 text-muted-foreground mb-3 opacity-50" />
             <h3 className="font-medium">You're doing great!</h3>
             <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-              You don't have any major weak areas right now. Keep practicing to maintain your high accuracy.
+              You don't have any major weak areas right now. Keep practicing to maintain your high
+              accuracy.
             </p>
           </div>
         </CardContent>
@@ -61,7 +62,9 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
                 {areasToFocus.length} {areasToFocus.length === 1 ? "Topic" : "Topics"}
               </span>
             </div>
-            <CardDescription>Targeted focus areas where your accuracy is below 70%.</CardDescription>
+            <CardDescription>
+              Targeted focus areas where your accuracy is below 70%.
+            </CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -70,7 +73,7 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
           {areasToFocus.map((topic, index) => {
             const acc = Math.round(topic.accuracy);
             return (
-              <div 
+              <div
                 key={index}
                 className="group relative flex flex-col justify-between overflow-hidden rounded-xl border bg-card/60 p-4 shadow-sm transition-all hover:shadow-md hover:border-primary/50"
               >
@@ -78,7 +81,9 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
                       <AlertCircle className="w-3.5 h-3.5" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Review Priority</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        Review Priority
+                      </span>
                     </div>
                     <span className="text-xs font-bold text-foreground bg-muted px-2 py-0.5 rounded">
                       {acc}% Acc
@@ -86,7 +91,10 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-sm line-clamp-1 text-foreground" title={topic.topic}>
+                    <h4
+                      className="font-semibold text-sm line-clamp-1 text-foreground"
+                      title={topic.topic}
+                    >
                       {topic.topic}
                     </h4>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -96,15 +104,20 @@ export function WeakAreasRecommendations({ weakTopics, loading }: WeakAreasRecom
 
                   {/* Visual Progress Bar */}
                   <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
-                    <div 
-                      className="bg-amber-500 h-1.5 rounded-full transition-all duration-500" 
+                    <div
+                      className="bg-amber-500 h-1.5 rounded-full transition-all duration-500"
                       style={{ width: `${Math.max(acc, 5)}%` }}
                     />
                   </div>
                 </div>
-                
+
                 <div className="mt-4 pt-3 border-t">
-                  <Button variant="ghost" size="sm" className="w-full justify-between p-0 h-8 font-medium text-xs text-primary hover:bg-transparent" asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-between p-0 h-8 font-medium text-xs text-primary hover:bg-transparent"
+                    asChild
+                  >
                     <Link to="/practice/config" search={{ mode: "topic", topic: topic.topic }}>
                       <span>Start Targeted Practice</span>
                       <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />

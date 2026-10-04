@@ -59,14 +59,21 @@ export function TermsOfServicePage() {
         <div className="container-page max-w-4xl space-y-10">
           {/* Top Navigation Bar (Headerless, clean) */}
           <div className="flex items-center justify-between border-b border-border/60 pb-4">
-            <Button variant="ghost" size="sm" asChild className="gap-1.5 text-muted-foreground hover:text-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="gap-1.5 text-muted-foreground hover:text-foreground"
+            >
               <Link to={ROUTES.landing}>
                 <ArrowLeft className="size-4" />
                 <span>Back to Home</span>
               </Link>
             </Button>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground hidden sm:inline">Effective Date: {lastUpdated}</span>
+              <span className="text-xs text-muted-foreground hidden sm:inline">
+                Effective Date: {lastUpdated}
+              </span>
               <ThemeToggle />
             </div>
           </div>
@@ -81,8 +88,8 @@ export function TermsOfServicePage() {
               Terms & Conditions
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-2xl">
-              Welcome to Knowledge Canvas. By accessing or using our application, you agree to comply with
-              and be bound by these terms. Please read them carefully.
+              Welcome to Knowledge Canvas. By accessing or using our application, you agree to
+              comply with and be bound by these terms. Please read them carefully.
             </p>
           </div>
 
@@ -113,22 +120,33 @@ export function TermsOfServicePage() {
             {/* Section 1 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">01</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Acceptance of Terms</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  01
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Acceptance of Terms
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                By creating an account, accessing, or using Knowledge Canvas, you signify your agreement to these Terms of Service. If you do not agree with any part of these terms, please discontinue using the service.
+                By creating an account, accessing, or using Knowledge Canvas, you signify your
+                agreement to these Terms of Service. If you do not agree with any part of these
+                terms, please discontinue using the service.
               </p>
             </section>
 
             {/* Section 2 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">02</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">User Accounts & Security</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  02
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  User Accounts & Security
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                To access test creation, question banks, and progress analytics, you must register for an account. You are responsible for:
+                To access test creation, question banks, and progress analytics, you must register
+                for an account. You are responsible for:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground pl-2">
                 <li>Maintaining the confidentiality of your login credentials.</li>
@@ -140,36 +158,58 @@ export function TermsOfServicePage() {
             {/* Section 3 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">03</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Acceptable Use Policy</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  03
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Acceptable Use Policy
+                </h2>
               </div>
               <p className="text-muted-foreground">
                 Knowledge Canvas is intended as an educational platform. You agree not to:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground pl-2">
                 <li>Upload materials containing malicious code, viruses, or disruptive scripts.</li>
-                <li>Attempt to bypass database security, API rate limits, or user authentication.</li>
-                <li>Use automated scripts or scrapers to overwhelm the application infrastructure.</li>
-                <li>Upload content that violates third-party intellectual property or copyright laws.</li>
+                <li>
+                  Attempt to bypass database security, API rate limits, or user authentication.
+                </li>
+                <li>
+                  Use automated scripts or scrapers to overwhelm the application infrastructure.
+                </li>
+                <li>
+                  Upload content that violates third-party intellectual property or copyright laws.
+                </li>
               </ul>
             </section>
 
             {/* Section 4 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">04</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">User Content & Ownership</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  04
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  User Content & Ownership
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                You retain complete intellectual property rights to the questions, answers, notes, and PDF documents you create or upload to Knowledge Canvas. We do not claim ownership of your study content. By uploading content, you grant Knowledge Canvas the limited license to store, process, and display that content solely for your private usage and testing.
+                You retain complete intellectual property rights to the questions, answers, notes,
+                and PDF documents you create or upload to Knowledge Canvas. We do not claim
+                ownership of your study content. By uploading content, you grant Knowledge Canvas
+                the limited license to store, process, and display that content solely for your
+                private usage and testing.
               </p>
             </section>
 
             {/* Section 5 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">05</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">AI Features & Accuracy Disclaimer</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  05
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  AI Features & Accuracy Disclaimer
+                </h2>
               </div>
               <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-2">
                 <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
@@ -177,7 +217,10 @@ export function TermsOfServicePage() {
                   <span>AI Assistance Notice</span>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Our PDF-to-MCQ conversion and question parsing features utilize Gemini AI to assist you. While we strive for high precision, AI-generated outputs can occasionally contain inaccuracies. Users are encouraged to review extracted questions before taking high-stakes practice exams.
+                  Our PDF-to-MCQ conversion and question parsing features utilize Gemini AI to
+                  assist you. While we strive for high precision, AI-generated outputs can
+                  occasionally contain inaccuracies. Users are encouraged to review extracted
+                  questions before taking high-stakes practice exams.
                 </p>
               </div>
             </section>
@@ -185,34 +228,53 @@ export function TermsOfServicePage() {
             {/* Section 6 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">06</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Limitation of Liability</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  06
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Limitation of Liability
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                Knowledge Canvas is provided on an "as is" and "as available" basis without warranties of any kind. We are not liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use the platform.
+                Knowledge Canvas is provided on an "as is" and "as available" basis without
+                warranties of any kind. We are not liable for any direct, indirect, incidental, or
+                consequential damages resulting from the use or inability to use the platform.
               </p>
             </section>
 
             {/* Section 7 */}
             <section className="space-y-4">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">07</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Developer Attribution & Inquiries</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  07
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Developer Attribution & Inquiries
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                This project is developed and maintained by <strong>Ikramuzzaman</strong>. For questions regarding these terms, feedback, or collaboration:
+                This project is developed and maintained by <strong>Ikramuzzaman</strong>. For
+                questions regarding these terms, feedback, or collaboration:
               </p>
 
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Button variant="outline" size="sm" asChild className="gap-2 shadow-2xs">
-                  <a href="https://ikramuzzaman.vercel.app" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://ikramuzzaman.vercel.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Globe className="size-4 text-primary" />
                     <span>Developer Portfolio</span>
                     <ExternalLink className="size-3 opacity-60" />
                   </a>
                 </Button>
                 <Button variant="outline" size="sm" asChild className="gap-2 shadow-2xs">
-                  <a href="https://github.com/ikramuzzaman455173" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://github.com/ikramuzzaman455173"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Github className="size-4" />
                     <span>GitHub Profile</span>
                     <ExternalLink className="size-3 opacity-60" />

@@ -19,7 +19,10 @@ export function ResultQuestionReview({ questions, answers }: ResultQuestionRevie
           const isUnanswered = !answer?.selectedAnswer;
 
           return (
-            <Card key={question.id} className={`overflow-hidden border-l-4 ${isCorrect ? 'border-l-green-500' : isUnanswered ? 'border-l-gray-300' : 'border-l-red-500'}`}>
+            <Card
+              key={question.id}
+              className={`overflow-hidden border-l-4 ${isCorrect ? "border-l-green-500" : isUnanswered ? "border-l-gray-300" : "border-l-red-500"}`}
+            >
               <CardContent className="p-6">
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <div className="font-medium text-lg leading-relaxed">
@@ -27,17 +30,29 @@ export function ResultQuestionReview({ questions, answers }: ResultQuestionRevie
                     {question.questionText}
                   </div>
                   <div className="shrink-0 mt-1">
-                    {isCorrect && <Badge className="bg-green-100 text-green-800 hover:bg-green-100"><CheckCircle2 className="w-3 h-3 mr-1" /> Correct</Badge>}
-                    {isUnanswered && <Badge variant="outline" className="text-muted-foreground"><MinusCircle className="w-3 h-3 mr-1" /> Unanswered</Badge>}
-                    {!isCorrect && !isUnanswered && <Badge className="bg-red-100 text-red-800 hover:bg-red-100"><XCircle className="w-3 h-3 mr-1" /> Incorrect</Badge>}
+                    {isCorrect && (
+                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> Correct
+                      </Badge>
+                    )}
+                    {isUnanswered && (
+                      <Badge variant="outline" className="text-muted-foreground">
+                        <MinusCircle className="w-3 h-3 mr-1" /> Unanswered
+                      </Badge>
+                    )}
+                    {!isCorrect && !isUnanswered && (
+                      <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                        <XCircle className="w-3 h-3 mr-1" /> Incorrect
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-3 mt-6">
-                  {(['A', 'B', 'C', 'D'] as CorrectAnswer[]).map((opt) => {
+                  {(["A", "B", "C", "D"] as CorrectAnswer[]).map((opt) => {
                     const isSelected = answer?.selectedAnswer === opt;
                     const isActuallyCorrect = question.correctAnswer === opt;
-                    
+
                     let bgClass = "bg-background border-border";
                     let icon = null;
 
@@ -50,7 +65,10 @@ export function ResultQuestionReview({ questions, answers }: ResultQuestionRevie
                     }
 
                     return (
-                      <div key={opt} className={`flex items-center justify-between p-4 rounded-lg border ${bgClass}`}>
+                      <div
+                        key={opt}
+                        className={`flex items-center justify-between p-4 rounded-lg border ${bgClass}`}
+                      >
                         <div className="flex items-center">
                           <span className="font-semibold mr-3">{opt}.</span>
                           <span>{question[`option${opt}` as keyof TestQuestion]}</span>
@@ -69,10 +87,11 @@ export function ResultQuestionReview({ questions, answers }: ResultQuestionRevie
                     {question.explanation}
                   </div>
                 )}
-                
+
                 {question.sourceReference && (
                   <div className="mt-4 text-xs text-muted-foreground flex items-center">
-                    <span className="font-medium mr-1">Source Reference:</span> {question.sourceReference}
+                    <span className="font-medium mr-1">Source Reference:</span>{" "}
+                    {question.sourceReference}
                   </div>
                 )}
               </CardContent>

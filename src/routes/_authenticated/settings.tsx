@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { 
-  User, 
-  Settings2, 
+import {
+  User,
+  Settings2,
   Sparkles,
-  Bell, 
-  Database, 
-  ShieldCheck, 
-  AlertTriangle 
+  Bell,
+  Database,
+  ShieldCheck,
+  AlertTriangle,
 } from "lucide-react";
 
 import { z } from "zod";
@@ -20,17 +20,13 @@ import { DataManagementSettings } from "@/features/settings/components/data-mana
 import { SecuritySettings } from "@/features/settings/components/security-settings";
 import { DangerZone } from "@/features/settings/components/danger-zone";
 
-type SettingsTab = 
-  | "profile" 
-  | "preferences" 
-  | "ai"
-  | "notifications" 
-  | "data" 
-  | "security" 
-  | "danger";
+type SettingsTab =
+  "profile" | "preferences" | "ai" | "notifications" | "data" | "security" | "danger";
 
 const settingsSearchSchema = z.object({
-  tab: z.enum(["profile", "preferences", "ai", "notifications", "data", "security", "danger"]).optional(),
+  tab: z
+    .enum(["profile", "preferences", "ai", "notifications", "data", "security", "danger"])
+    .optional(),
 });
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -56,7 +52,13 @@ function SettingsPage() {
     });
   };
 
-  const tabs: Array<{ id: SettingsTab; label: string; icon: any; destructive?: boolean; badge?: string }> = [
+  const tabs: Array<{
+    id: SettingsTab;
+    label: string;
+    icon: any;
+    destructive?: boolean;
+    badge?: string;
+  }> = [
     { id: "profile", label: "Profile", icon: User },
     { id: "preferences", label: "Preferences", icon: Settings2 },
     { id: "ai", label: "AI & API Keys", icon: Sparkles },
@@ -84,9 +86,14 @@ function SettingsPage() {
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
                   className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap md:whitespace-normal
-                    ${isActive 
-                      ? (tab.destructive ? 'bg-destructive text-destructive-foreground' : 'bg-primary text-primary-foreground') 
-                      : (tab.destructive ? 'hover:bg-destructive/10 text-destructive' : 'hover:bg-muted text-muted-foreground')
+                    ${
+                      isActive
+                        ? tab.destructive
+                          ? "bg-destructive text-destructive-foreground"
+                          : "bg-primary text-primary-foreground"
+                        : tab.destructive
+                          ? "hover:bg-destructive/10 text-destructive"
+                          : "hover:bg-muted text-muted-foreground"
                     }
                   `}
                 >
@@ -97,7 +104,7 @@ function SettingsPage() {
             })}
           </nav>
         </aside>
-        
+
         <main className="flex-1 w-full min-w-0 max-w-4xl">
           {activeTab === "profile" && <ProfileSettings />}
           {activeTab === "preferences" && <PreferencesSettings />}

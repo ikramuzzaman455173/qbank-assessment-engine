@@ -28,19 +28,28 @@ export function LandingCTA() {
               </h2>
 
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Join Knowledge Canvas for free. Import your study material, simulate real timed tests,
-                and monitor your topic-level mastery with precision analytics.
+                Join Knowledge Canvas for free. Import your study material, simulate real timed
+                tests, and monitor your topic-level mastery with precision analytics.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-                <Button asChild size="lg" className="w-full sm:w-auto gap-2 shadow-sm font-medium hover:scale-105 transition-transform">
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full sm:w-auto gap-2 shadow-sm font-medium hover:scale-105 transition-transform"
+                >
                   <Link to={session ? ROUTES.dashboard : ROUTES.auth}>
                     <span>{session ? "Go to Dashboard" : "Claim Your Free Account"}</span>
                     <ArrowRight className="size-4" />
                   </Link>
                 </Button>
                 {!session && (
-                  <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-dashed hover:border-solid">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto border-dashed hover:border-solid"
+                  >
                     <Link to={ROUTES.auth}>
                       <span>Sign In</span>
                     </Link>

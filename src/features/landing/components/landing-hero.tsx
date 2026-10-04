@@ -33,7 +33,8 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
     id: 1,
     topic: "Computer Science",
     difficulty: "Medium",
-    question: "What is the average time complexity of searching an element in a balanced Binary Search Tree (AVL Tree)?",
+    question:
+      "What is the average time complexity of searching an element in a balanced Binary Search Tree (AVL Tree)?",
     options: [
       { id: "A", text: "O(1)" },
       { id: "B", text: "O(log n)" },
@@ -41,7 +42,8 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
       { id: "D", text: "O(n log n)" },
     ],
     correct: "B",
-    explanation: "Because an AVL tree maintains a strictly balanced height of log₂(n), search, insertion, and deletion all execute in O(log n) time.",
+    explanation:
+      "Because an AVL tree maintains a strictly balanced height of log₂(n), search, insertion, and deletion all execute in O(log n) time.",
   },
   {
     id: 2,
@@ -55,7 +57,8 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
       { id: "D", text: "Endoplasmic Reticulum" },
     ],
     correct: "C",
-    explanation: "Mitochondria generate most of the chemical energy needed to power the biochemical reactions of the cell through cellular respiration.",
+    explanation:
+      "Mitochondria generate most of the chemical energy needed to power the biochemical reactions of the cell through cellular respiration.",
   },
   {
     id: 3,
@@ -69,7 +72,8 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
       { id: "D", text: "x / (x² + 1)" },
     ],
     correct: "A",
-    explanation: "Using the chain rule: d/dx[ln(u)] = (1/u) * du/dx. Here u = x² + 1 and du/dx = 2x, so the derivative is 2x / (x² + 1).",
+    explanation:
+      "Using the chain rule: d/dx[ln(u)] = (1/u) * du/dx. Here u = x² + 1 and du/dx = 2x, so the derivative is 2x / (x² + 1).",
   },
 ];
 
@@ -81,8 +85,7 @@ export function LandingHero() {
   const [timerSeconds, setTimerSeconds] = useState(0);
   const sandboxRef = useRef<HTMLDivElement>(null);
 
-  const activeQ = DEMO_QUESTIONS[currentIdx] ?? DEMO_QUESTIONS[0];
-  if (!activeQ) return null;
+  const activeQ = DEMO_QUESTIONS[currentIdx] ?? DEMO_QUESTIONS[0]!;
 
   const isAnswered = selectedOption !== null;
   const isCorrect = isAnswered && selectedOption === activeQ.correct;
@@ -168,7 +171,11 @@ export function LandingHero() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-              <Button asChild size="lg" className="w-full sm:w-auto gap-2 shadow-sm font-medium hover:scale-105 transition-transform">
+              <Button
+                asChild
+                size="lg"
+                className="w-full sm:w-auto gap-2 shadow-sm font-medium hover:scale-105 transition-transform"
+              >
                 <Link to={session ? ROUTES.dashboard : ROUTES.auth}>
                   <span>{session ? "Go to Dashboard" : "Get Started Free"}</span>
                   <ArrowRight className="size-4" />
@@ -236,16 +243,22 @@ export function LandingHero() {
                 <CardHeader className="pb-3 border-b border-dashed border-border/80 bg-muted/30">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs font-normal border border-border">
+                      <Badge
+                        variant="secondary"
+                        className="text-xs font-normal border border-border"
+                      >
                         {activeQ.topic}
                       </Badge>
                       <Badge
                         variant="outline"
                         className={cn(
                           "text-xs font-normal border-dashed",
-                          activeQ.difficulty === "Easy" && "text-emerald-600 dark:text-emerald-400 border-emerald-500/40 bg-emerald-500/5",
-                          activeQ.difficulty === "Medium" && "text-amber-600 dark:text-amber-400 border-amber-500/40 bg-amber-500/5",
-                          activeQ.difficulty === "Hard" && "text-red-600 dark:text-red-400 border-red-500/40 bg-red-500/5",
+                          activeQ.difficulty === "Easy" &&
+                            "text-emerald-600 dark:text-emerald-400 border-emerald-500/40 bg-emerald-500/5",
+                          activeQ.difficulty === "Medium" &&
+                            "text-amber-600 dark:text-amber-400 border-amber-500/40 bg-amber-500/5",
+                          activeQ.difficulty === "Hard" &&
+                            "text-red-600 dark:text-red-400 border-red-500/40 bg-red-500/5",
                         )}
                       >
                         {activeQ.difficulty}
@@ -269,10 +282,12 @@ export function LandingHero() {
                       const isSelected = selectedOption === opt.id;
                       const isThisCorrect = opt.id === activeQ.correct;
 
-                      let stateStyle = "border-border/80 bg-background hover:bg-muted/40 hover:border-foreground/40 hover:translate-x-1";
+                      let stateStyle =
+                        "border-border/80 bg-background hover:bg-muted/40 hover:border-foreground/40 hover:translate-x-1";
                       if (isAnswered) {
                         if (isThisCorrect) {
-                          stateStyle = "border-emerald-500 bg-emerald-500/10 text-foreground font-medium shadow-2xs";
+                          stateStyle =
+                            "border-emerald-500 bg-emerald-500/10 text-foreground font-medium shadow-2xs";
                         } else if (isSelected && !isThisCorrect) {
                           stateStyle = "border-red-500 bg-red-500/10 text-foreground";
                         } else {
@@ -297,8 +312,8 @@ export function LandingHero() {
                               isAnswered && isThisCorrect
                                 ? "text-emerald-600 dark:text-emerald-400"
                                 : isAnswered && isSelected
-                                ? "text-red-600 dark:text-red-400"
-                                : "text-muted-foreground",
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-muted-foreground",
                             )}
                           >
                             {opt.id}.

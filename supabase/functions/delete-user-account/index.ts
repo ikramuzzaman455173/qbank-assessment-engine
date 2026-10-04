@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
         global: {
           headers: { Authorization: req.headers.get("Authorization")! },
         },
-      }
+      },
     );
 
     // Get the user from the auth token
@@ -37,13 +37,12 @@ Deno.serve(async (req) => {
     // Now instantiate a service role client to actually delete the user
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
     // First delete any files in the avatars bucket that belong to this user.
     // The bucket is 'avatars' and files are stored in `avatars/{user_id}/...`
-    const { data: avatarFiles, error: listError } = await supabaseAdmin
-      .storage
+    const { data: avatarFiles, error: listError } = await supabaseAdmin.storage
       .from("avatars")
       .list(user.id);
 
@@ -53,7 +52,7 @@ Deno.serve(async (req) => {
     }
 
     // Note: Question Bank PDF/attachments deletion could also go here if needed,
-    // but CASCADEs on the database handle the DB side. 
+    // but CASCADEs on the database handle the DB side.
     // Ideally, a separate cron job or storage trigger cleans up orphaned files.
 
     // Finally, delete the user from auth.users (this cascades to profiles, user_preferences, question_banks, etc. if ON DELETE CASCADE is set)
@@ -63,20 +62,14 @@ Deno.serve(async (req) => {
       throw deleteError;
     }
 
-    return new Response(
-      JSON.stringify({ message: "User account deleted successfully." }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+    return new Response(JSON.stringify({ message: "User account deleted successfully." }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error: any) {
-    return new Response(
-      JSON.stringify({ error: error?.message || "Internal server error" }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      }
-    );
+    return new Response(JSON.stringify({ error: error?.message || "Internal server error" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
+    });
   }
 });

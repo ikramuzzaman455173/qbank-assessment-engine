@@ -8,9 +8,7 @@ export function NotificationSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Email Notifications</CardTitle>
-          <CardDescription>
-            Choose what you want to be notified about via email.
-          </CardDescription>
+          <CardDescription>Choose what you want to be notified about via email.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between space-x-2 rounded-lg border p-4">
@@ -53,7 +51,8 @@ export function NotificationSettings() {
         <CardContent className="space-y-4">
           <div className="rounded-md border p-4 bg-muted/50">
             <p className="text-sm text-muted-foreground">
-              In-app notification preferences will be available once the notification delivery system is fully deployed.
+              In-app notification preferences will be available once the notification delivery
+              system is fully deployed.
             </p>
           </div>
         </CardContent>

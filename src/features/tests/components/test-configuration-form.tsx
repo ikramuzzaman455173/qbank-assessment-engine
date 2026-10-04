@@ -85,43 +85,46 @@ export function TestConfigurationForm() {
   const onSubmit = (values: ConfigValues) => {
     setGenerateError(null);
     if (values.totalQuestions > eligibleCount) {
-      setGenerateError(`Only ${eligibleCount} questions match your current filters. Please reduce the question count or change the filters.`);
+      setGenerateError(
+        `Only ${eligibleCount} questions match your current filters. Please reduce the question count or change the filters.`,
+      );
       return;
     }
 
-    createMutation.mutate({
-      bankId: values.bankId,
-      title: values.title || "Custom Practice Test",
-      mode: values.mode,
-      totalQuestions: values.mode === "full" ? eligibleCount : values.totalQuestions,
-      difficulty: values.difficulty as any,
-      topic: values.topic || null,
-      timerEnabled: values.timerEnabled,
-      durationSeconds: values.timerEnabled && values.durationSeconds ? values.durationSeconds : null,
-      randomizeQuestions: values.randomizeQuestions,
-      randomizeOptions: values.randomizeOptions,
-    }, {
-      onSuccess: (data) => {
-        void navigate({ to: ROUTES.test(data) as any });
+    createMutation.mutate(
+      {
+        bankId: values.bankId,
+        title: values.title || "Custom Practice Test",
+        mode: values.mode,
+        totalQuestions: values.mode === "full" ? eligibleCount : values.totalQuestions,
+        difficulty: values.difficulty as any,
+        topic: values.topic || null,
+        timerEnabled: values.timerEnabled,
+        durationSeconds:
+          values.timerEnabled && values.durationSeconds ? values.durationSeconds : null,
+        randomizeQuestions: values.randomizeQuestions,
+        randomizeOptions: values.randomizeOptions,
       },
-      onError: (err) => {
-        setGenerateError(err.message);
-      }
-    });
+      {
+        onSuccess: (data) => {
+          void navigate({ to: ROUTES.test(data) as any });
+        },
+        onError: (err) => {
+          setGenerateError(err.message);
+        },
+      },
+    );
   };
 
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Configure Test</CardTitle>
-        <CardDescription>
-          Generate a new test from your question banks.
-        </CardDescription>
+        <CardDescription>Generate a new test from your question banks.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            
             {/* Bank Selection */}
             <FormField
               control={form.control}
@@ -132,7 +135,9 @@ export function TestConfigurationForm() {
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={isBanksLoading ? "Loading..." : "Select a Question Bank"} />
+                        <SelectValue
+                          placeholder={isBanksLoading ? "Loading..." : "Select a Question Bank"}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -194,7 +199,11 @@ export function TestConfigurationForm() {
                   <FormItem>
                     <FormLabel>Topic Filter</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Routing Protocols (leave blank for all)" {...field} value={field.value || ""} />
+                      <Input
+                        placeholder="e.g. Routing Protocols (leave blank for all)"
+                        {...field}
+                        value={field.value || ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -244,18 +253,22 @@ export function TestConfigurationForm() {
                   control={form.control}
                   name="totalQuestions"
                   render={({ field }) => {
-                    const requestedMoreThanAvailable = watchBankId && !isCountLoading && eligibleCount > 0 && field.value > eligibleCount;
+                    const requestedMoreThanAvailable =
+                      watchBankId &&
+                      !isCountLoading &&
+                      eligibleCount > 0 &&
+                      field.value > eligibleCount;
                     return (
                       <FormItem>
                         <FormLabel>Number of Questions</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            min={1} 
-                            max={eligibleCount || 100} 
+                          <Input
+                            type="number"
+                            min={1}
+                            max={eligibleCount || 100}
                             placeholder="e.g., 20"
-                            {...field} 
-                            onChange={e => field.onChange(parseInt(e.target.value, 10))}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
                           />
                         </FormControl>
                         {requestedMoreThanAvailable && (
@@ -273,7 +286,7 @@ export function TestConfigurationForm() {
 
             <div className="space-y-4 pt-4 border-t">
               <h4 className="font-medium text-sm text-muted-foreground">Test Settings</h4>
-              
+
               <FormField
                 control={form.control}
                 name="timerEnabled"
@@ -281,15 +294,10 @@ export function TestConfigurationForm() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Enable Timer</FormLabel>
-                      <FormDescription>
-                        Test will auto-submit when time expires.
-                      </FormDescription>
+                      <FormDescription>Test will auto-submit when time expires.</FormDescription>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -304,7 +312,8 @@ export function TestConfigurationForm() {
                       <div>
                         <FormLabel className="text-base font-semibold">Test Time Limit</FormLabel>
                         <FormDescription>
-                          Configure hours, minutes, or seconds. The test will auto-submit when the countdown ends.
+                          Configure hours, minutes, or seconds. The test will auto-submit when the
+                          countdown ends.
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -327,15 +336,10 @@ export function TestConfigurationForm() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Randomize Question Order</FormLabel>
-                      <FormDescription>
-                        Questions will be shown in a random order.
-                      </FormDescription>
+                      <FormDescription>Questions will be shown in a random order.</FormDescription>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -353,10 +357,7 @@ export function TestConfigurationForm() {
                       </FormDescription>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -370,18 +371,26 @@ export function TestConfigurationForm() {
             )}
 
             <div className="space-y-2">
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={createMutation.isPending || isCountLoading || !watchBankId || eligibleCount === 0}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={
+                  createMutation.isPending || isCountLoading || !watchBankId || eligibleCount === 0
+                }
               >
-                {createMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {createMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
                 Generate Test
               </Button>
               {!watchBankId ? (
-                <p className="text-xs text-center text-muted-foreground">Select a question bank to configure and generate your test.</p>
+                <p className="text-xs text-center text-muted-foreground">
+                  Select a question bank to configure and generate your test.
+                </p>
               ) : eligibleCount === 0 && !isCountLoading ? (
-                <p className="text-xs text-center text-amber-600 dark:text-amber-400">No questions match the current filters. Please adjust difficulty or topic.</p>
+                <p className="text-xs text-center text-amber-600 dark:text-amber-400">
+                  No questions match the current filters. Please adjust difficulty or topic.
+                </p>
               ) : null}
             </div>
           </form>

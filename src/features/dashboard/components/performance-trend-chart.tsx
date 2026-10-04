@@ -16,16 +16,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  PlayCircle, 
-  Activity, 
-  BarChart3, 
-  Layers, 
-  Target, 
+import {
+  TrendingUp,
+  TrendingDown,
+  PlayCircle,
+  Activity,
+  BarChart3,
+  Layers,
+  Target,
   Award,
-  HelpCircle
+  HelpCircle,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
@@ -133,7 +133,8 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
           </div>
           <h4 className="font-semibold text-foreground text-sm">No Trend Data Yet</h4>
           <p className="text-xs text-muted-foreground mt-1 max-w-xs leading-relaxed">
-            Practice questions or complete formal tests to visualize your daily accuracy score trajectory.
+            Practice questions or complete formal tests to visualize your daily accuracy score
+            trajectory.
           </p>
           <Button size="sm" className="mt-4 gap-1.5 shadow-sm" asChild>
             <Link to="/practice/config">
@@ -156,14 +157,14 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
               <Activity className="size-4 text-primary" />
               Performance Trend
             </CardTitle>
-            
+
             {/* Momentum Badge */}
             {chartData.length > 1 ? (
-              <Badge 
-                variant="outline" 
+              <Badge
+                variant="outline"
                 className={`text-[11px] py-0.5 px-2 font-medium flex items-center gap-1 ${
-                  stats.isImproving 
-                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" 
+                  stats.isImproving
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                     : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
                 }`}
               >
@@ -180,7 +181,10 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
                 )}
               </Badge>
             ) : (
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[11px] py-0.5 px-2">
+              <Badge
+                variant="outline"
+                className="bg-primary/10 text-primary border-primary/20 text-[11px] py-0.5 px-2"
+              >
                 Live Data
               </Badge>
             )}
@@ -290,10 +294,7 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
         {/* 3. Interactive Chart Canvas */}
         <div className="h-[250px] w-full pt-1">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={chartData}
-              margin={{ top: 12, right: 12, left: -16, bottom: 0 }}
-            >
+            <ComposedChart data={chartData} margin={{ top: 12, right: 12, left: -16, bottom: 0 }}>
               <defs>
                 {/* Accuracy Area Gradient */}
                 <linearGradient id="performanceAccuracyGrad" x1="0" y1="0" x2="0" y2="1">
@@ -308,11 +309,7 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
                 </linearGradient>
               </defs>
 
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                vertical={false} 
-                className="stroke-border/40" 
-              />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/40" />
 
               <XAxis
                 dataKey="formattedDate"
@@ -399,9 +396,7 @@ export function PerformanceTrendChart({ data, loading }: PerformanceTrendChartPr
                             <span className="size-2 rounded-full bg-blue-500" />
                             Accuracy:
                           </span>
-                          <span className="font-bold text-foreground text-sm">
-                            {acc}%
-                          </span>
+                          <span className="font-bold text-foreground text-sm">{acc}%</span>
                         </div>
 
                         <div className="flex justify-between items-center gap-3">

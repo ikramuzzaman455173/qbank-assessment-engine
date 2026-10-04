@@ -24,7 +24,8 @@ export function usePwaInstall() {
 
     // Check if device is iOS Safari
     const userAgent = window.navigator.userAgent.toLowerCase();
-    const isIosDevice = /iphone|ipad|ipod/.test(userAgent) && !(window as unknown as { MSStream?: unknown }).MSStream;
+    const isIosDevice =
+      /iphone|ipad|ipod/.test(userAgent) && !(window as unknown as { MSStream?: unknown }).MSStream;
     setIsIOS(isIosDevice);
 
     // Check localStorage dismissal state (dismiss for 7 days if clicked 'Later')

@@ -57,7 +57,7 @@ Deno.serve(async (req: Request) => {
     // 3. Convert PDF to base64
     const arrayBuffer = await fileData.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
-    
+
     const chunkSize = 0x8000;
     const chunks: string[] = [];
     for (let i = 0; i < uint8Array.length; i += chunkSize) {
@@ -133,10 +133,11 @@ Rules:
     };
 
     const candidateModels = [
+      "gemini-2.5-flash",
+      "gemini-1.5-flash",
+      "gemini-2.0-flash",
       "gemini-3.7-flash",
-      "gemini-3.6-flash",
       "gemini-3.5-flash",
-      "gemini-3.1-pro",
     ];
     let parsedOutput: any = null;
     let lastErrorText = "";
@@ -151,7 +152,7 @@ Rules:
               "Content-Type": "application/json",
             },
             body: JSON.stringify(requestBody),
-          }
+          },
         );
 
         if (geminiRes.ok) {
@@ -173,11 +174,13 @@ Rules:
 
     if (!parsedOutput) {
       return new Response(
-        JSON.stringify({ error: `Failed to process PDF with AI: ${lastErrorText || "No text generated"}` }),
+        JSON.stringify({
+          error: `Failed to process PDF with AI: ${lastErrorText || "No text generated"}`,
+        }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        },
       );
     }
 

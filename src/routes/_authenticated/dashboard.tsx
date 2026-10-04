@@ -1,45 +1,51 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState } from 'react'
-import { useSession } from '@/features/auth/hooks/use-session'
-import { useDashboardMetrics } from '@/features/dashboard/api/use-dashboard-metrics'
-import { useGeminiKey } from '@/features/settings/api/use-gemini-key'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { DashboardMetricCard } from '@/features/dashboard/components/dashboard-metric-card'
-import { PerformanceTrendChart } from '@/features/dashboard/components/performance-trend-chart'
-import { TopicPerformanceTable } from '@/features/dashboard/components/topic-performance-table'
-import { WeakAreasRecommendations } from '@/features/dashboard/components/weak-areas-recommendations'
-import { RecentActivityList } from '@/features/dashboard/components/recent-activity-list'
-import { QuestionBankSummaryList } from '@/features/dashboard/components/question-bank-summary-list'
-import { 
-  Target, 
-  FileQuestion, 
-  GraduationCap, 
-  Percent, 
-  PlayCircle, 
-  PlusCircle, 
-  FolderPlus, 
-  Sparkles, 
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { useSession } from "@/features/auth/hooks/use-session";
+import { useDashboardMetrics } from "@/features/dashboard/api/use-dashboard-metrics";
+import { useGeminiKey } from "@/features/settings/api/use-gemini-key";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { DashboardMetricCard } from "@/features/dashboard/components/dashboard-metric-card";
+import { PerformanceTrendChart } from "@/features/dashboard/components/performance-trend-chart";
+import { TopicPerformanceTable } from "@/features/dashboard/components/topic-performance-table";
+import { WeakAreasRecommendations } from "@/features/dashboard/components/weak-areas-recommendations";
+import { RecentActivityList } from "@/features/dashboard/components/recent-activity-list";
+import { QuestionBankSummaryList } from "@/features/dashboard/components/question-bank-summary-list";
+import {
+  Target,
+  FileQuestion,
+  GraduationCap,
+  Percent,
+  PlayCircle,
+  PlusCircle,
+  FolderPlus,
+  Sparkles,
   Zap,
   CheckCircle2,
-  Calendar
-} from 'lucide-react'
+  Calendar,
+} from "lucide-react";
 
-export const Route = createFileRoute('/_authenticated/dashboard')({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
-})
+});
 
 function DashboardPage() {
-  const { session } = useSession()
-  const [days, setDays] = useState<number>(30)
-  const { status: geminiStatus } = useGeminiKey()
-  
-  const { data: metrics, isLoading, isError } = useDashboardMetrics(days)
-  const profileName = session?.user?.user_metadata?.['full_name'] || 'Learner'
+  const { session } = useSession();
+  const [days, setDays] = useState<number>(30);
+  const { status: geminiStatus } = useGeminiKey();
 
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
+  const { data: metrics, isLoading, isError } = useDashboardMetrics(days);
+  const profileName = session?.user?.user_metadata?.["full_name"] || "Learner";
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
     <div className="flex flex-col gap-8 pb-8">
@@ -51,27 +57,34 @@ function DashboardPage() {
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
                 {greeting}, {profileName}! 👋
               </h1>
-              
+
               {/* AI Key Status Badge */}
               {geminiStatus.source === "custom" ? (
                 <Link to="/settings" search={{ tab: "ai" }} className="inline-flex">
-                  <Badge variant="outline" className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 text-xs py-0.5 px-2 flex items-center gap-1 cursor-pointer transition-colors">
+                  <Badge
+                    variant="outline"
+                    className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 text-xs py-0.5 px-2 flex items-center gap-1 cursor-pointer transition-colors"
+                  >
                     <CheckCircle2 className="size-3 text-emerald-500" />
                     Personal AI Active
                   </Badge>
                 </Link>
               ) : (
                 <Link to="/settings" search={{ tab: "ai" }} className="inline-flex">
-                  <Badge variant="outline" className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/20 text-xs py-0.5 px-2 flex items-center gap-1 cursor-pointer transition-colors">
+                  <Badge
+                    variant="outline"
+                    className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/20 text-xs py-0.5 px-2 flex items-center gap-1 cursor-pointer transition-colors"
+                  >
                     <Zap className="size-3 text-amber-500" />
                     Shared AI Quota (Configure)
                   </Badge>
                 </Link>
               )}
             </div>
-            
+
             <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
-              Track your exam readiness, master your weak areas, and generate smart practice questions with Google Gemini.
+              Track your exam readiness, master your weak areas, and generate smart practice
+              questions with Google Gemini.
             </p>
 
             {/* Quick Learning Action Shortcuts */}
@@ -94,7 +107,12 @@ function DashboardPage() {
                   Question Banks
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" className="gap-1.5 bg-background/80 hover:bg-primary/10 hover:border-primary/30 transition-all" asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 bg-background/80 hover:bg-primary/10 hover:border-primary/30 transition-all"
+                asChild
+              >
                 <Link to="/settings" search={{ tab: "ai" }}>
                   <Sparkles className="size-4 text-primary" />
                   API & AI Keys
@@ -106,10 +124,7 @@ function DashboardPage() {
           {/* Time Period Filter */}
           <div className="flex items-center gap-2 self-start lg:self-center bg-background/80 backdrop-blur p-1.5 rounded-xl border">
             <Calendar className="size-4 text-muted-foreground ml-2" />
-            <Select 
-              value={days.toString()} 
-              onValueChange={(val) => setDays(parseInt(val))}
-            >
+            <Select value={days.toString()} onValueChange={(val) => setDays(parseInt(val))}>
               <SelectTrigger className="w-[135px] border-0 bg-transparent focus:ring-0 shadow-none text-xs font-medium">
                 <SelectValue placeholder="Time period" />
               </SelectTrigger>
@@ -132,7 +147,7 @@ function DashboardPage() {
 
       {/* 2. Key Metrics Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <DashboardMetricCard 
+        <DashboardMetricCard
           title="Total Repository"
           value={metrics?.total_questions ?? 0}
           description="Available in your question banks"
@@ -140,7 +155,7 @@ function DashboardPage() {
           loading={isLoading}
           accentColor="purple"
         />
-        <DashboardMetricCard 
+        <DashboardMetricCard
           title="Questions Practiced"
           value={metrics?.questions_practiced ?? 0}
           description="Attempted during this period"
@@ -148,7 +163,7 @@ function DashboardPage() {
           loading={isLoading}
           accentColor="blue"
         />
-        <DashboardMetricCard 
+        <DashboardMetricCard
           title="Tests Completed"
           value={metrics?.tests_completed ?? 0}
           description="Formal test sessions finished"
@@ -156,51 +171,49 @@ function DashboardPage() {
           loading={isLoading}
           accentColor="emerald"
         />
-        <DashboardMetricCard 
+        <DashboardMetricCard
           title="Overall Accuracy"
-          value={metrics?.overall_accuracy != null ? `${Math.round(metrics.overall_accuracy)}%` : 'N/A'}
-          description={metrics?.overall_accuracy != null && metrics.overall_accuracy >= 75 ? "Target met (≥ 75%)" : "Keep practicing"}
+          value={
+            metrics?.overall_accuracy != null ? `${Math.round(metrics.overall_accuracy)}%` : "N/A"
+          }
+          description={
+            metrics?.overall_accuracy != null && metrics.overall_accuracy >= 75
+              ? "Target met (≥ 75%)"
+              : "Keep practicing"
+          }
           icon={<Percent className="w-4 h-4" />}
           loading={isLoading}
-          accentColor={metrics?.overall_accuracy != null && metrics.overall_accuracy >= 75 ? "emerald" : "amber"}
+          accentColor={
+            metrics?.overall_accuracy != null && metrics.overall_accuracy >= 75
+              ? "emerald"
+              : "amber"
+          }
         />
       </div>
 
       {/* 3. Performance Trend & Recent Activity */}
       <div className="grid gap-6 lg:grid-cols-4">
-        <PerformanceTrendChart 
-          data={metrics?.trend || []} 
-          loading={isLoading} 
-        />
+        <PerformanceTrendChart data={metrics?.trend || []} loading={isLoading} />
         <div className="lg:col-span-1">
-          <RecentActivityList 
-            activities={metrics?.recent_activity || []} 
-            loading={isLoading} 
-          />
+          <RecentActivityList activities={metrics?.recent_activity || []} loading={isLoading} />
         </div>
       </div>
 
       {/* 4. Weak Areas / Targeted Recommendations */}
-      <WeakAreasRecommendations 
-        weakTopics={metrics?.weak_topics || []} 
-        loading={isLoading} 
-      />
+      <WeakAreasRecommendations weakTopics={metrics?.weak_topics || []} loading={isLoading} />
 
       {/* 5. Strongest Topics & Question Banks */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-1">
-          <TopicPerformanceTable 
+          <TopicPerformanceTable
             title="Strongest Topics"
             description="Topics where your performance is highest."
             topics={metrics?.strong_topics || []}
             loading={isLoading}
           />
         </div>
-        <QuestionBankSummaryList 
-          banks={metrics?.bank_summaries || []} 
-          loading={isLoading} 
-        />
+        <QuestionBankSummaryList banks={metrics?.bank_summaries || []} loading={isLoading} />
       </div>
     </div>
-  )
+  );
 }

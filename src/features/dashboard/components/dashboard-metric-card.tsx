@@ -39,10 +39,14 @@ export function DashboardMetricCard({
 
   return (
     <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/40 group">
-      <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl ${accentStyles[accentColor]} rounded-bl-full pointer-events-none transition-transform group-hover:scale-110`} />
-      
+      <div
+        className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl ${accentStyles[accentColor]} rounded-bl-full pointer-events-none transition-transform group-hover:scale-110`}
+      />
+
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 relative">
-        <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</CardTitle>
+        <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {title}
+        </CardTitle>
         {icon && (
           <div className={`p-2 rounded-lg border ${iconBgStyles[accentColor]} transition-colors`}>
             {icon}
@@ -57,7 +61,9 @@ export function DashboardMetricCard({
           </div>
         ) : (
           <div className="space-y-1">
-            <div className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{value}</div>
+            <div className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              {value}
+            </div>
             <div className="flex items-center justify-between gap-2">
               {description && (
                 <p className="text-xs text-muted-foreground line-clamp-1">{description}</p>

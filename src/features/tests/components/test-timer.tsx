@@ -54,21 +54,25 @@ export function TestTimer({ startedAt, durationSeconds, onExpire }: TestTimerPro
     const s = seconds % 60;
 
     if (h > 0) {
-      return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
     }
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
   const isWarning = timeLeft > 0 && timeLeft <= 300; // 5 minutes warning
   const isDanger = timeLeft > 0 && timeLeft <= 60; // 1 minute warning
 
   return (
-    <div className={cn(
-      "flex items-center gap-2 font-mono text-sm sm:text-base font-semibold px-3.5 py-1.5 rounded-lg border transition-colors",
-      isDanger ? "bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/30 animate-pulse" 
-      : isWarning ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30" 
-      : "bg-muted/60 text-foreground border-border"
-    )}>
+    <div
+      className={cn(
+        "flex items-center gap-2 font-mono text-sm sm:text-base font-semibold px-3.5 py-1.5 rounded-lg border transition-colors",
+        isDanger
+          ? "bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/30 animate-pulse"
+          : isWarning
+            ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30"
+            : "bg-muted/60 text-foreground border-border",
+      )}
+    >
       <Clock className="w-4 h-4 shrink-0" />
       <span>{formatTime(Math.max(0, timeLeft))}</span>
     </div>

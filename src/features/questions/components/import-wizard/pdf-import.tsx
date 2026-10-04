@@ -3,17 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { 
-  AlertCircle, 
-  Upload, 
-  FileText, 
-  Loader2, 
-  ShieldAlert, 
-  Sparkles, 
-  Zap, 
-  Key, 
+import {
+  AlertCircle,
+  Upload,
+  FileText,
+  Loader2,
+  ShieldAlert,
+  Sparkles,
+  Zap,
+  Key,
   CheckCircle2,
-  ExternalLink 
+  ExternalLink,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -44,11 +44,11 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
   const [status, setStatus] = useState<"idle" | "uploading" | "processing">("idle");
   const [progress, setProgress] = useState<number>(0);
   const [stageMessage, setStageMessage] = useState<string>("");
-  
+
   // Quick in-place API Key dialog state
   const [showKeyDialog, setShowKeyDialog] = useState(false);
   const [quickApiKey, setQuickApiKey] = useState("");
-  
+
   const { status: keyStatus, saveKey, isSaving } = useGeminiKey();
   const progressTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -89,13 +89,13 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
 
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
-    
+
     if (selectedFile.type !== "application/pdf") {
       setError("Please select a valid PDF file.");
       setFile(null);
       return;
     }
-    
+
     // 20MB limit
     if (selectedFile.size > 20 * 1024 * 1024) {
       setError("File size exceeds 20MB limit.");
@@ -144,7 +144,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
     try {
       setStatus("processing");
       startSimulatedProgress();
-      
+
       // 1. Create Source Audit Record (storagePath is null since raw PDF is not permanently stored)
       const sourceRecord = await createSourceMutation.mutateAsync({
         bankId,
@@ -161,7 +161,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
       const rawQuestions: RawQuestion[] = await processPdfMutation.mutateAsync({
         file,
       });
-      
+
       stopSimulatedProgress();
       setProgress(95);
       setStageMessage("Validating extracted questions...");
@@ -185,7 +185,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
           };
         }
       });
-      
+
       // 4. Update Source Record with question count
       await supabase
         .from("uploaded_sources")
@@ -202,7 +202,6 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
       setTimeout(() => {
         onComplete(results, sourceRecord.id);
       }, 300);
-      
     } catch (err: any) {
       stopSimulatedProgress();
       console.error(err);
@@ -232,14 +231,18 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
             <div className="space-y-1">
               <CardTitle>Import PDF</CardTitle>
               <CardDescription>
-                Upload a PDF document and we'll automatically extract the multiple choice questions from it.
+                Upload a PDF document and we'll automatically extract the multiple choice questions
+                from it.
               </CardDescription>
             </div>
-            
+
             {/* AI Engine Status Badge */}
             <div className="flex items-center gap-2 self-start sm:self-auto">
               {keyStatus.source === "custom" ? (
-                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 text-xs py-1 flex items-center gap-1.5">
+                <Badge
+                  variant="outline"
+                  className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 text-xs py-1 flex items-center gap-1.5"
+                >
                   <CheckCircle2 className="size-3 text-emerald-500" />
                   Personal Key Active
                 </Badge>
@@ -257,11 +260,10 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          
-          <div 
+          <div
             className={`relative flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg border-muted-foreground/25 bg-muted/10 transition-colors ${
-              isProcessing 
-                ? "opacity-60 cursor-not-allowed pointer-events-none" 
+              isProcessing
+                ? "opacity-60 cursor-not-allowed pointer-events-none"
                 : "hover:bg-muted/30"
             }`}
           >
@@ -270,7 +272,9 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
                 <FileText className="w-12 h-12 text-primary mx-auto" />
                 <div>
                   <p className="font-medium text-sm">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                  <p className="text-xs text-muted-foreground">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
                 </div>
                 {!isProcessing && (
                   <Button variant="ghost" size="sm" onClick={() => setFile(null)}>
@@ -285,9 +289,9 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
                   <p className="text-sm font-medium">Click or drag PDF here</p>
                   <p className="text-xs text-muted-foreground">PDF up to 20MB</p>
                 </div>
-                <Input 
-                  type="file" 
-                  accept=".pdf,application/pdf" 
+                <Input
+                  type="file"
+                  accept=".pdf,application/pdf"
                   onChange={handleFileChange}
                   disabled={isProcessing}
                   className={`absolute inset-0 w-full h-full opacity-0 ${
@@ -307,14 +311,17 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
                   <AlertDescription className="text-xs leading-relaxed">{error}</AlertDescription>
                 </div>
               </div>
-              
+
               {/* Quick Action to Add Custom Key if error happens */}
-              {(error.includes("quota") || error.includes("rate limit") || error.includes("Key") || error.includes("key")) && (
+              {(error.includes("quota") ||
+                error.includes("rate limit") ||
+                error.includes("Key") ||
+                error.includes("key")) && (
                 <div className="pt-2 flex items-center gap-2">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
                     onClick={() => setShowKeyDialog(true)}
                     className="bg-background text-foreground text-xs"
                   >
@@ -325,7 +332,7 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
               )}
             </Alert>
           )}
-          
+
           {isProcessing && (
             <div className="space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
               <div className="flex items-center justify-between text-sm">
@@ -335,27 +342,30 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
                 </div>
                 <span className="font-semibold text-primary">{Math.min(progress, 100)}%</span>
               </div>
-              
+
               <Progress value={progress} className="h-2 w-full" />
-              
+
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
                 <ShieldAlert className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-                <span>Please do not close this tab or refresh the page while questions are being extracted.</span>
+                <span>
+                  Please do not close this tab or refresh the page while questions are being
+                  extracted.
+                </span>
               </div>
             </div>
           )}
 
           <div className="flex justify-end gap-2 pt-4">
-            <Button 
-              variant="outline" 
-              onClick={onCancel} 
+            <Button
+              variant="outline"
+              onClick={onCancel}
               disabled={isProcessing}
               className={isProcessing ? "cursor-not-allowed opacity-50" : ""}
             >
               Cancel
             </Button>
-            <Button 
-              onClick={processFile} 
+            <Button
+              onClick={processFile}
               disabled={!file || isProcessing}
               className={isProcessing ? "cursor-not-allowed" : ""}
             >
@@ -381,7 +391,8 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
               Configure Personal Gemini API Key
             </DialogTitle>
             <DialogDescription>
-              Add your free Google Gemini API key to avoid shared rate limit issues and extract MCQs with full speed.
+              Add your free Google Gemini API key to avoid shared rate limit issues and extract MCQs
+              with full speed.
             </DialogDescription>
           </DialogHeader>
 
@@ -415,12 +426,16 @@ export function PdfImport({ bankId, onComplete, onCancel }: PdfImportProps) {
             <Button variant="ghost" size="sm" onClick={() => setShowKeyDialog(false)}>
               Cancel
             </Button>
-            <Button 
-              size="sm" 
-              onClick={handleSaveQuickKey} 
+            <Button
+              size="sm"
+              onClick={handleSaveQuickKey}
               disabled={!quickApiKey.trim() || isSaving}
             >
-              {isSaving ? <Loader2 className="size-4 animate-spin mr-1.5" /> : <CheckCircle2 className="size-4 mr-1.5" />}
+              {isSaving ? (
+                <Loader2 className="size-4 animate-spin mr-1.5" />
+              ) : (
+                <CheckCircle2 className="size-4 mr-1.5" />
+              )}
               Save & Activate
             </Button>
           </DialogFooter>

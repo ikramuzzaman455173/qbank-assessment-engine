@@ -8,10 +8,7 @@ export function useCreateSource() {
 
   return useMutation({
     mutationFn: async (
-      sourceData: Omit<
-        UploadedSource,
-        "id" | "ownerId" | "createdAt" | "updatedAt"
-      >
+      sourceData: Omit<UploadedSource, "id" | "ownerId" | "createdAt" | "updatedAt">,
     ) => {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error("Not authenticated");

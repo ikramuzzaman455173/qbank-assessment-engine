@@ -51,9 +51,15 @@ export function PwaInstallPrompt() {
                   <span>How to install on iOS:</span>
                 </p>
                 <ol className="mt-1.5 list-decimal space-y-1 pl-4 text-muted-foreground">
-                  <li>Tap the <strong>Share</strong> button in Safari toolbar.</li>
-                  <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
-                  <li>Tap <strong>Add</strong> at top-right.</li>
+                  <li>
+                    Tap the <strong>Share</strong> button in Safari toolbar.
+                  </li>
+                  <li>
+                    Scroll down and tap <strong>Add to Home Screen</strong>.
+                  </li>
+                  <li>
+                    Tap <strong>Add</strong> at top-right.
+                  </li>
                 </ol>
               </div>
             )}

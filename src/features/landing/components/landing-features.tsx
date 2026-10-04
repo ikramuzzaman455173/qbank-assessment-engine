@@ -59,7 +59,10 @@ const FEATURES = [
 
 export function LandingFeatures() {
   return (
-    <section id="features" className="scroll-mt-20 py-14 md:py-20 border-b border-border bg-muted/30">
+    <section
+      id="features"
+      className="scroll-mt-20 py-14 md:py-20 border-b border-border bg-muted/30"
+    >
       <div className="container-page space-y-10 md:space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -71,7 +74,8 @@ export function LandingFeatures() {
             Everything You Need to Ace Any Exam
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-            A complete suite designed to turn static study materials into active, high-retention practice.
+            A complete suite designed to turn static study materials into active, high-retention
+            practice.
           </p>
         </div>
 
@@ -92,9 +96,7 @@ export function LandingFeatures() {
                     <Icon className="size-5" />
                   </div>
                   <CardTitle className="text-lg font-bold">{item.title}</CardTitle>
-                  <CardDescription className="text-sm leading-relaxed">
-                    {item.desc}
-                  </CardDescription>
+                  <CardDescription className="text-sm leading-relaxed">{item.desc}</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground pt-3 border-t border-dashed border-border/80">

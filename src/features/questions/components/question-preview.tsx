@@ -92,7 +92,9 @@ export function QuestionPreview({
                   {opt.id}.
                 </span>
                 <span className="flex-1 whitespace-pre-wrap">{opt.text}</span>
-                {isCorrect && <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />}
+                {isCorrect && (
+                  <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                )}
               </div>
             );
           })}

@@ -32,13 +32,13 @@ export function useExportData() {
         exportedAt: new Date().toISOString(),
         user: {
           profile,
-          preferences
+          preferences,
         },
         data: {
           questionBanks: banks || [],
           tests: tests || [],
           attempts: attempts || [],
-        }
+        },
       };
 
       // Create blob and download
@@ -46,12 +46,11 @@ export function useExportData() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `qbank-export-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `qbank-export-${new Date().toISOString().split("T")[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-
     } catch (err: any) {
       setError(err);
       throw err;

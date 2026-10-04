@@ -18,7 +18,12 @@ interface TopicPerformanceTableProps {
   loading?: boolean;
 }
 
-export function TopicPerformanceTable({ title, description, topics, loading }: TopicPerformanceTableProps) {
+export function TopicPerformanceTable({
+  title,
+  description,
+  topics,
+  loading,
+}: TopicPerformanceTableProps) {
   if (loading) {
     return (
       <Card>

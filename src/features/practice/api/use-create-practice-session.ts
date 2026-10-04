@@ -5,6 +5,6 @@ export function useCreatePracticeSession() {
     mutationFn: async (variables: any) => {
       console.log("Mock create practice session", variables);
       return { id: "mock-session-id" };
-    }
+    },
   });
 }

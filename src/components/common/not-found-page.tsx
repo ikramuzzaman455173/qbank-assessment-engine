@@ -104,19 +104,22 @@ const TRIVIA_QUESTIONS: MiniTrivia[] = [
       "Network Timeout",
     ],
     correctIndex: 1,
-    explanation: "HTTP 404 Not Found indicates that the server cannot find the requested URL resource.",
+    explanation:
+      "HTTP 404 Not Found indicates that the server cannot find the requested URL resource.",
   },
   {
     question: "Which data structure uses LIFO (Last In, First Out) ordering?",
     options: ["Queue", "Stack", "Binary Search Tree", "Linked List"],
     correctIndex: 1,
-    explanation: "A Stack operates on the LIFO principle where the last element inserted is removed first.",
+    explanation:
+      "A Stack operates on the LIFO principle where the last element inserted is removed first.",
   },
   {
     question: "What is the time complexity of searching a balanced Binary Search Tree?",
     options: ["O(1)", "O(n)", "O(log n)", "O(n log n)"],
     correctIndex: 2,
-    explanation: "Searching in a balanced BST takes O(log n) time by halving search space at each level.",
+    explanation:
+      "Searching in a balanced BST takes O(log n) time by halving search space at each level.",
   },
   {
     question: "In web development, which HTTP method is typically used to create a new resource?",
@@ -174,7 +177,7 @@ export function NotFoundPage() {
       (link) =>
         link.title.toLowerCase().includes(q) ||
         link.description.toLowerCase().includes(q) ||
-        link.keywords.some((k) => k.includes(q))
+        link.keywords.some((k) => k.includes(q)),
     );
   }, [searchQuery]);
 
@@ -206,7 +209,9 @@ export function NotFoundPage() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
             <GraduationCap className="size-4.5" />
           </span>
-          <span className="font-display text-base font-bold text-foreground tracking-tight">QBank</span>
+          <span className="font-display text-base font-bold text-foreground tracking-tight">
+            QBank
+          </span>
         </div>
 
         {/* Top Header & Visual 404 Hero */}
@@ -232,7 +237,8 @@ export function NotFoundPage() {
               Lost in the Knowledge Canvas?
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              The page you're searching for doesn't exist, has been moved, or the link may be outdated.
+              The page you're searching for doesn't exist, has been moved, or the link may be
+              outdated.
             </p>
           </div>
 
@@ -240,13 +246,19 @@ export function NotFoundPage() {
           {currentPath && (
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-muted/40 text-xs font-mono text-muted-foreground max-w-full truncate shadow-xs">
               <span className="text-foreground/70 font-semibold">Missing Route:</span>
-              <span className="truncate max-w-[200px] sm:max-w-[320px] text-foreground font-medium">{currentPath}</span>
+              <span className="truncate max-w-[200px] sm:max-w-[320px] text-foreground font-medium">
+                {currentPath}
+              </span>
               <button
                 onClick={copyCurrentUrl}
                 title="Copy full URL"
                 className="ml-1 p-1 hover:text-foreground text-muted-foreground transition-colors rounded hover:bg-background cursor-pointer"
               >
-                {copied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                {copied ? (
+                  <Check className="size-3.5 text-emerald-500" />
+                ) : (
+                  <Copy className="size-3.5" />
+                )}
               </button>
             </div>
           )}
@@ -335,7 +347,10 @@ export function NotFoundPage() {
                             </span>
                           </div>
                           {link.badge && (
-                            <Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-normal">
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] py-0 px-1.5 font-normal"
+                            >
                               {link.badge}
                             </Badge>
                           )}
@@ -355,7 +370,12 @@ export function NotFoundPage() {
               ) : (
                 <div className="col-span-full py-6 text-center text-xs text-muted-foreground space-y-2">
                   <p>No destinations found matching "{searchQuery}"</p>
-                  <Button variant="ghost" size="sm" onClick={() => setSearchQuery("")} className="text-xs h-7">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearchQuery("")}
+                    className="text-xs h-7"
+                  >
                     Clear Search
                   </Button>
                 </div>
@@ -376,7 +396,9 @@ export function NotFoundPage() {
                   <h4 className="text-xs sm:text-sm font-semibold text-foreground">
                     Quick Knowledge Trivia 🧠
                   </h4>
-                  <p className="text-[11px] text-muted-foreground">Stay sharp while finding your way</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Stay sharp while finding your way
+                  </p>
                 </div>
               </div>
 
@@ -386,21 +408,27 @@ export function NotFoundPage() {
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs sm:text-sm font-medium text-foreground leading-snug">{activeTrivia.question}</p>
+              <p className="text-xs sm:text-sm font-medium text-foreground leading-snug">
+                {activeTrivia.question}
+              </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {activeTrivia.options.map((option, idx) => {
                   const isSelected = selectedAnswer === idx;
                   const isCorrect = idx === activeTrivia.correctIndex;
 
-                  let btnStyle = "border-border/60 bg-background/60 hover:bg-accent/40 text-foreground";
+                  let btnStyle =
+                    "border-border/60 bg-background/60 hover:bg-accent/40 text-foreground";
                   if (triviaAnswered) {
                     if (isCorrect) {
-                      btnStyle = "border-emerald-500/50 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-medium";
+                      btnStyle =
+                        "border-emerald-500/50 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-medium";
                     } else if (isSelected) {
-                      btnStyle = "border-destructive/50 bg-destructive/10 text-destructive font-medium";
+                      btnStyle =
+                        "border-destructive/50 bg-destructive/10 text-destructive font-medium";
                     } else {
-                      btnStyle = "opacity-50 border-border/30 bg-background/30 text-muted-foreground";
+                      btnStyle =
+                        "opacity-50 border-border/30 bg-background/30 text-muted-foreground";
                     }
                   }
 
@@ -418,8 +446,12 @@ export function NotFoundPage() {
                         <span className="leading-tight">{option}</span>
                       </span>
 
-                      {triviaAnswered && isCorrect && <CheckCircle2 className="size-4 text-emerald-500 shrink-0 ml-1" />}
-                      {triviaAnswered && isSelected && !isCorrect && <XCircle className="size-4 text-destructive shrink-0 ml-1" />}
+                      {triviaAnswered && isCorrect && (
+                        <CheckCircle2 className="size-4 text-emerald-500 shrink-0 ml-1" />
+                      )}
+                      {triviaAnswered && isSelected && !isCorrect && (
+                        <XCircle className="size-4 text-destructive shrink-0 ml-1" />
+                      )}
                     </button>
                   );
                 })}
@@ -433,7 +465,12 @@ export function NotFoundPage() {
                     </span>
                     {activeTrivia.explanation}
                   </p>
-                  <Button size="sm" variant="secondary" onClick={handleNextTrivia} className="gap-1 text-xs shrink-0 self-end sm:self-auto h-7 px-2.5">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={handleNextTrivia}
+                    className="gap-1 text-xs shrink-0 self-end sm:self-auto h-7 px-2.5"
+                  >
                     <RotateCcw className="size-3.5" />
                     Next Question
                   </Button>
@@ -458,11 +495,17 @@ export function NotFoundPage() {
               Report Issue
             </a>
             <span>&bull;</span>
-            <Link to="/privacy" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+            <Link
+              to="/privacy"
+              className="hover:text-foreground transition-colors underline-offset-4 hover:underline"
+            >
               Privacy
             </Link>
             <span>&bull;</span>
-            <Link to="/terms" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+            <Link
+              to="/terms"
+              className="hover:text-foreground transition-colors underline-offset-4 hover:underline"
+            >
               Terms
             </Link>
           </div>

@@ -10,7 +10,9 @@ export function useDeleteAccount() {
     setError(null);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -19,14 +21,14 @@ export function useDeleteAccount() {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
-        }
+        },
       );
 
       if (functionError) throw functionError;
 
       // Ensure local session is cleared
       await supabase.auth.signOut();
-      
+
       return data;
     } catch (err: any) {
       setError(err);

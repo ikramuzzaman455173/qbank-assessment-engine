@@ -59,14 +59,21 @@ export function PrivacyPolicyPage() {
         <div className="container-page max-w-4xl space-y-10">
           {/* Top Navigation Bar (Headerless, clean) */}
           <div className="flex items-center justify-between border-b border-border/60 pb-4">
-            <Button variant="ghost" size="sm" asChild className="gap-1.5 text-muted-foreground hover:text-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="gap-1.5 text-muted-foreground hover:text-foreground"
+            >
               <Link to={ROUTES.landing}>
                 <ArrowLeft className="size-4" />
                 <span>Back to Home</span>
               </Link>
             </Button>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground hidden sm:inline">Effective Date: {lastUpdated}</span>
+              <span className="text-xs text-muted-foreground hidden sm:inline">
+                Effective Date: {lastUpdated}
+              </span>
               <ThemeToggle />
             </div>
           </div>
@@ -81,8 +88,9 @@ export function PrivacyPolicyPage() {
               Privacy Policy
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-2xl">
-              At Knowledge Canvas, your privacy and trust are our top priorities. This policy explains
-              what data we collect, how it is processed, and how your study materials remain secure.
+              At Knowledge Canvas, your privacy and trust are our top priorities. This policy
+              explains what data we collect, how it is processed, and how your study materials
+              remain secure.
             </p>
           </div>
 
@@ -113,21 +121,31 @@ export function PrivacyPolicyPage() {
             {/* Section 1 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">01</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Information We Collect</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  01
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Information We Collect
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                We only gather information necessary to provide you with smart question bank management and test simulations:
+                We only gather information necessary to provide you with smart question bank
+                management and test simulations:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground pl-2">
                 <li>
-                  <strong className="text-foreground">Account Information:</strong> Email address and authentication credentials managed securely via Supabase Auth.
+                  <strong className="text-foreground">Account Information:</strong> Email address
+                  and authentication credentials managed securely via Supabase Auth.
                 </li>
                 <li>
-                  <strong className="text-foreground">Question Banks & Content:</strong> Questions, options, explanations, tags, and topics you manually enter or import via PDF/JSON files.
+                  <strong className="text-foreground">Question Banks & Content:</strong> Questions,
+                  options, explanations, tags, and topics you manually enter or import via PDF/JSON
+                  files.
                 </li>
                 <li>
-                  <strong className="text-foreground">Test & Practice Activity:</strong> Test attempts, question responses, time spent, score percentages, and topic mastery analytics to generate performance metrics.
+                  <strong className="text-foreground">Test & Practice Activity:</strong> Test
+                  attempts, question responses, time spent, score percentages, and topic mastery
+                  analytics to generate performance metrics.
                 </li>
               </ul>
             </section>
@@ -135,16 +153,24 @@ export function PrivacyPolicyPage() {
             {/* Section 2 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">02</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">How We Use Your Information</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  02
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  How We Use Your Information
+                </h2>
               </div>
               <p className="text-muted-foreground">
                 Your data is strictly used to deliver and enhance the core learning functionality:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground pl-2">
                 <li>Providing question bank storage, search, and organization.</li>
-                <li>Simulating real-time timed tests and computing comprehensive score breakdowns.</li>
-                <li>Generating weakness radar and topic performance graphs on your private dashboard.</li>
+                <li>
+                  Simulating real-time timed tests and computing comprehensive score breakdowns.
+                </li>
+                <li>
+                  Generating weakness radar and topic performance graphs on your private dashboard.
+                </li>
                 <li>Authenticating and maintaining your active login sessions safely.</li>
               </ul>
             </section>
@@ -152,8 +178,12 @@ export function PrivacyPolicyPage() {
             {/* Section 3 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">03</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">AI Processing & Google Gemini</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  03
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  AI Processing & Google Gemini
+                </h2>
               </div>
               <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-2">
                 <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
@@ -161,7 +191,25 @@ export function PrivacyPolicyPage() {
                   <span>Automated MCQ Extraction</span>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  When you utilize the PDF import or AI question generation features, text from your uploaded document is sent to Google Gemini APIs (<code className="bg-background px-1 py-0.5 rounded text-primary">gemini-3.7-flash</code>, <code className="bg-background px-1 py-0.5 rounded text-primary">gemini-3.6-flash</code>, <code className="bg-background px-1 py-0.5 rounded text-primary">gemini-3.5-flash</code>, or <code className="bg-background px-1 py-0.5 rounded text-primary">gemini-3.1-pro</code>) strictly to structure questions into JSON. We do not use your proprietary documents to train public AI models.
+                  When you utilize the PDF import or AI question generation features, text from your
+                  uploaded document is sent to Google Gemini APIs (
+                  <code className="bg-background px-1 py-0.5 rounded text-primary">
+                    gemini-3.7-flash
+                  </code>
+                  ,{" "}
+                  <code className="bg-background px-1 py-0.5 rounded text-primary">
+                    gemini-3.6-flash
+                  </code>
+                  ,{" "}
+                  <code className="bg-background px-1 py-0.5 rounded text-primary">
+                    gemini-3.5-flash
+                  </code>
+                  , or{" "}
+                  <code className="bg-background px-1 py-0.5 rounded text-primary">
+                    gemini-3.1-pro
+                  </code>
+                  ) strictly to structure questions into JSON. We do not use your proprietary
+                  documents to train public AI models.
                 </p>
               </div>
             </section>
@@ -169,45 +217,73 @@ export function PrivacyPolicyPage() {
             {/* Section 4 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">04</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Data Storage & Security</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  04
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Data Storage & Security
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                All data is housed in enterprise-grade PostgreSQL infrastructure backed by Supabase with Row Level Security (RLS). Every table requires cryptographic authentication, ensuring that only you can read, modify, or delete your question banks and attempt logs.
+                All data is housed in enterprise-grade PostgreSQL infrastructure backed by Supabase
+                with Row Level Security (RLS). Every table requires cryptographic authentication,
+                ensuring that only you can read, modify, or delete your question banks and attempt
+                logs.
               </p>
             </section>
 
             {/* Section 5 */}
             <section className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">05</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Your Rights & Data Deletion</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  05
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Your Rights & Data Deletion
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                You maintain complete authority over your records. You can delete any individual question, question bank, or clear your test history directly from the user interface. If you wish to delete your entire account, all associated records are permanently purged from the database.
+                You maintain complete authority over your records. You can delete any individual
+                question, question bank, or clear your test history directly from the user
+                interface. If you wish to delete your entire account, all associated records are
+                permanently purged from the database.
               </p>
             </section>
 
             {/* Section 6 */}
             <section className="space-y-4">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono text-xs">06</Badge>
-                <h2 className="font-display text-xl font-bold text-foreground">Developer Credit & Contact</h2>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  06
+                </Badge>
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Developer Credit & Contact
+                </h2>
               </div>
               <p className="text-muted-foreground">
-                Knowledge Canvas is developed with care by <strong>Ikramuzzaman</strong>. If you have any questions, privacy inquiries, or feedback regarding the platform, feel free to reach out directly:
+                Knowledge Canvas is developed with care by <strong>Ikramuzzaman</strong>. If you
+                have any questions, privacy inquiries, or feedback regarding the platform, feel free
+                to reach out directly:
               </p>
 
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Button variant="outline" size="sm" asChild className="gap-2 shadow-2xs">
-                  <a href="https://ikramuzzaman.vercel.app" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://ikramuzzaman.vercel.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Globe className="size-4 text-primary" />
                     <span>Developer Portfolio</span>
                     <ExternalLink className="size-3 opacity-60" />
                   </a>
                 </Button>
                 <Button variant="outline" size="sm" asChild className="gap-2 shadow-2xs">
-                  <a href="https://github.com/ikramuzzaman455173" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://github.com/ikramuzzaman455173"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Github className="size-4" />
                     <span>GitHub Profile</span>
                     <ExternalLink className="size-3 opacity-60" />

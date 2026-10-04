@@ -11,7 +11,7 @@ export function useUploadAvatar() {
 
   const uploadAvatar = async (file: File) => {
     if (!user) throw new Error("Not authenticated");
-    
+
     setIsUploading(true);
     setError(null);
 
@@ -36,16 +36,16 @@ export function useUploadAvatar() {
       if (uploadError) {
         if (uploadError.message?.toLowerCase().includes("bucket not found")) {
           throw new Error(
-            "Supabase Storage bucket 'avatars' not found. Please create the 'avatars' public bucket in your Supabase Dashboard."
+            "Supabase Storage bucket 'avatars' not found. Please create the 'avatars' public bucket in your Supabase Dashboard.",
           );
         }
         throw uploadError;
       }
 
       // 3. Get public URL with timestamp cache buster
-      const { data: { publicUrl } } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(filePath);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("avatars").getPublicUrl(filePath);
 
       const finalUrl = `${publicUrl}?t=${Date.now()}`;
 
@@ -73,11 +73,11 @@ export function useUploadAvatar() {
       const { data: files, error: listError } = await supabase.storage
         .from("avatars")
         .list(user.id);
-      
+
       if (listError) throw listError;
-      
+
       if (files && files.length > 0) {
-        const filePaths = files.map(f => `${user.id}/${f.name}`);
+        const filePaths = files.map((f) => `${user.id}/${f.name}`);
         await supabase.storage.from("avatars").remove(filePaths);
       }
 
@@ -97,6 +97,6 @@ export function useUploadAvatar() {
     uploadAvatar,
     removeAvatar,
     isUploading,
-    error
+    error,
   };
 }

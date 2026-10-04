@@ -65,7 +65,11 @@ export function DataManagementSettings() {
               <p className="text-sm text-muted-foreground">Includes all your personal data.</p>
             </div>
             <Button onClick={exportData} disabled={isExporting}>
-              {isExporting ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Download className="mr-2 size-4" />}
+              {isExporting ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 size-4" />
+              )}
               Export Data
             </Button>
           </div>

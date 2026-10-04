@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  ChevronsLeft, 
-  ChevronsRight, 
+import { useState, useEffect, useCallback } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   ArrowRight,
-  Layers
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,20 +54,23 @@ export function AdvancedPagination({
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
-  const handlePageChange = (newPage: number) => {
-    const validPage = Math.max(1, Math.min(newPage, totalPages));
-    if (validPage !== currentPage) {
-      onPageChange(validPage);
-      if (scrollToTopOnPageChange) {
-        if (scrollTargetId) {
-          const el = document.getElementById(scrollTargetId);
-          el?.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      const validPage = Math.max(1, Math.min(newPage, totalPages));
+      if (validPage !== currentPage) {
+        onPageChange(validPage);
+        if (scrollToTopOnPageChange) {
+          if (scrollTargetId) {
+            const el = document.getElementById(scrollTargetId);
+            el?.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
         }
       }
-    }
-  };
+    },
+    [currentPage, totalPages, onPageChange, scrollToTopOnPageChange, scrollTargetId],
+  );
 
   const handleJumpSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,12 +96,12 @@ export function AdvancedPagination({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentPage, totalPages]);
+  }, [currentPage, handlePageChange]);
 
   // Generate page numbers with smart ellipsis
   const getVisiblePages = () => {
     const pages: (number | "ellipsis-left" | "ellipsis-right")[] = [];
-    
+
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
       return pages;
@@ -161,7 +164,9 @@ export function AdvancedPagination({
               onClick={() => handlePageChange(b.page)}
               className={cn(
                 "h-7 px-2.5 text-xs font-mono rounded-md transition-all",
-                b.page === currentPage ? "font-semibold shadow-xs" : "text-muted-foreground hover:text-foreground"
+                b.page === currentPage
+                  ? "font-semibold shadow-xs"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               {b.label}
@@ -176,7 +181,10 @@ export function AdvancedPagination({
         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground order-2 sm:order-1">
           <div className="flex items-center gap-1.5">
             <span>Showing</span>
-            <Badge variant="secondary" className="font-mono text-xs px-2 py-0.5 font-semibold text-foreground">
+            <Badge
+              variant="secondary"
+              className="font-mono text-xs px-2 py-0.5 font-semibold text-foreground"
+            >
               {startItem}–{endItem}
             </Badge>
             <span>of</span>
@@ -261,7 +269,7 @@ export function AdvancedPagination({
                   onClick={() => handlePageChange(item)}
                   className={cn(
                     "h-8 min-w-[32px] px-2 text-xs font-mono rounded-lg transition-all",
-                    isCurrent && "font-bold shadow-xs"
+                    isCurrent && "font-bold shadow-xs",
                   )}
                 >
                   {item}
@@ -298,7 +306,10 @@ export function AdvancedPagination({
 
           {/* Direct Quick Page Jumper */}
           {showQuickJumper && totalPages > 3 && (
-            <form onSubmit={handleJumpSubmit} className="flex items-center gap-1 pl-2 border-l border-border">
+            <form
+              onSubmit={handleJumpSubmit}
+              className="flex items-center gap-1 pl-2 border-l border-border"
+            >
               <span className="text-xs text-muted-foreground hidden sm:inline">Go to:</span>
               <Input
                 type="number"

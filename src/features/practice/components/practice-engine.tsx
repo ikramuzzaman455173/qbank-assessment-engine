@@ -1,23 +1,30 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { 
-  CheckCircle2, 
-  XCircle, 
-  ArrowRight, 
-  ArrowLeft, 
-  RotateCcw, 
-  HelpCircle, 
-  Award, 
-  Info, 
+import {
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
+  ArrowLeft,
+  RotateCcw,
+  HelpCircle,
+  Award,
+  Info,
   Send,
   Eye,
   Check,
   AlertCircle,
   Maximize,
   Minimize2,
-  Keyboard
+  Keyboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -39,10 +46,10 @@ interface PracticeEngineProps {
   durationSeconds?: number | undefined;
 }
 
-export function PracticeEngine({ 
-  questions, 
+export function PracticeEngine({
+  questions,
   bankId,
-  randomizeOptions = false, 
+  randomizeOptions = false,
   onFinish,
   defaultMode = "exam",
   timerEnabled = false,
@@ -54,16 +61,18 @@ export function PracticeEngine({
   // Session Mode: "exam" (results at end) or "instant" (immediate feedback)
   const [mode, setMode] = useState<"exam" | "instant">(defaultMode);
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+
   // Answers map: { [questionId or index]: selectedOptionId ('A' | 'B' | 'C' | 'D') }
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
-  
+
   // Instant mode specific state (reveals answer for current question)
   const [instantRevealed, setInstantRevealed] = useState<Record<string, boolean>>({});
-  
+
   // Finished state & Attempt saving
   const [isFinished, setIsFinished] = useState(false);
-  const [reviewFilter, setReviewFilter] = useState<"all" | "incorrect" | "correct" | "unanswered">("all");
+  const [reviewFilter, setReviewFilter] = useState<"all" | "incorrect" | "correct" | "unanswered">(
+    "all",
+  );
   const saveAttemptMutation = useSavePracticeAttempt();
   const hasSavedRef = useRef(false);
   const startedAtRef = useRef<string>(new Date().toISOString());
@@ -77,16 +86,6 @@ export function PracticeEngine({
   // Keyboard hints visibility
   const [showKeyHints, setShowKeyHints] = useState(true);
 
-  if (questions.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <h2 className="text-2xl font-bold mb-2">No Questions Found</h2>
-        <p className="text-muted-foreground mb-6">Could not find any questions matching your criteria.</p>
-        <Button onClick={onFinish}>Go Back</Button>
-      </div>
-    );
-  }
-
   const currentQuestion = questions[currentIndex];
 
   // Options memoized per question
@@ -99,10 +98,24 @@ export function PracticeEngine({
       { id: "D", text: currentQuestion.optionD },
     ];
     if (randomizeOptions) {
-      return [...baseOptions].sort(() => Math.random() - 0.5);
+      const seed = `${currentQuestion.id || currentIndex}`;
+      let hash = 0;
+      for (let i = 0; i < seed.length; i++) {
+        hash = (hash << 5) - hash + seed.charCodeAt(i);
+        hash |= 0;
+      }
+      const shuffled = [...baseOptions];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        hash = (hash * 9301 + 49297) % 233280;
+        const j = Math.abs(hash) % (i + 1);
+        const temp = shuffled[i]!;
+        shuffled[i] = shuffled[j]!;
+        shuffled[j] = temp;
+      }
+      return shuffled;
     }
     return baseOptions;
-  }, [currentQuestion, randomizeOptions]);
+  }, [currentQuestion, randomizeOptions, currentIndex]);
 
   // Handle Option Click
   const handleSelectOption = (optionId: string) => {
@@ -111,20 +124,20 @@ export function PracticeEngine({
 
     if (mode === "instant") {
       if (instantRevealed[qKey]) return; // already locked in instant mode
-      setUserAnswers(prev => ({ ...prev, [qKey]: optionId }));
-      setInstantRevealed(prev => ({ ...prev, [qKey]: true }));
+      setUserAnswers((prev) => ({ ...prev, [qKey]: optionId }));
+      setInstantRevealed((prev) => ({ ...prev, [qKey]: true }));
     } else {
       // Exam mode: allow selecting or toggling freely
-      setUserAnswers(prev => ({
+      setUserAnswers((prev) => ({
         ...prev,
-        [qKey]: prev[qKey] === optionId ? "" : optionId
+        [qKey]: prev[qKey] === optionId ? "" : optionId,
       }));
     }
   };
 
   const handleNext = useCallback(() => {
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
     } else {
       setIsFinished(true);
     }
@@ -132,7 +145,7 @@ export function PracticeEngine({
 
   const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
+      setCurrentIndex((prev) => prev - 1);
     }
   }, [currentIndex]);
 
@@ -147,19 +160,22 @@ export function PracticeEngine({
   };
 
   // Toggle strike-through on an option (elimination tool)
-  const handleToggleStrike = useCallback((optionId: string) => {
-    if (!currentQuestion) return;
-    const qKey = currentQuestion.id || String(currentIndex);
-    setStrikeThrough(prev => {
-      const existing = prev[qKey] ? new Set(prev[qKey]) : new Set<string>();
-      if (existing.has(optionId)) {
-        existing.delete(optionId);
-      } else {
-        existing.add(optionId);
-      }
-      return { ...prev, [qKey]: existing };
-    });
-  }, [currentQuestion, currentIndex]);
+  const handleToggleStrike = useCallback(
+    (optionId: string) => {
+      if (!currentQuestion) return;
+      const qKey = currentQuestion.id || String(currentIndex);
+      setStrikeThrough((prev) => {
+        const existing = prev[qKey] ? new Set(prev[qKey]) : new Set<string>();
+        if (existing.has(optionId)) {
+          existing.delete(optionId);
+        } else {
+          existing.add(optionId);
+        }
+        return { ...prev, [qKey]: existing };
+      });
+    },
+    [currentQuestion, currentIndex],
+  );
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -181,16 +197,21 @@ export function PracticeEngine({
         return;
       }
 
-      // A/B/C/D or 1/2/3/4 = select option
+      // Number keys 1-4 = select 1st, 2nd, 3rd, 4th displayed option
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= 4) {
+        const selectedOpt = currentOptions[num - 1];
+        if (selectedOpt) {
+          e.preventDefault();
+          handleSelectOption(selectedOpt.id);
+          return;
+        }
+      }
+
+      // A/B/C/D = select option by ID
       if (optionKeys.includes(key)) {
         e.preventDefault();
         handleSelectOption(key);
-        return;
-      }
-      const mappedNumber = numberKeys[e.key];
-      if (mappedNumber) {
-        e.preventDefault();
-        handleSelectOption(mappedNumber);
         return;
       }
 
@@ -223,12 +244,22 @@ export function PracticeEngine({
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [isFinished, currentIndex, questions.length, handleNext, handlePrevious, handleSelectOption, handleToggleStrike, toggleFullscreen]);
+  }, [
+    isFinished,
+    currentIndex,
+    questions.length,
+    handleNext,
+    handlePrevious,
+    handleSelectOption,
+    handleToggleStrike,
+    toggleFullscreen,
+    currentOptions,
+  ]);
 
   // Metrics calculation
   const totalQuestions = questions.length;
   const answeredCount = Object.values(userAnswers).filter(Boolean).length;
-  
+
   let correctCount = 0;
   let incorrectCount = 0;
   let unansweredCount = 0;
@@ -264,24 +295,51 @@ export function PracticeEngine({
         startedAt: startedAtRef.current,
       });
     }
-  }, [isFinished, answeredCount, bankId, questions, userAnswers, percentage, correctCount, incorrectCount, unansweredCount, timerEnabled, durationSeconds, saveAttemptMutation]);
+  }, [
+    isFinished,
+    answeredCount,
+    bankId,
+    questions,
+    userAnswers,
+    percentage,
+    correctCount,
+    incorrectCount,
+    unansweredCount,
+    timerEnabled,
+    durationSeconds,
+    saveAttemptMutation,
+  ]);
+
+  if (questions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <h2 className="text-2xl font-bold mb-2">No Questions Found</h2>
+        <p className="text-muted-foreground mb-6">
+          Could not find any questions matching your criteria.
+        </p>
+        <Button onClick={onFinish}>Go Back</Button>
+      </div>
+    );
+  }
 
   // -------------------------------------------------------------
   // RESULTS VIEW (When Test is Finished)
   // -------------------------------------------------------------
   if (isFinished) {
-    const filteredQuestions = questions.map((q, idx) => {
-      const qKey = q.id || String(idx);
-      const selected = userAnswers[qKey];
-      const isCorrect = selected === q.correctAnswer;
-      const isSkipped = !selected;
-      return { question: q, index: idx, selected, isCorrect, isSkipped };
-    }).filter(item => {
-      if (reviewFilter === "incorrect") return !item.isCorrect && !item.isSkipped;
-      if (reviewFilter === "correct") return item.isCorrect;
-      if (reviewFilter === "unanswered") return item.isSkipped;
-      return true;
-    });
+    const filteredQuestions = questions
+      .map((q, idx) => {
+        const qKey = q.id || String(idx);
+        const selected = userAnswers[qKey];
+        const isCorrect = selected === q.correctAnswer;
+        const isSkipped = !selected;
+        return { question: q, index: idx, selected, isCorrect, isSkipped };
+      })
+      .filter((item) => {
+        if (reviewFilter === "incorrect") return !item.isCorrect && !item.isSkipped;
+        if (reviewFilter === "correct") return item.isCorrect;
+        if (reviewFilter === "unanswered") return item.isSkipped;
+        return true;
+      });
 
     return (
       <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300">
@@ -291,14 +349,12 @@ export function PracticeEngine({
             <div className="mx-auto bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-3">
               <Award className="w-8 h-8 text-primary" />
             </div>
-            <CardTitle className="text-3xl font-bold">
-              Test Completed!
-            </CardTitle>
+            <CardTitle className="text-3xl font-bold">Test Completed!</CardTitle>
             <CardDescription className="text-base">
               Here is your complete performance breakdown and answer review.
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="space-y-6 pt-6">
             {/* Score Ring & Badge */}
             <div className="flex flex-col items-center justify-center">
@@ -308,7 +364,7 @@ export function PracticeEngine({
               <div className="text-sm font-medium text-muted-foreground mt-1">
                 Final Accuracy Score ({correctCount} / {totalQuestions})
               </div>
-              
+
               <div className="mt-3">
                 {percentage >= 80 ? (
                   <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 text-sm font-medium">
@@ -330,26 +386,38 @@ export function PracticeEngine({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto pt-2">
               <div className="flex flex-col items-center p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-center">
                 <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mb-1" />
-                <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{correctCount}</span>
-                <span className="text-xs uppercase tracking-wider font-semibold text-emerald-600 dark:text-emerald-400 mt-1">Correct</span>
+                <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">
+                  {correctCount}
+                </span>
+                <span className="text-xs uppercase tracking-wider font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
+                  Correct
+                </span>
               </div>
 
               <div className="flex flex-col items-center p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
                 <XCircle className="w-6 h-6 text-red-600 dark:text-red-400 mb-1" />
-                <span className="text-2xl font-bold text-red-700 dark:text-red-300">{incorrectCount}</span>
-                <span className="text-xs uppercase tracking-wider font-semibold text-red-600 dark:text-red-400 mt-1">Incorrect</span>
+                <span className="text-2xl font-bold text-red-700 dark:text-red-300">
+                  {incorrectCount}
+                </span>
+                <span className="text-xs uppercase tracking-wider font-semibold text-red-600 dark:text-red-400 mt-1">
+                  Incorrect
+                </span>
               </div>
 
               <div className="flex flex-col items-center p-4 bg-muted/60 border border-border rounded-xl text-center">
                 <HelpCircle className="w-6 h-6 text-muted-foreground mb-1" />
                 <span className="text-2xl font-bold text-foreground">{unansweredCount}</span>
-                <span className="text-xs uppercase tracking-wider font-semibold text-muted-foreground mt-1">Skipped</span>
+                <span className="text-xs uppercase tracking-wider font-semibold text-muted-foreground mt-1">
+                  Skipped
+                </span>
               </div>
 
               <div className="flex flex-col items-center p-4 bg-primary/10 border border-primary/20 rounded-xl text-center">
                 <Send className="w-6 h-6 text-primary mb-1" />
                 <span className="text-2xl font-bold text-primary">{totalQuestions}</span>
-                <span className="text-xs uppercase tracking-wider font-semibold text-primary mt-1">Total</span>
+                <span className="text-xs uppercase tracking-wider font-semibold text-primary mt-1">
+                  Total
+                </span>
               </div>
             </div>
           </CardContent>
@@ -375,12 +443,13 @@ export function PracticeEngine({
             <div>
               <h3 className="text-2xl font-bold tracking-tight">Answer Review & Explanations</h3>
               <p className="text-sm text-muted-foreground">
-                Review all questions, your submitted answers, correct solutions, and in-depth explanations.
+                Review all questions, your submitted answers, correct solutions, and in-depth
+                explanations.
               </p>
             </div>
 
-            <Tabs 
-              value={reviewFilter} 
+            <Tabs
+              value={reviewFilter}
               onValueChange={(val) => setReviewFilter(val as any)}
               className="w-full sm:w-auto"
             >
@@ -392,9 +461,7 @@ export function PracticeEngine({
                 <TabsTrigger value="correct" className="text-emerald-600 dark:text-emerald-400">
                   Correct ({correctCount})
                 </TabsTrigger>
-                <TabsTrigger value="unanswered">
-                  Skipped ({unansweredCount})
-                </TabsTrigger>
+                <TabsTrigger value="unanswered">Skipped ({unansweredCount})</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -405,134 +472,150 @@ export function PracticeEngine({
             </div>
           ) : (
             <div className="space-y-6">
-              {filteredQuestions.map(({ question: q, index: qIdx, selected, isCorrect, isSkipped }) => {
-                const options = [
-                  { id: "A", text: q.optionA },
-                  { id: "B", text: q.optionB },
-                  { id: "C", text: q.optionC },
-                  { id: "D", text: q.optionD },
-                ];
+              {filteredQuestions.map(
+                ({ question: q, index: qIdx, selected, isCorrect, isSkipped }) => {
+                  const options = [
+                    { id: "A", text: q.optionA },
+                    { id: "B", text: q.optionB },
+                    { id: "C", text: q.optionC },
+                    { id: "D", text: q.optionD },
+                  ];
 
-                return (
-                  <Card 
-                    key={q.id || qIdx} 
-                    className={cn(
-                      "shadow-sm transition-all overflow-hidden border-l-4",
-                      isCorrect 
-                        ? "border-l-emerald-500" 
-                        : isSkipped 
-                        ? "border-l-amber-500" 
-                        : "border-l-red-500"
-                    )}
-                  >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                              Question {qIdx + 1}
-                            </span>
-                            {q.topic && <Badge variant="outline" className="text-xs">{q.topic}</Badge>}
-                            {q.difficulty && (
-                              <Badge variant="secondary" className="text-xs capitalize">{q.difficulty}</Badge>
+                  return (
+                    <Card
+                      key={q.id || qIdx}
+                      className={cn(
+                        "shadow-sm transition-all overflow-hidden border-l-4",
+                        isCorrect
+                          ? "border-l-emerald-500"
+                          : isSkipped
+                            ? "border-l-amber-500"
+                            : "border-l-red-500",
+                      )}
+                    >
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1 flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                Question {qIdx + 1}
+                              </span>
+                              {q.topic && (
+                                <Badge variant="outline" className="text-xs">
+                                  {q.topic}
+                                </Badge>
+                              )}
+                              {q.difficulty && (
+                                <Badge variant="secondary" className="text-xs capitalize">
+                                  {q.difficulty}
+                                </Badge>
+                              )}
+                            </div>
+                            <CardTitle className="text-lg font-semibold leading-relaxed pt-1">
+                              {q.questionText}
+                            </CardTitle>
+                          </div>
+
+                          <div>
+                            {isCorrect && (
+                              <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 gap-1.5 py-1">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Correct
+                              </Badge>
+                            )}
+                            {!isCorrect && !isSkipped && (
+                              <Badge className="bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/30 gap-1.5 py-1">
+                                <XCircle className="w-3.5 h-3.5" /> Incorrect
+                              </Badge>
+                            )}
+                            {isSkipped && (
+                              <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30 gap-1.5 py-1">
+                                <AlertCircle className="w-3.5 h-3.5" /> Skipped
+                              </Badge>
                             )}
                           </div>
-                          <CardTitle className="text-lg font-semibold leading-relaxed pt-1">
-                            {q.questionText}
-                          </CardTitle>
                         </div>
+                      </CardHeader>
 
-                        <div>
-                          {isCorrect && (
-                            <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 gap-1.5 py-1">
-                              <CheckCircle2 className="w-3.5 h-3.5" /> Correct
-                            </Badge>
-                          )}
-                          {!isCorrect && !isSkipped && (
-                            <Badge className="bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/30 gap-1.5 py-1">
-                              <XCircle className="w-3.5 h-3.5" /> Incorrect
-                            </Badge>
-                          )}
-                          {isSkipped && (
-                            <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30 gap-1.5 py-1">
-                              <AlertCircle className="w-3.5 h-3.5" /> Skipped
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </CardHeader>
+                      <CardContent className="space-y-4 pt-1">
+                        {/* Option choices */}
+                        <div className="grid grid-cols-1 gap-2.5">
+                          {options.map((opt) => {
+                            const isOptionCorrect = q.correctAnswer === opt.id;
+                            const isOptionSelected = selected === opt.id;
 
-                    <CardContent className="space-y-4 pt-1">
-                      {/* Option choices */}
-                      <div className="grid grid-cols-1 gap-2.5">
-                        {options.map((opt) => {
-                          const isOptionCorrect = q.correctAnswer === opt.id;
-                          const isOptionSelected = selected === opt.id;
+                            let optionBoxClass =
+                              "border-border bg-card text-muted-foreground opacity-80";
+                            let badgeEl = null;
 
-                          let optionBoxClass = "border-border bg-card text-muted-foreground opacity-80";
-                          let badgeEl = null;
+                            if (isOptionCorrect) {
+                              optionBoxClass =
+                                "border-emerald-500 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500 font-medium opacity-100";
+                              badgeEl = (
+                                <Badge className="bg-emerald-600 text-white hover:bg-emerald-600 text-xs gap-1 shrink-0">
+                                  <Check className="w-3 h-3" /> Correct Answer
+                                </Badge>
+                              );
+                            } else if (isOptionSelected && !isOptionCorrect) {
+                              optionBoxClass =
+                                "border-red-500 bg-red-500/10 text-red-950 dark:text-red-100 ring-1 ring-red-500 font-medium opacity-100";
+                              badgeEl = (
+                                <Badge variant="destructive" className="text-xs gap-1 shrink-0">
+                                  <XCircle className="w-3 h-3" /> Your Answer
+                                </Badge>
+                              );
+                            }
 
-                          if (isOptionCorrect) {
-                            optionBoxClass = "border-emerald-500 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500 font-medium opacity-100";
-                            badgeEl = (
-                              <Badge className="bg-emerald-600 text-white hover:bg-emerald-600 text-xs gap-1 shrink-0">
-                                <Check className="w-3 h-3" /> Correct Answer
-                              </Badge>
-                            );
-                          } else if (isOptionSelected && !isOptionCorrect) {
-                            optionBoxClass = "border-red-500 bg-red-500/10 text-red-950 dark:text-red-100 ring-1 ring-red-500 font-medium opacity-100";
-                            badgeEl = (
-                              <Badge variant="destructive" className="text-xs gap-1 shrink-0">
-                                <XCircle className="w-3 h-3" /> Your Answer
-                              </Badge>
-                            );
-                          }
-
-                          return (
-                            <div
-                              key={opt.id}
-                              className={cn(
-                                "flex items-start justify-between gap-3 p-3.5 rounded-lg border transition-all",
-                                optionBoxClass
-                              )}
-                            >
-                              <div className="flex items-start gap-3 flex-1">
-                                <span className={cn(
-                                  "font-bold min-w-[1.5rem]",
-                                  isOptionCorrect ? "text-emerald-600 dark:text-emerald-400" :
-                                  isOptionSelected ? "text-red-600 dark:text-red-400" : ""
-                                )}>
-                                  {opt.id}.
-                                </span>
-                                <span className="text-sm leading-relaxed">{opt.text}</span>
+                            return (
+                              <div
+                                key={opt.id}
+                                className={cn(
+                                  "flex items-start justify-between gap-3 p-3.5 rounded-lg border transition-all",
+                                  optionBoxClass,
+                                )}
+                              >
+                                <div className="flex items-start gap-3 flex-1">
+                                  <span
+                                    className={cn(
+                                      "font-bold min-w-[1.5rem]",
+                                      isOptionCorrect
+                                        ? "text-emerald-600 dark:text-emerald-400"
+                                        : isOptionSelected
+                                          ? "text-red-600 dark:text-red-400"
+                                          : "",
+                                    )}
+                                  >
+                                    {opt.id}.
+                                  </span>
+                                  <span className="text-sm leading-relaxed">{opt.text}</span>
+                                </div>
+                                {badgeEl}
                               </div>
-                              {badgeEl}
+                            );
+                          })}
+                        </div>
+
+                        {/* Explanation */}
+                        {q.explanation && (
+                          <div className="mt-4 p-4 rounded-lg bg-muted/60 border border-border/80 text-sm">
+                            <div className="flex items-center gap-1.5 font-semibold text-primary mb-1.5">
+                              <Info className="w-4 h-4" /> Explanation:
                             </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Explanation */}
-                      {q.explanation && (
-                        <div className="mt-4 p-4 rounded-lg bg-muted/60 border border-border/80 text-sm">
-                          <div className="flex items-center gap-1.5 font-semibold text-primary mb-1.5">
-                            <Info className="w-4 h-4" /> Explanation:
+                            <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">
+                              {q.explanation}
+                            </p>
                           </div>
-                          <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">
-                            {q.explanation}
-                          </p>
-                        </div>
-                      )}
+                        )}
 
-                      {q.sourceReference && (
-                        <div className="text-xs text-muted-foreground pt-1 flex items-center gap-1">
-                          <span className="font-medium">Reference:</span> {q.sourceReference}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                        {q.sourceReference && (
+                          <div className="text-xs text-muted-foreground pt-1 flex items-center gap-1">
+                            <span className="font-medium">Reference:</span> {q.sourceReference}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                },
+              )}
             </div>
           )}
         </div>
@@ -567,7 +650,7 @@ export function PracticeEngine({
         <div className="flex items-center gap-2">
           {/* Live Timer if enabled */}
           {timerEnabled && durationSeconds > 0 && (
-            <TestTimer 
+            <TestTimer
               startedAt={startedAtRef.current}
               durationSeconds={durationSeconds}
               onExpire={() => setIsFinished(true)}
@@ -580,9 +663,9 @@ export function PracticeEngine({
               onClick={() => setMode("exam")}
               className={cn(
                 "px-2.5 py-1 rounded-md font-medium transition-colors",
-                mode === "exam" 
-                  ? "bg-background text-foreground shadow-sm" 
-                  : "text-muted-foreground hover:text-foreground"
+                mode === "exam"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
               )}
               title="Exam Mode: Submit all questions first, see full results and explanations at the end"
             >
@@ -592,9 +675,9 @@ export function PracticeEngine({
               onClick={() => setMode("instant")}
               className={cn(
                 "px-2.5 py-1 rounded-md font-medium transition-colors",
-                mode === "instant" 
-                  ? "bg-background text-foreground shadow-sm" 
-                  : "text-muted-foreground hover:text-foreground"
+                mode === "instant"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
               )}
               title="Practice Mode: Instant feedback and explanation after each question"
             >
@@ -613,9 +696,9 @@ export function PracticeEngine({
             {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
           </Button>
 
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setIsFinished(true)}
             className="text-xs text-muted-foreground hover:text-primary"
           >
@@ -640,11 +723,11 @@ export function PracticeEngine({
               onClick={() => setCurrentIndex(idx)}
               className={cn(
                 "w-7 h-7 rounded-md text-xs font-semibold transition-all shrink-0 flex items-center justify-center border",
-                isCurrent 
-                  ? "bg-primary text-primary-foreground border-primary ring-2 ring-primary/30" 
+                isCurrent
+                  ? "bg-primary text-primary-foreground border-primary ring-2 ring-primary/30"
                   : hasAnswer
-                  ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 dark:hover:bg-emerald-900/50"
-                  : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
+                    ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 dark:hover:bg-emerald-900/50"
+                    : "bg-muted/40 text-muted-foreground border-border hover:bg-muted",
               )}
               title={`Jump to Question ${idx + 1}`}
             >
@@ -662,10 +745,14 @@ export function PracticeEngine({
               Question {currentIndex + 1}
             </Badge>
             {currentQuestion.topic && (
-              <Badge variant="secondary" className="text-xs">{currentQuestion.topic}</Badge>
+              <Badge variant="secondary" className="text-xs">
+                {currentQuestion.topic}
+              </Badge>
             )}
             {currentQuestion.difficulty && (
-              <Badge variant="secondary" className="text-xs capitalize">{currentQuestion.difficulty}</Badge>
+              <Badge variant="secondary" className="text-xs capitalize">
+                {currentQuestion.difficulty}
+              </Badge>
             )}
           </div>
           <CardTitle className="text-xl leading-relaxed whitespace-pre-wrap pt-1 font-semibold">
@@ -679,7 +766,8 @@ export function PracticeEngine({
             const isCorrect = currentQuestion.correctAnswer === opt.id;
             const isStruck = strikeThrough[qKey]?.has(opt.id) ?? false;
 
-            let stateClass = "border-border hover:border-primary/50 hover:bg-accent/40 cursor-pointer";
+            let stateClass =
+              "border-border hover:border-primary/50 hover:bg-accent/40 cursor-pointer";
             let Icon = null;
 
             // In Instant/Learn mode, reveal immediately if answered
@@ -687,16 +775,19 @@ export function PracticeEngine({
               stateClass = "border-border opacity-50 cursor-default";
 
               if (isCorrect) {
-                stateClass = "border-emerald-500 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500 cursor-default opacity-100";
+                stateClass =
+                  "border-emerald-500 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500 cursor-default opacity-100";
                 Icon = <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />;
               } else if (isSelected && !isCorrect) {
-                stateClass = "border-red-500 bg-red-500/10 text-red-950 dark:text-red-100 ring-1 ring-red-500 cursor-default opacity-100";
+                stateClass =
+                  "border-red-500 bg-red-500/10 text-red-950 dark:text-red-100 ring-1 ring-red-500 cursor-default opacity-100";
                 Icon = <XCircle className="h-5 w-5 text-red-500 shrink-0" />;
               }
             } else {
               // In Exam Mode: Clean active selection state without spoiling answers
               if (isSelected) {
-                stateClass = "border-primary bg-primary/10 text-foreground ring-2 ring-primary/40 font-medium shadow-xs";
+                stateClass =
+                  "border-primary bg-primary/10 text-foreground ring-2 ring-primary/40 font-medium shadow-xs";
               }
             }
 
@@ -711,20 +802,22 @@ export function PracticeEngine({
                 className={cn(
                   "flex items-start gap-3 p-4 rounded-xl border transition-all duration-150 select-none",
                   stateClass,
-                  isStruck && "opacity-40 line-through decoration-2"
+                  isStruck && "opacity-40 line-through decoration-2",
                 )}
               >
                 {/* Radio selection circle */}
-                <div className={cn(
-                  "w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 transition-colors mt-0.5",
-                  isSelected && mode === "exam"
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : isSelected && mode === "instant" && isCorrect
-                    ? "border-emerald-500 bg-emerald-500 text-white"
-                    : isSelected && mode === "instant" && !isCorrect
-                    ? "border-red-500 bg-red-500 text-white"
-                    : "border-muted-foreground/40 text-muted-foreground"
-                )}>
+                <div
+                  className={cn(
+                    "w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 transition-colors mt-0.5",
+                    isSelected && mode === "exam"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : isSelected && mode === "instant" && isCorrect
+                        ? "border-emerald-500 bg-emerald-500 text-white"
+                        : isSelected && mode === "instant" && !isCorrect
+                          ? "border-red-500 bg-red-500 text-white"
+                          : "border-muted-foreground/40 text-muted-foreground",
+                  )}
+                >
                   {opt.id}
                 </div>
 
@@ -768,9 +861,9 @@ export function PracticeEngine({
                 Next Question <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button 
-                size="lg" 
-                onClick={() => setIsFinished(true)} 
+              <Button
+                size="lg"
+                onClick={() => setIsFinished(true)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 font-semibold"
               >
                 <Send className="h-4 w-4" /> Submit Test
@@ -787,16 +880,33 @@ export function PracticeEngine({
             <Keyboard className="h-3.5 w-3.5" />
             <span className="font-medium">Shortcuts:</span>
             <span>
-              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">A-D</kbd> answer
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                A-D
+              </kbd>{" "}
+              answer
               <span className="mx-1.5">·</span>
-              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">←→</kbd> navigate
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                ←→
+              </kbd>{" "}
+              navigate
               <span className="mx-1.5">·</span>
-              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">Shift+A-D</kbd> eliminate
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                Shift+A-D
+              </kbd>{" "}
+              eliminate
               <span className="mx-1.5">·</span>
-              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">F</kbd> focus mode
+              <kbd className="px-1.5 py-0.5 rounded bg-background border text-[10px] font-mono">
+                F
+              </kbd>{" "}
+              focus mode
             </span>
           </div>
-          <button onClick={() => setShowKeyHints(false)} className="text-muted-foreground/60 hover:text-foreground ml-4">✕</button>
+          <button
+            onClick={() => setShowKeyHints(false)}
+            className="text-muted-foreground/60 hover:text-foreground ml-4"
+          >
+            ✕
+          </button>
         </div>
       )}
     </div>

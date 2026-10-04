@@ -1,15 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { questionKeys } from "./keys";
+import { questionBankKeys } from "@/features/question-banks/api/keys";
 import type { Question } from "@/types/domain";
 
 interface ImportQuestionsArgs {
   bankId: string;
   sourceId?: string;
-  questions: Omit<
-    Question,
-    "id" | "ownerId" | "createdAt" | "updatedAt" | "bankId"
-  >[];
+  questions: Omit<Question, "id" | "ownerId" | "createdAt" | "updatedAt" | "bankId">[];
 }
 
 export function useImportQuestions() {
@@ -36,10 +34,7 @@ export function useImportQuestions() {
       }));
 
       // 1. Insert questions
-      const { data, error } = await supabase
-        .from("questions")
-        .insert(questionsToInsert)
-        .select();
+      const { data, error } = await supabase.from("questions").insert(questionsToInsert).select();
 
       if (error) {
         throw new Error(error.message);
@@ -59,11 +54,17 @@ export function useImportQuestions() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: questionKeys.list(variables.bankId, {}), // Using an empty filters object for now or whatever is default
-      });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: questionKeys.all,
+      });
+      void queryClient.invalidateQueries({
+        queryKey: questionBankKeys.detail(variables.bankId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: questionBankKeys.lists(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ["dashboard-metrics"],
       });
     },
   });

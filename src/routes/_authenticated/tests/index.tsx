@@ -23,10 +23,7 @@ function TestsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <PageHeader
-          title="My Tests"
-          description="Manage and take your generated tests."
-        />
+        <PageHeader title="My Tests" description="Manage and take your generated tests." />
         <Button onClick={() => navigate({ to: ROUTES.createTest })}>
           <Plus className="mr-2 h-4 w-4" />
           Generate Test
@@ -36,7 +33,7 @@ function TestsPage() {
       {isLoading ? (
         <LoadingState label="Loading tests..." />
       ) : error ? (
-        <ErrorState 
+        <ErrorState
           title="Failed to load tests"
           description={(error as Error).message}
           onRetry={() => refetch()}
@@ -45,23 +42,34 @@ function TestsPage() {
         <EmptyState
           title="No tests generated yet"
           description="You haven't generated any tests from your question banks."
-          action={<Button onClick={() => navigate({ to: ROUTES.createTest })}>Generate Your First Test</Button>}
+          action={
+            <Button onClick={() => navigate({ to: ROUTES.createTest })}>
+              Generate Your First Test
+            </Button>
+          }
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {tests.map((test) => (
             <Card key={test.id} className="flex flex-col">
               <CardHeader>
-                <CardTitle className="text-lg line-clamp-1" title={test.title}>{test.title}</CardTitle>
-                <CardDescription className="line-clamp-1">{test.bankName || "Unknown Bank"}</CardDescription>
+                <CardTitle className="text-lg line-clamp-1" title={test.title}>
+                  {test.title}
+                </CardTitle>
+                <CardDescription className="line-clamp-1">
+                  {test.bankName || "Unknown Bank"}
+                </CardDescription>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-1 text-sm text-muted-foreground">
-                  <p>{test.totalQuestions} Questions • {test.mode} mode</p>
+                  <p>
+                    {test.totalQuestions} Questions • {test.mode} mode
+                  </p>
                   <p>Difficulty: {test.difficulty || "Mixed"}</p>
                   {test.timerEnabled && test.durationSeconds && (
                     <p>
-                      Timer: {(() => {
+                      Timer:{" "}
+                      {(() => {
                         const h = Math.floor(test.durationSeconds / 3600);
                         const m = Math.floor((test.durationSeconds % 3600) / 60);
                         const s = test.durationSeconds % 60;

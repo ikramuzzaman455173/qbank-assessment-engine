@@ -41,7 +41,10 @@ export function LandingComparison() {
   const [activeView, setActiveView] = useState<"side-by-side" | "canvas-only">("side-by-side");
 
   return (
-    <section id="comparison" className="scroll-mt-20 py-20 border-b border-border bg-background relative overflow-hidden bg-canvas-dots">
+    <section
+      id="comparison"
+      className="scroll-mt-20 py-20 border-b border-border bg-background relative overflow-hidden bg-canvas-dots"
+    >
       <div className="container-page space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -100,7 +103,12 @@ export function LandingComparison() {
                   <span>Traditional Method</span>
                 </div>
               )}
-              <div className={cn("text-primary flex items-center gap-1.5", activeView === "side-by-side" ? "md:col-span-4" : "md:col-span-8")}>
+              <div
+                className={cn(
+                  "text-primary flex items-center gap-1.5",
+                  activeView === "side-by-side" ? "md:col-span-4" : "md:col-span-8",
+                )}
+              >
                 <Check className="size-4 text-emerald-500" />
                 <span>Knowledge Canvas Way</span>
               </div>
@@ -130,7 +138,12 @@ export function LandingComparison() {
                   )}
 
                   {/* Knowledge Canvas Advantage */}
-                  <div className={cn("text-xs sm:text-sm text-foreground font-medium flex items-start gap-2 bg-emerald-500/5 md:bg-transparent p-2.5 md:p-0 rounded-lg", activeView === "side-by-side" ? "md:col-span-4" : "md:col-span-8")}>
+                  <div
+                    className={cn(
+                      "text-xs sm:text-sm text-foreground font-medium flex items-start gap-2 bg-emerald-500/5 md:bg-transparent p-2.5 md:p-0 rounded-lg",
+                      activeView === "side-by-side" ? "md:col-span-4" : "md:col-span-8",
+                    )}
+                  >
                     <Check className="size-4 text-emerald-500 shrink-0 mt-0.5" />
                     <div className="space-y-1">
                       <span>{row.canvas}</span>

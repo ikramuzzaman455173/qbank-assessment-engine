@@ -9,10 +9,12 @@ export function useCurrentAttempt(testId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attempts")
-        .select(`
+        .select(
+          `
           *,
           attempt_answers (*)
-        `)
+        `,
+        )
         .eq("test_id", testId)
         .eq("status", "in_progress")
         .order("created_at", { ascending: false })
@@ -95,10 +97,12 @@ export function useAttempt(attemptId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attempts")
-        .select(`
+        .select(
+          `
           *,
           attempt_answers (*)
-        `)
+        `,
+        )
         .eq("id", attemptId)
         .maybeSingle();
 

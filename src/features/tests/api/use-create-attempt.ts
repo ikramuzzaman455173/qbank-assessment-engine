@@ -12,6 +12,14 @@ export function useCreateAttempt() {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) throw new Error("Not authenticated");
 
+      // Mark any prior in_progress attempt for this test as abandoned
+      await supabase
+        .from("attempts")
+        .update({ status: "abandoned" })
+        .eq("test_id", testId)
+        .eq("user_id", userData.user.id)
+        .eq("status", "in_progress");
+
       const { data, error } = await supabase
         .from("attempts")
         .insert({
@@ -30,8 +38,12 @@ export function useCreateAttempt() {
       return data.id;
     },
     onSuccess: (attemptId, variables) => {
-      queryClient.invalidateQueries({ queryKey: attemptKeys.lists(variables.testId) });
-      navigate({ to: `/tests/${variables.testId}/attempt` as any });
+      void queryClient.invalidateQueries({ queryKey: attemptKeys.lists(variables.testId) });
+      void queryClient.invalidateQueries({ queryKey: attemptKeys.all });
+      void navigate({
+        to: `/tests/${variables.testId}/attempt` as any,
+        search: { attemptId } as any,
+      });
     },
   });
 }

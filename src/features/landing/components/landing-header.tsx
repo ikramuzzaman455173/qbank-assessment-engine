@@ -42,7 +42,10 @@ export function LandingHeader() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground" aria-label="Landing Navigation">
+        <nav
+          className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground"
+          aria-label="Landing Navigation"
+        >
           {NAV_LINKS.map(({ label, targetId, icon: Icon }) => (
             <a
               key={targetId}
@@ -72,7 +75,11 @@ export function LandingHeader() {
               <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
                 <Link to={ROUTES.auth}>Sign In</Link>
               </Button>
-              <Button size="sm" asChild className="hidden xs:inline-flex gap-1.5 shadow-xs font-medium">
+              <Button
+                size="sm"
+                asChild
+                className="hidden xs:inline-flex gap-1.5 shadow-xs font-medium"
+              >
                 <Link to={ROUTES.auth}>
                   <span>Get Started</span>
                   <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -113,7 +120,11 @@ export function LandingHeader() {
           </nav>
           <div className="pt-2 border-t border-border flex flex-col gap-2">
             {session ? (
-              <Button size="sm" asChild className="w-full justify-center gap-1.5 shadow-xs font-medium">
+              <Button
+                size="sm"
+                asChild
+                className="w-full justify-center gap-1.5 shadow-xs font-medium"
+              >
                 <Link to={ROUTES.dashboard} onClick={() => setMobileMenuOpen(false)}>
                   <span>Go to Dashboard</span>
                   <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -126,7 +137,11 @@ export function LandingHeader() {
                     Sign In
                   </Link>
                 </Button>
-                <Button size="sm" asChild className="w-full justify-center gap-1.5 shadow-xs font-medium">
+                <Button
+                  size="sm"
+                  asChild
+                  className="w-full justify-center gap-1.5 shadow-xs font-medium"
+                >
                   <Link to={ROUTES.auth} onClick={() => setMobileMenuOpen(false)}>
                     <span>Get Started</span>
                     <ArrowRight className="size-3.5" aria-hidden="true" />

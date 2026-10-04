@@ -20,7 +20,7 @@ export function useEligibleQuestionsCount(args: EligibleCountArgs) {
       if (args.difficulty && args.difficulty !== "mixed") {
         query = query.eq("difficulty", args.difficulty);
       }
-      
+
       if (args.topic && args.topic.trim() !== "") {
         query = query.eq("topic", args.topic.trim());
       }

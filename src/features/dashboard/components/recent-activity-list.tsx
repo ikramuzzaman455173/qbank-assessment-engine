@@ -63,25 +63,30 @@ export function RecentActivityList({ activities, loading }: RecentActivityListPr
           const isGoodScore = score >= 75;
           const isPassScore = score >= 50;
 
-          const badgeStyle = isGoodScore 
-            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" 
-            : isPassScore 
-            ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" 
-            : "bg-destructive/10 text-destructive border-destructive/20";
+          const badgeStyle = isGoodScore
+            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+            : isPassScore
+              ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+              : "bg-destructive/10 text-destructive border-destructive/20";
 
           return (
-            <Link 
-              key={activity.id} 
-              to="/attempts/$attemptId/result" 
+            <Link
+              key={activity.id}
+              to="/attempts/$attemptId/result"
               params={{ attemptId: activity.id }}
               className="flex items-center justify-between p-3 rounded-lg border border-transparent hover:border-border hover:bg-muted/50 transition-all group"
             >
               <div className="flex items-start gap-3 min-w-0 pr-2">
-                <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${isPractice ? "bg-blue-500/10 text-blue-600 dark:text-blue-400" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"}`}>
+                <div
+                  className={`p-2 rounded-lg shrink-0 mt-0.5 ${isPractice ? "bg-blue-500/10 text-blue-600 dark:text-blue-400" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"}`}
+                >
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors" title={activity.title}>
+                  <h4
+                    className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors"
+                    title={activity.title}
+                  >
                     {activity.title}
                   </h4>
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mt-1">

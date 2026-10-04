@@ -77,7 +77,11 @@ export function PreferencesSettings() {
   }, [preferences, form]);
 
   if (isLoading) {
-    return <div className="p-8 flex justify-center"><Loader2 className="animate-spin text-primary" /></div>;
+    return (
+      <div className="p-8 flex justify-center">
+        <Loader2 className="animate-spin text-primary" />
+      </div>
+    );
   }
 
   const onSubmit = async (values: PreferencesFormValues) => {
@@ -94,7 +98,6 @@ export function PreferencesSettings() {
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          
           <Card>
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
@@ -119,9 +122,7 @@ export function PreferencesSettings() {
                         <SelectItem value="system">System</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormDescription>
-                      Select the interface theme you prefer.
-                    </FormDescription>
+                    <FormDescription>Select the interface theme you prefer.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -143,7 +144,13 @@ export function PreferencesSettings() {
                     <FormItem>
                       <FormLabel>Default Question Count</FormLabel>
                       <FormControl>
-                        <Input type="number" min={1} max={500} placeholder="e.g., 20 (1 - 500)" {...field} />
+                        <Input
+                          type="number"
+                          min={1}
+                          max={500}
+                          placeholder="e.g., 20 (1 - 500)"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -158,7 +165,9 @@ export function PreferencesSettings() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Randomize Question Order</FormLabel>
-                      <FormDescription>Questions appear in random order by default.</FormDescription>
+                      <FormDescription>
+                        Questions appear in random order by default.
+                      </FormDescription>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -174,7 +183,9 @@ export function PreferencesSettings() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Randomize Options</FormLabel>
-                      <FormDescription>Shuffle the options (A, B, C, D) by default.</FormDescription>
+                      <FormDescription>
+                        Shuffle the options (A, B, C, D) by default.
+                      </FormDescription>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -199,7 +210,13 @@ export function PreferencesSettings() {
                     <FormItem>
                       <FormLabel>Default Practice Question Count</FormLabel>
                       <FormControl>
-                        <Input type="number" min={1} max={500} placeholder="e.g., 10 (1 - 500)" {...field} />
+                        <Input
+                          type="number"
+                          min={1}
+                          max={500}
+                          placeholder="e.g., 10 (1 - 500)"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -214,7 +231,9 @@ export function PreferencesSettings() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Immediate Feedback</FormLabel>
-                      <FormDescription>Show correct/incorrect immediately after answering.</FormDescription>
+                      <FormDescription>
+                        Show correct/incorrect immediately after answering.
+                      </FormDescription>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -230,7 +249,9 @@ export function PreferencesSettings() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Show Explanations</FormLabel>
-                      <FormDescription>Display question explanations automatically.</FormDescription>
+                      <FormDescription>
+                        Display question explanations automatically.
+                      </FormDescription>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />

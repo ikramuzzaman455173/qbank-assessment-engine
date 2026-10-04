@@ -19,7 +19,8 @@ const STEPS: Step[] = [
   {
     id: 1,
     title: "1. Upload & Ingest Questions",
-    shortDesc: "Upload your PDFs or author structured multiple-choice questions in seconds with AI assistance.",
+    shortDesc:
+      "Upload your PDFs or author structured multiple-choice questions in seconds with AI assistance.",
     icon: FileUp,
     badge: "Step 01 • Ingestion",
     previewTitle: "Smart PDF & JSON Parser",
@@ -36,7 +37,8 @@ const STEPS: Step[] = [
   {
     id: 2,
     title: "2. Practice or Run Timed Tests",
-    shortDesc: "Choose untimed practice mode for learning or start real exam simulations with timers.",
+    shortDesc:
+      "Choose untimed practice mode for learning or start real exam simulations with timers.",
     icon: PlayCircle,
     badge: "Step 02 • Execution",
     previewTitle: "Dual-Engine Test Simulator",
@@ -53,7 +55,8 @@ const STEPS: Step[] = [
   {
     id: 3,
     title: "3. Analyze Mastery & Fix Weak Areas",
-    shortDesc: "Review your detailed diagnostic reports, uncover weak topics, and track improvement.",
+    shortDesc:
+      "Review your detailed diagnostic reports, uncover weak topics, and track improvement.",
     icon: LineChart,
     badge: "Step 03 • Mastery",
     previewTitle: "Diagnostic Analytics & Recommendations",
@@ -75,7 +78,10 @@ export function LandingHowItWorks() {
   if (!activeStep) return null;
 
   return (
-    <section id="how-it-works" className="scroll-mt-20 py-14 md:py-20 border-b border-border bg-canvas-grid bg-background relative">
+    <section
+      id="how-it-works"
+      className="scroll-mt-20 py-14 md:py-20 border-b border-border bg-canvas-grid bg-background relative"
+    >
       <div className="container-page space-y-10 md:space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -87,8 +93,8 @@ export function LandingHowItWorks() {
             How Knowledge Canvas Works
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-            A frictionless learning loop designed to help you prepare faster, retain better,
-            and pass with confidence.
+            A frictionless learning loop designed to help you prepare faster, retain better, and
+            pass with confidence.
           </p>
         </div>
 
@@ -124,7 +130,12 @@ export function LandingHowItWorks() {
                     <Icon className="size-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className={cn("text-base font-bold", isActive ? "text-foreground" : "text-muted-foreground")}>
+                    <h3
+                      className={cn(
+                        "text-base font-bold",
+                        isActive ? "text-foreground" : "text-muted-foreground",
+                      )}
+                    >
                       {step.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -161,7 +172,10 @@ export function LandingHowItWorks() {
                   </span>
                   <div className="space-y-2.5">
                     {activeStep.previewPoints.map((pt, i) => (
-                      <div key={i} className="flex items-start gap-2.5 text-sm p-2 rounded-md bg-muted/20 border border-border/60">
+                      <div
+                        key={i}
+                        className="flex items-start gap-2.5 text-sm p-2 rounded-md bg-muted/20 border border-border/60"
+                      >
                         <CheckCircle2 className="size-4.5 text-emerald-500 shrink-0 mt-0.5" />
                         <span className="text-foreground/90 font-medium">{pt}</span>
                       </div>
@@ -171,7 +185,10 @@ export function LandingHowItWorks() {
 
                 <div className="grid grid-cols-2 gap-3 pt-4 border-t border-dashed border-border/80">
                   {activeStep.mockStats.map((st, i) => (
-                    <div key={i} className="rounded-lg border border-dashed border-border bg-muted/40 p-3">
+                    <div
+                      key={i}
+                      className="rounded-lg border border-dashed border-border bg-muted/40 p-3"
+                    >
                       <span className="text-xs text-muted-foreground block">{st.label}</span>
                       <span className="text-lg font-bold font-mono text-foreground block pt-0.5">
                         {st.value}

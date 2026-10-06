@@ -74,8 +74,8 @@ function ResetPasswordPage() {
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters long");
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long");
       return;
     }
     if (newPassword !== confirmPassword) {

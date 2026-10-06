@@ -68,7 +68,8 @@ export function useResults() {
 
         if (error) {
           console.warn("Error fetching results from Supabase:", error.message);
-          return GUEST_RESULTS;
+          if (isGuestSession()) return GUEST_RESULTS;
+          throw error;
         }
 
         if (!data || data.length === 0) {
@@ -101,7 +102,8 @@ export function useResults() {
         });
       } catch (err) {
         console.warn("Failed to fetch results, falling back:", err);
-        return GUEST_RESULTS;
+        if (isGuestSession()) return GUEST_RESULTS;
+        throw err;
       }
     },
   });

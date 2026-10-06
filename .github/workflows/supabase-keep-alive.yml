@@ -11,11 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Heartbeat to Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Skipping heartbeat: SUPABASE_URL or SUPABASE_ANON_KEY secrets not set in GitHub repository."
+            exit 0
+          fi
+
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_3Oh3hPJIUfAh1b1I835h_g__7F3KhHW' }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_3Oh3hPJIUfAh1b1I835h_g__7F3KhHW' }}" \
-            "${{ secrets.SUPABASE_URL || 'https://fyokwegeezebfcktgdwu.supabase.co' }}/rest/v1/profiles?select=id&limit=1")
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1")
           
           echo "Supabase Response HTTP Status: $HTTP_STATUS"
           

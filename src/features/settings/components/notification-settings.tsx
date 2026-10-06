@@ -1,14 +1,20 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 
 export function NotificationSettings() {
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Email Notifications</CardTitle>
-          <CardDescription>Choose what you want to be notified about via email.</CardDescription>
+          <div className="flex items-center justify-between">
+            <CardTitle>Email Notifications</CardTitle>
+            <Badge variant="secondary">Coming Soon</Badge>
+          </div>
+          <CardDescription>
+            Email notifications and dispatch pipeline will be available in the next release.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between space-x-2 rounded-lg border p-4">

@@ -25,7 +25,7 @@ Tools: Tailwind CSS v4, Recharts, TanStack Query, React Hook Form, Zod, Radix UI
 Deployment: Vercel, Nitro Engine
 
 Excerpt:
-Educators and students spend hours retyping questions from PDF exam papers and lack clear topic-level score breakdowns. QBank solves this by automating question extraction with Google Gemini, running time-locked practice tests with anti-loss protection, and showing clear mastery analytics. The system cuts exam setup time by 90% and keeps student testing data secure with PostgreSQL Row Level Security.
+Before university exams, preparing from static MCQ PDFs makes it difficult to test real recall under time limits or find weak areas. I built QBank as a personal open-source platform to turn exam PDF papers into interactive tests with Google Gemini, protect student answers with local state sync, and track topic mastery with clear charts. The system cuts test creation time by 90% and provides instant practice on low-scoring topics.
 
 Description (Copy the Markdown below into your Rich Text Editor):
 
@@ -33,29 +33,29 @@ Description (Copy the Markdown below into your Rich Text Editor):
 
 | Project Attribute | Engineering & Delivery Details |
 | :--- | :--- |
-| **Client / Domain** | EdTech & Examination Preparation (O/A Level & Professional Certifications) |
-| **Agency Partner** | Shopnojal IT (Delivered for Real Commercial Client) |
-| **Role & Execution** | **Lead Full-Stack Developer** (Delivered on-time in a 5-week part-time sprint alongside full-time role) |
+| **Project Type** | Personal Open-Source Full-Stack Project |
+| **Origin & Motivation** | Built to solve my own university exam prep: turning static MCQ PDFs into live tests |
+| **Role & Execution** | **Solo Full-Stack Engineer** (Full Architecture, UI Design, DB Schema & AI Pipelines) |
 | **Core Architecture** | React 19 + TanStack Start (SSR with Nitro) + Supabase PostgreSQL (RLS) + Google Gemini |
 | **Database Security** | PostgreSQL Row Level Security (RLS) with strict multi-tenant data isolation |
 | **Live Interactive Test** | [https://qbank-core.vercel.app](https://qbank-core.vercel.app) (Guest Credentials: `demo@knowledgecanvas.dev` / `Demo@Recruiter2026!`) |
 
-> 🔒 **Client Confidentiality & Showcase Notice:**
-> The primary production repository is proprietary and kept private under NDA. This showcase and live staging deployment serve as an authorized, sanitized sandbox demonstrating the architecture, component patterns, and real-time workflows with non-sensitive data.
+> 💡 **Project Story & Motivation:**
+> Before my university exams, I used to prepare MCQ papers in PDF format to study. But reading static PDFs was not enough. I needed a dedicated platform to test myself with countdown timers, review wrong answers, and track weak topics. I built QBank to solve that real problem.
 
 ---
 
 ## 🎯 The 30-Second Executive Summary
 
-**QBank** is a production-grade testing platform built to solve slow exam prep and missing analytics for learners. Built for teachers, academies, and self-directed students, it replaces manual question entry with automated AI parsing and real-time exam tracking.
+**QBank** is a production-grade testing platform built to turn messy question papers into interactive practice exams. Built for self-directed students and teachers, it replaces slow manual question entry with automated AI parsing and real-time exam tracking.
 
-The platform lets educators build question banks in minutes, run time-locked exams that never lose student answers, and see clear accuracy trends across topics and difficulty levels.
+The platform lets users create question banks in minutes, run time-locked tests that protect student answers during tab reloads, and see clear accuracy trends across topics and difficulty levels.
 
 ### 📊 3 Core Transformations (Problem vs. Measurable Impact)
 
 1. ⚡ **Question Import & Paper Digitization:**
-   - **Legacy Friction:** Teachers spent 45 to 60 minutes typing questions manually from paper sheets or PDF exam papers into disparate forms.
-   - **Engineered Solution:** Built an automated question extraction flow with Google Gemini to parse questions, answer keys, and explanations into an editable review table in under 2 minutes.
+   - **Legacy Friction:** Typing 50+ questions by hand from paper sheets or PDF exam papers took 45 to 60 minutes of tedious work.
+   - **Engineered Solution:** Built an automated question extraction flow with Google Gemini to parse questions, options, and explanations into an editable review table in under 2 minutes.
    - **Measurable Impact:** 🚀 **90% faster question creation (under 2 minutes per paper)**
 
 2. 📈 **Exam State & Anti-Loss Protection:**
@@ -97,7 +97,7 @@ The platform lets educators build question banks in minutes, run time-locked exa
 ### 🛡️ Production Engineering Practices
 
 - **Database Multi-Tenancy:** Placed test evaluation and question records behind PostgreSQL Row Level Security policies so users can only view and edit their own data.
-- **Pre-Commit AI Review:** Provided an interactive review table where teachers can review and edit AI-extracted questions before saving to Supabase.
+- **Pre-Commit AI Review:** Provided an interactive review table where users can review and edit AI-extracted questions before saving to Supabase.
 - **Optimistic UI & Cache Management:** Used TanStack Query to cache question banks and test results, ensuring instant page transitions without loading screens.
 - **Offline Review via PWA:** Added service worker caching so students can review previous test results even when offline.
 - **Automated Heartbeat:** Added a GitHub Actions cron job running every two days to ping the Supabase database and keep it active.
@@ -109,7 +109,7 @@ The platform lets educators build question banks in minutes, run time-locked exa
 - **Atomic Scoring Logic:** Computed test results on the server to prevent client-side inspection or answer tampering.
 
 > 🎯 **Senior Developer Takeaway:**
-> "Building reliable assessment software requires keeping user state safe at all times. Pairing TanStack Start with Supabase Row Level Security delivered a fast, clean product on-time within our 5-week sprint."
+> "Building reliable assessment software requires keeping user state safe at all times. Pairing TanStack Start with Supabase Row Level Security delivered a fast, clean product that solved my university exam needs."
 
 ---
 

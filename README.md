@@ -19,23 +19,23 @@
     <a href="#-key-screens--live-interactive-testing">Screens & Demo</a> •
     <a href="#️-tech-stack--architecture">Tech Stack</a> •
     <a href="#-getting-started">Getting Started</a> •
-    <a href="#-author--delivery-credits">Author</a>
+    <a href="#-author--project-credits">Author</a>
   </p>
 </div>
 
 ---
 
 > [!NOTE]
-> 🔒 **Client Confidentiality & Sanitized Showcase Sandbox:**
-> The primary production repository is proprietary and kept private under NDA. This public repository and live staging deployment serve as an authorized, sanitized showcase/staging sandbox demonstrating architecture, UI design system, and full-stack workflows without exposing confidential client data or private keys.
+> 💡 **Project Origin & Real Motivation:**
+> I built QBank to solve a real problem during my university exams. I used to make MCQ PDF papers to study, but there was no dedicated platform to practice them, take timed self-assessment tests, or identify my weak topics. I built this full-stack platform to turn static exam papers into interactive tests with instant feedback.
 
 ## ⚡ Quick Snapshot (The 30-Second Overview)
 
 | Attribute | Details |
 | :--- | :--- |
-| **Client / Domain** | EdTech & Examination Preparation (O/A Level & Professional Certifications) |
-| **Agency Partner** | Shopnojal IT (Delivered for Real Commercial Client) |
-| **Role & Execution** | **Lead Full-Stack Developer** (Delivered on-time in a 5-week part-time sprint alongside full-time role) |
+| **Project Type** | Personal Open-Source Full-Stack Project |
+| **Core Motivation** | Solving real university exam prep: turning static MCQ PDFs into timed self-assessment tests |
+| **Role & Execution** | **Solo Full-Stack Engineer** (Full Architecture, UI Design, Database Schema & AI Integration) |
 | **Core Stack** | React 19 + TanStack Start (SSR with Nitro) + Supabase PostgreSQL (RLS) + Google Gemini API |
 | **Live Interactive Test** | [https://qbank-core.vercel.app](https://qbank-core.vercel.app) (Guest Mode: 1-Click "Explore as Guest Reviewer" or `demo@knowledgecanvas.dev` / `Demo@Recruiter2026!`) |
 
@@ -43,7 +43,7 @@
 
 ## 🎯 Core Problem & Measurable Impact (3 Key Wins)
 
-- ⚡ **Question Import & Paper Digitization:** Replaced slow manual retyping of questions from paper exam sheets with an automated AI parser using Google Gemini $\rightarrow$ 🚀 **90% faster question creation (under 2 minutes per paper)**.
+- ⚡ **Question Import & Paper Digitization:** Replaced manual typing of exam questions from lecture PDFs with an automated AI parser using Google Gemini $\rightarrow$ 🚀 **90% faster question creation (under 2 minutes per paper)**.
 - 📈 **Exam State & Anti-Loss Protection:** Replaced lost test attempts from accidental tab refreshes with local session sync and automatic submission on timer expiry $\rightarrow$ 📈 **100% test attempt recovery with zero lost answers**.
 - 🛡️ **Learning Insights & Weak-Area Practice:** Replaced basic single-score test summaries with topic-level mastery charts and automated practice recommendations for low-scoring subjects $\rightarrow$ ⚡ **Sub-150ms page response times and instant weak-area detection**.
 
@@ -120,7 +120,7 @@ knowledge-canvas/
 
 ## 🚀 Getting Started
 
-Follow these steps to run the sanitized showcase locally on your machine:
+Follow these steps to run the project locally on your machine:
 
 ```bash
 # 1. Clone the repository
@@ -141,8 +141,8 @@ Open [http://localhost:3000](http://localhost:3000) (or the port shown in your t
 
 ---
 
-## 👨‍💻 Author & Delivery Credits
-- **Lead Developer:** [Md. Ikramuzzaman](https://github.com/ikramuzzaman455173)
-- **Agency Partner:** Shopnojal IT (Delivered for Real Commercial Client)
+## 👨‍💻 Author & Project Credits
+- **Creator & Lead Developer:** [Md. Ikramuzzaman](https://github.com/ikramuzzaman455173)
+- **Project Type:** Independent Personal Open-Source Project
 - **Portfolio:** [https://ikramuzzaman.vercel.app](https://ikramuzzaman.vercel.app)
 - **GitHub:** [@ikramuzzaman455173](https://github.com/ikramuzzaman455173)

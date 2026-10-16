@@ -21,7 +21,7 @@ import { useCurrentAttempt, useTestAttempts } from "@/features/tests/api/use-att
 import { useDeleteAttempt } from "@/features/tests/api/use-delete-attempt";
 import { ROUTES } from "@/constants/routes";
 
-export const Route = createFileRoute("/_authenticated/tests/$testId")({
+export const Route = createFileRoute("/_authenticated/tests/$testId/")({
   head: () => ({
     meta: [{ title: "Test Details — QBank" }],
   }),

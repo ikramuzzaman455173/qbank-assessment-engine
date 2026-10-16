@@ -87,7 +87,7 @@ function TestAttemptPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/10 -mt-8 -mx-4 md:-mx-8 lg:-mx-12 px-0">
+    <div className="w-full">
       <TestTakingEngine test={test} attempt={activeAttempt as any} />
     </div>
   );

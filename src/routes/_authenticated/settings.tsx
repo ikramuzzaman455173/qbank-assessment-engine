@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   User,
@@ -19,6 +19,7 @@ import { NotificationSettings } from "@/features/settings/components/notificatio
 import { DataManagementSettings } from "@/features/settings/components/data-management-settings";
 import { SecuritySettings } from "@/features/settings/components/security-settings";
 import { DangerZone } from "@/features/settings/components/danger-zone";
+import { cn } from "@/lib/utils";
 
 type SettingsTab =
   "profile" | "preferences" | "ai" | "notifications" | "data" | "security" | "danger";
@@ -43,11 +44,19 @@ export const Route = createFileRoute("/_authenticated/settings")({
 function SettingsPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const activeTab: SettingsTab = search.tab || "profile";
+  const [activeTab, setActiveTab] = useState<SettingsTab>(search.tab || "profile");
+
+  useEffect(() => {
+    if (search.tab && search.tab !== activeTab) {
+      setActiveTab(search.tab);
+    }
+  }, [search.tab]);
 
   const handleTabChange = (tabId: SettingsTab) => {
+    setActiveTab(tabId);
     void navigate({
-      search: (prev) => ({ ...prev, tab: tabId }),
+      to: "/settings",
+      search: { tab: tabId },
       replace: true,
     });
   };
@@ -77,28 +86,28 @@ function SettingsPage() {
 
       <div className="flex flex-col md:flex-row gap-8 items-start">
         <aside className="w-full md:w-64 shrink-0 overflow-x-auto md:overflow-visible">
-          <nav className="flex md:flex-col gap-2 min-w-max md:min-w-0 pb-4 md:pb-0">
+          <nav className="flex md:flex-col gap-1.5 min-w-max md:min-w-0 pb-4 md:pb-0">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap md:whitespace-normal
-                    ${
-                      isActive
-                        ? tab.destructive
-                          ? "bg-destructive text-destructive-foreground"
-                          : "bg-primary text-primary-foreground"
-                        : tab.destructive
-                          ? "hover:bg-destructive/10 text-destructive"
-                          : "hover:bg-muted text-muted-foreground"
-                    }
-                  `}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-150 text-left cursor-pointer select-none whitespace-nowrap md:whitespace-normal",
+                    isActive
+                      ? tab.destructive
+                        ? "bg-destructive text-destructive-foreground shadow-xs font-semibold"
+                        : "bg-primary text-primary-foreground shadow-xs font-semibold"
+                      : tab.destructive
+                        ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
                 >
-                  <Icon className="size-4" />
-                  {tab.label}
+                  <Icon className="size-4 shrink-0" />
+                  <span>{tab.label}</span>
                 </button>
               );
             })}

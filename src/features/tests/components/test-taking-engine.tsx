@@ -283,17 +283,17 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
   const unansweredCount = test.totalQuestions - answers.filter((a) => !!a.selectedAnswer).length;
 
   return (
-    <div className="flex flex-col lg:flex-row h-full w-full min-h-[calc(100vh-6rem)] gap-6 p-4 md:p-6">
+    <div className="flex flex-col lg:flex-row w-full gap-6">
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col space-y-4 max-w-4xl">
-        <div className="flex items-center justify-between bg-card p-4 rounded-lg border shadow-sm">
-          <div>
-            <h1 className="font-bold text-lg">{test.title}</h1>
-            <p className="text-sm text-muted-foreground">
+      <div className="flex-1 min-w-0 flex flex-col space-y-4">
+        <div className="flex items-center justify-between bg-card p-4 rounded-lg border shadow-sm gap-3">
+          <div className="min-w-0 pr-2">
+            <h1 className="font-bold text-base sm:text-lg truncate">{test.title}</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Question {currentIndex + 1} of {test.totalQuestions}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {test.timerEnabled && test.durationSeconds && (
               <TestTimer
                 durationSeconds={test.durationSeconds}
@@ -329,7 +329,7 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
 
         <Card className="flex-1 flex flex-col shadow-sm border-t-4 border-t-primary">
           <CardHeader>
-            <div className="text-lg font-medium leading-relaxed whitespace-pre-wrap">
+            <div className="text-lg font-medium leading-relaxed whitespace-pre-wrap break-words">
               <span className="text-muted-foreground font-bold mr-2">{currentIndex + 1}.</span>
               {currentQuestion.questionText}
             </div>
@@ -363,12 +363,12 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
                   >
                     {opt.id}.
                   </span>
-                  <span className="flex-1 whitespace-pre-wrap leading-relaxed">{opt.text}</span>
+                  <span className="flex-1 whitespace-pre-wrap leading-relaxed break-words">{opt.text}</span>
                 </div>
               );
             })}
           </CardContent>
-          <CardFooter className="flex items-center justify-between border-t p-4 bg-muted/20">
+          <CardFooter className="flex flex-wrap items-center justify-between gap-3 border-t p-4 bg-muted/20">
             <Button variant="outline" onClick={handlePrevious} disabled={currentIndex === 0}>
               <ChevronLeft className="mr-2 h-4 w-4" /> Previous
             </Button>
@@ -405,8 +405,8 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
 
         {/* Keyboard Shortcuts Hint Bar */}
         {showKeyHints && (
-          <div className="hidden sm:flex items-center justify-between bg-muted/50 border rounded-lg px-4 py-2 text-xs text-muted-foreground animate-in fade-in duration-300">
-            <div className="flex items-center gap-1.5">
+          <div className="hidden sm:flex items-center justify-between gap-2 bg-muted/50 border rounded-lg px-4 py-2 text-xs text-muted-foreground animate-in fade-in duration-300">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <Keyboard className="h-3.5 w-3.5" />
               <span className="font-medium">Shortcuts:</span>
               <span>
@@ -447,7 +447,7 @@ export function TestTakingEngine({ test, attempt }: TestTakingEngineProps) {
       </div>
 
       {/* Sidebar Area */}
-      <div className="w-full lg:w-80 flex flex-col gap-4">
+      <div className="w-full lg:w-72 xl:w-80 shrink-0 flex flex-col gap-4">
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
             <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
